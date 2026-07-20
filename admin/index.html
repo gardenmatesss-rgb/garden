@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shidujim — Panel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+:root{
+  --black:#0f0f0f;--white:#fafaf8;--gold:#b8912a;--gold-light:#e8d5a0;
+  --gold-muted:#f5edd8;--gray-50:#f7f7f5;--gray-100:#f0f0ee;
+  --gray-200:#e2e2de;--gray-400:#a8a89e;--gray-600:#68685e;
+  --sidebar-w:240px;--r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--black);font-size:13px;line-height:1.5}
+
+/* LOGIN */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--black)}
+.login-box{width:340px;background:var(--white);border-radius:14px;overflow:hidden}
+.login-accent{height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold))}
+.login-inner{padding:2.4rem 2rem 2rem}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;margin-bottom:2px}
+.login-sub{font-size:11px;color:var(--gray-400);letter-spacing:.04em;margin-bottom:1.8rem}
+.login-box input{width:100%;padding:10px 13px;border:1px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:9px;background:var(--white);color:var(--black);transition:border-color .18s}
+.login-box input:focus{border-color:var(--gold)}
+.login-box .btn-login{width:100%;padding:11px;background:var(--black);color:var(--white);border:none;border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.03em;margin-top:2px}
+.login-box .btn-login:hover{opacity:.85}
+.login-err{color:#c0392b;font-size:11px;margin-top:7px;display:none}
+
+/* SHELL */
+.app{display:none}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--black);display:flex;flex-direction:column;z-index:100}
+.sb-top{padding:1.6rem 1.4rem 1rem;border-bottom:1px solid #1e1e1e}
+.sb-logo{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--white);letter-spacing:.01em}
+.sb-logo em{color:var(--gold);font-style:normal}
+.sb-role{font-size:9.5px;color:#3a3a3a;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.nav{padding:.8rem 0;flex:1;overflow-y:auto}
+.nav-sec{font-size:9px;color:#333;letter-spacing:.1em;text-transform:uppercase;padding:.9rem 1.4rem .3rem}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 1.4rem;color:var(--gray-400);cursor:pointer;font-size:12.5px;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif;transition:all .14s;position:relative}
+.ni:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.ni.active{color:var(--white);background:rgba(255,255,255,.06)}
+.ni .ico{font-size:13px;width:17px;text-align:center;opacity:.7}
+.ni.active .ico{opacity:1}
+.ni .badge-count{margin-left:auto;background:var(--gold);color:var(--white);font-size:9px;font-weight:600;padding:1px 6px;border-radius:10px;display:none}
+.ni .badge-count.show{display:inline}
+.sb-foot{padding:1rem 1.4rem;border-top:1px solid #1a1a1a}
+.sb-user{font-size:11px;color:#333;margin-bottom:.4rem}
+.btn-out{font-size:11px;color:var(--gray-600);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:color .14s;padding:0}
+.btn-out:hover{color:var(--white)}
+.main{margin-left:var(--sidebar-w);padding:2.2rem 2.5rem;min-height:100vh}
+.page{display:none}.page.active{display:block}
+.ph{margin-bottom:1.8rem}
+.pt{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;line-height:1.1}
+.ps{font-size:11.5px;color:var(--gray-600);margin-top:3px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem}
+.sc{background:var(--white);border-radius:var(--r);padding:1.3rem 1.4rem;border:1px solid var(--gray-200);position:relative;overflow:hidden}
+.sc-num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;line-height:1}
+.sc-lbl{font-size:10.5px;color:var(--gray-600);margin-top:3px;letter-spacing:.02em}
+.sc-ico{position:absolute;top:1.1rem;right:1.1rem;font-size:17px;opacity:.15}
+
+/* CARDS/TABLE */
+.card{background:var(--white);border-radius:var(--r);border:1px solid var(--gray-200);overflow:hidden}
+.toolbar{display:flex;gap:9px;margin-bottom:1.1rem;flex-wrap:wrap;align-items:center}
+.si{position:relative;flex:1;min-width:180px;max-width:260px}
+.si input{width:100%;padding:8px 11px 8px 32px;border:1px solid var(--gray-200);border-radius:7px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white);transition:border-color .18s}
+.si input:focus{border-color:var(--gold)}
+.si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:13px;pointer-events:none}
+select.fsel{padding:8px 11px;border:1px solid var(--gray-200);border-radius:7px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white);cursor:pointer;transition:border-color .18s}
+select.fsel:focus{border-color:var(--gold)}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600);background:var(--gray-50);border-bottom:1px solid var(--gray-100);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--gray-50);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fdfdf9}
+.av{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gray-200)}
+.av-ph{width:32px;height:32px;border-radius:50%;background:var(--gray-100);border:1.5px solid var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:500}
+.chip-m{background:#e6eeff;color:#1a46a0}
+.chip-f{background:#fce5f5;color:#8a1a70}
+.chip-new{background:var(--gold-muted);color:#7a5a00;border:1px solid var(--gold-light)}
+.chip-ok{background:#e6f5ec;color:#1a7040}
+.tname{font-weight:500;font-size:13px;color:var(--black)}
+.tsub{font-size:11px;color:var(--gray-400);margin-top:1px}
+.empty-state{padding:3rem;text-align:center}
+.es-ico{font-size:28px;opacity:.3;margin-bottom:.6rem}
+.es-txt{font-size:12.5px;color:var(--gray-400)}
+
+/* BUTTONS */
+.btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;letter-spacing:.02em;transition:all .14s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.b-black{background:var(--black);color:var(--white)}.b-black:hover{opacity:.85}
+.b-gold{background:var(--gold);color:var(--white)}.b-gold:hover{opacity:.9}
+.b-ghost{background:transparent;color:var(--gray-600);border:1px solid var(--gray-200)}.b-ghost:hover{border-color:var(--gray-400);color:var(--black)}
+.b-danger{background:transparent;color:#c0392b;border:1px solid #fcc}.b-danger:hover{background:#fff0f0}
+.b-sm{padding:5px 10px;font-size:11.5px}
+
+/* OVERLAYS */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.ov.open{display:flex}
+.modal{background:var(--white);border-radius:14px;width:92%;max-width:700px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-hd{padding:1.6rem 1.8rem 1.1rem;border-bottom:1px solid var(--gray-100);position:sticky;top:0;background:var(--white);z-index:2;display:flex;align-items:flex-start;justify-content:space-between}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500}
+.modal-sub{font-size:11px;color:var(--gray-400);margin-top:2px}
+.btn-x{background:none;border:none;font-size:19px;cursor:pointer;color:var(--gray-400);padding:3px;line-height:1}.btn-x:hover{color:var(--black)}
+.modal-bd{padding:1.4rem 1.8rem 1.8rem}
+
+/* PROFILE VIEW */
+.psec{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:1.3rem 0 .7rem;padding-bottom:.4rem;border-bottom:1px solid var(--gold-muted)}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px 2rem}
+.pf{padding:5px 0}
+.pf .k{font-size:9.5px;color:var(--gray-400);letter-spacing:.04em;margin-bottom:2px;text-transform:uppercase}
+.pf .v{font-size:13px;color:var(--black)}
+.modal-acts{display:flex;gap:7px;margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--gray-100);flex-wrap:wrap}
+
+/* EDIT FORM */
+.ef-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.ef-full{grid-column:1/-1}
+.ef-sec{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;padding-bottom:.4rem;border-bottom:1px solid var(--gold-muted);grid-column:1/-1}
+.ef-field{display:flex;flex-direction:column;gap:4px}
+.ef-field label{font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em}
+.ef-field input,.ef-field select,.ef-field textarea{padding:8px 10px;border:1px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;background:var(--white);color:var(--black);transition:border-color .18s}
+.ef-field input:focus,.ef-field select:focus,.ef-field textarea:focus{border-color:var(--gold)}
+.ef-field textarea{min-height:70px;resize:vertical;line-height:1.4}
+.save-bar{display:flex;gap:8px;justify-content:flex-end;margin-top:1.4rem;padding-top:1.1rem;border-top:1px solid var(--gray-100)}
+
+/* HISTORIAL */
+.hist-item{display:flex;gap:10px;padding:.7rem 0;border-bottom:1px solid var(--gray-50)}
+.hist-item:last-child{border-bottom:none}
+.hist-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0}
+.hist-body{flex:1}
+.hist-title{font-size:13px;font-weight:500;color:var(--black)}
+.hist-date{font-size:10.5px;color:var(--gray-400);margin-top:1px}
+.hist-note{font-size:11.5px;color:var(--gray-600);margin-top:3px;font-style:italic}
+
+/* SUGGEST */
+.sug-item{display:flex;align-items:center;gap:12px;padding:.9rem;border-radius:9px;border:1px solid var(--gray-200);margin-bottom:7px;transition:border-color .15s}
+.sug-item:hover{border-color:var(--gold-light)}
+.sug-info{flex:1}
+.sug-name{font-size:13.5px;font-weight:500}
+.sug-detail{font-size:11px;color:var(--gray-600);margin-top:2px}
+.sug-score{text-align:center;min-width:48px}
+.sug-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--gold);line-height:1}
+.sug-lbl{font-size:9px;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase}
+.sug-btns{display:flex;flex-direction:column;gap:5px;min-width:82px}
+
+/* MATCHES */
+.mc{background:var(--white);border-radius:var(--r);border:1px solid var(--gray-200);padding:1.3rem 1.4rem;margin-bottom:9px;transition:border-color .2s}
+.mc:hover{border-color:var(--gold-light)}
+.mc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.mc-names{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500}
+.mc-names .amp{color:var(--gold);margin:0 5px}
+.mc-pair{display:grid;grid-template-columns:1fr 28px 1fr;gap:7px;align-items:center;margin-bottom:.9rem}
+.mc-person{background:var(--gray-50);border-radius:7px;padding:.65rem .85rem}
+.mc-pname{font-size:13px;font-weight:500}
+.mc-pdet{font-size:11px;color:var(--gray-600);margin-top:2px}
+.mc-heart{text-align:center;font-size:14px;color:var(--gold)}
+
+/* CONTACT FLOW */
+.contact-flow{background:var(--gray-50);border-radius:8px;padding:.9rem 1rem;margin-bottom:.9rem;border:1px solid var(--gray-100)}
+.cf-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-600);margin-bottom:.7rem}
+.cf-step{display:flex;align-items:center;gap:8px;padding:.4rem 0}
+.cf-dot{width:6px;height:6px;border-radius:50%;background:var(--gray-300);flex-shrink:0}
+.cf-dot.done{background:var(--gold)}
+.cf-dot.pending{background:var(--gray-200);border:1.5px solid var(--gold)}
+.cf-label{font-size:12px;color:var(--black);flex:1}
+.cf-status{font-size:11px;color:var(--gray-400)}
+.cf-status.yes{color:#1a7040;font-weight:500}
+.cf-status.no{color:#c0392b;font-weight:500}
+.cf-status.wait{color:var(--gold)}
+select.cf-sel{padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:11.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white)}
+select.cf-sel:focus{border-color:var(--gold)}
+
+.mc-foot{display:flex;gap:7px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--gray-100);padding-top:.85rem}
+select.status-sel{padding:6px 9px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;outline:none;background:var(--white);cursor:pointer}
+select.status-sel:focus{border-color:var(--gold)}
+input.notes-inp{flex:1;min-width:120px;padding:6px 9px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;outline:none}
+input.notes-inp:focus{border-color:var(--gold)}
+.mc-note{font-size:11px;color:var(--gray-600);font-style:italic;margin-bottom:.75rem;padding:.45rem .75rem;background:var(--gray-50);border-radius:6px;border-left:2px solid var(--gold-light)}
+
+/* STATUS CHIPS */
+.sch{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.s-pendiente{background:#fff8e1;color:#7a5800}
+.s-propuesto{background:#e6eeff;color:#1a46a0}
+.s-contactado{background:#e6f5ff;color:#1a6090}
+.s-aceptaron{background:#e6f5ec;color:#1a6040}
+.s-salidas{background:#f0e6ff;color:#6a1a9f}
+.s-comprometidos{background:#fff0e6;color:#9f5a1a}
+.s-casados{background:var(--black);color:var(--gold)}
+.s-rechazado{background:#fee6e6;color:#c0392b}
+.s-nofunciono{background:var(--gray-100);color:var(--gray-600)}
+
+/* PENDING CARD */
+.pend-card{background:var(--white);border-radius:var(--r);border:1px solid var(--gray-200);padding:1.3rem 1.4rem;margin-bottom:9px}
+.pend-hd{display:flex;align-items:center;gap:12px;margin-bottom:.9rem}
+.pend-info{flex:1}
+.pend-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500}
+.pend-detail{font-size:11.5px;color:var(--gray-600);margin-top:2px}
+.pend-contact{font-size:12px;color:var(--gray-600);margin-bottom:.9rem;padding:.6rem .9rem;background:var(--gray-50);border-radius:7px}
+.pend-acts{display:flex;gap:7px;flex-wrap:wrap}
+
+@media(max-width:860px){
+  :root{--sidebar-w:54px}
+  .sb-top .sb-role,.ni span:not(.ico),.ni .badge-count,.sb-foot .sb-user,.btn-out{display:none}
+  .main{padding:1.5rem}
+  .stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-accent"></div>
+    <div class="login-inner">
+      <div class="login-title">Shidujim</div>
+      <div class="login-sub">Panel de administración · Acceso privado</div>
+      <input type="text" id="lu" placeholder="Usuario" autocomplete="off">
+      <input type="password" id="lp" placeholder="Contraseña">
+      <button class="btn-login" onclick="doLogin()">Ingresar</button>
+      <p class="login-err" id="loginErr">Usuario o contraseña incorrectos.</p>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="sb-top">
+      <div class="sb-logo">Shidu<em>jim</em></div>
+      <div class="sb-role">Panel privado</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-sec">Principal</div>
+      <button class="ni active" onclick="showPage('dashboard',this)"><span class="ico">◈</span><span>Inicio</span></button>
+      <button class="ni" onclick="showPage('pendientes',this)"><span class="ico">◎</span><span>Pendientes</span><span class="badge-count" id="bcPend">0</span></button>
+      <button class="ni" onclick="showPage('perfiles',this)"><span class="ico">◉</span><span>Perfiles</span></button>
+      <div class="nav-sec">Matches</div>
+      <button class="ni" onclick="showPage('matches',this)"><span class="ico">✦</span><span>Matches</span></button>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-user">nikisel</div>
+      <button class="btn-out" onclick="logout()">Salir →</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="ph"><div class="pt" id="dashGreet">Bienvenida</div><div class="ps" id="dashDate"></div></div>
+      <div class="stats">
+        <div class="sc"><div class="sc-ico">◉</div><div class="sc-num" id="sTotal">—</div><div class="sc-lbl">Perfiles activos</div></div>
+        <div class="sc"><div class="sc-ico">◎</div><div class="sc-num" id="sH">—</div><div class="sc-lbl">Hombres</div></div>
+        <div class="sc"><div class="sc-ico">◎</div><div class="sc-num" id="sM">—</div><div class="sc-lbl">Mujeres</div></div>
+        <div class="sc"><div class="sc-ico">✦</div><div class="sc-num" id="sMat">—</div><div class="sc-lbl">Matches activos</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
+        <div style="font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600)">Últimos perfiles aprobados</div>
+      </div>
+      <div class="card"><table>
+        <thead><tr><th></th><th>Nombre</th><th>Edad</th><th>Ciudad</th><th>Orientación</th><th></th></tr></thead>
+        <tbody id="recentBody"><tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--gray-400);font-size:12px">Cargando...</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- PENDIENTES -->
+    <div class="page" id="page-pendientes">
+      <div class="ph"><div class="pt">Pendientes de revisión</div><div class="ps">Revisá y aprobá cada perfil antes de que entre al sistema de matching.</div></div>
+      <div id="pendList"><div style="padding:2rem;text-align:center;color:var(--gray-400);font-size:12px">Cargando...</div></div>
+    </div>
+
+    <!-- PERFILES -->
+    <div class="page" id="page-perfiles">
+      <div class="ph"><div class="pt">Perfiles</div></div>
+      <div class="toolbar">
+        <div class="si"><span class="si-ico">⌕</span><input id="searchQ" placeholder="Buscar..." oninput="filterP()"></div>
+        <select class="fsel" id="fSexo" onchange="filterP()">
+          <option value="">Todos</option><option value="Masculino">Hombres</option><option value="Femenino">Mujeres</option>
+        </select>
+        <select class="fsel" id="fRelig" onchange="filterP()">
+          <option value="">Toda orientación</option>
+          <option>Simplemente judío/a</option><option>Espiritual no religioso</option>
+          <option>Tradicionalista</option><option>Ortodoxo moderno</option>
+          <option>Ortodoxo</option><option>Jasídico</option>
+          <option>Jabad</option><option>Dati leumi</option><option>Jaredí</option>
+        </select>
+        <button class="btn b-ghost b-sm" onclick="loadProfiles()">↻</button>
+      </div>
+      <div class="card"><table>
+        <thead><tr><th></th><th>Nombre</th><th>Edad</th><th>Sexo</th><th>Ciudad</th><th>Orientación</th><th>Ingreso</th><th></th></tr></thead>
+        <tbody id="profBody"><tr><td colspan="8" style="padding:1.5rem;text-align:center;color:var(--gray-400);font-size:12px">Cargando...</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- MATCHES -->
+    <div class="page" id="page-matches">
+      <div class="ph"><div class="pt">Matches</div></div>
+      <div class="toolbar">
+        <select class="fsel" id="fMS" onchange="renderMatches()">
+          <option value="">Todos los estados</option>
+          <option>Propuesto</option><option>Contactado</option><option>Aceptaron</option>
+          <option>En salidas</option><option>Comprometidos</option><option>Casados</option>
+          <option>Rechazado</option><option>No funcionó</option>
+        </select>
+      </div>
+      <div id="matchList"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: VER PERFIL -->
+<div class="ov" id="ovProfile" onclick="closeOv('ovProfile',event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <div><div class="modal-title" id="pmTitle">Perfil</div><div class="modal-sub" id="pmSub"></div></div>
+      <button class="btn-x" onclick="closeOv('ovProfile')">×</button>
+    </div>
+    <div class="modal-bd">
+      <div id="pmGrid"></div>
+      <div class="modal-acts" id="pmActs"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR PERFIL -->
+<div class="ov" id="ovEdit" onclick="closeOv('ovEdit',event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <div><div class="modal-title" id="emTitle">Editar perfil</div></div>
+      <button class="btn-x" onclick="closeOv('ovEdit')">×</button>
+    </div>
+    <div class="modal-bd">
+      <div class="ef-grid" id="emForm"></div>
+      <div class="save-bar">
+        <button class="btn b-ghost" onclick="closeOv('ovEdit')">Cancelar</button>
+        <button class="btn b-gold" onclick="saveEdit()">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: HISTORIAL -->
+<div class="ov" id="ovHist" onclick="closeOv('ovHist',event)">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd">
+      <div><div class="modal-title" id="histTitle">Historial</div></div>
+      <button class="btn-x" onclick="closeOv('ovHist')">×</button>
+    </div>
+    <div class="modal-bd" id="histBody"></div>
+  </div>
+</div>
+
+<!-- MODAL: SUGERENCIAS -->
+<div class="ov" id="ovSuggest" onclick="closeOv('ovSuggest',event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <div><div class="modal-title" id="sugTitle">Candidatos</div></div>
+      <button class="btn-x" onclick="closeOv('ovSuggest')">×</button>
+    </div>
+    <div class="modal-bd" id="sugBody"></div>
+  </div>
+</div>
+
+<script>
+const SCRIPT='https://script.google.com/macros/s/AKfycbzDUUmzlIWWPDvuDM3f6eRR3VFDjQ7cGGNTR3SIXsduP6iFhriST4TZwxMUxNvozHkW/exec';
+const USER='nikisel',PASS='Nikisel1';
+let allP=[],editIdx=null;
+
+// ── STATE ─────────────────────────────────────────────────────
+function gs(){return JSON.parse(localStorage.getItem('shidujim_v2')||'{"approved":{},"rejected":{},"matches":[],"history":{}}');}
+function ss(s){localStorage.setItem('shidujim_v2',JSON.stringify(s));}
+
+// ── LOGIN ─────────────────────────────────────────────────────
+function doLogin(){
+  if(document.getElementById('lu').value.trim()===USER&&document.getElementById('lp').value===PASS){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    init();
+  } else document.getElementById('loginErr').style.display='block';
+}
+document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+function logout(){document.getElementById('loginScreen').style.display='flex';document.getElementById('app').style.display='none';}
+
+// ── INIT ──────────────────────────────────────────────────────
+function init(){
+  const d=new Date();
+  const h=d.getHours();
+  const greet=h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
+  document.getElementById('dashGreet').textContent=greet;
+  document.getElementById('dashDate').textContent=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  loadProfiles();
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function showPage(n,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(n==='matches')renderMatches();
+  if(n==='pendientes')renderPend();
+  if(n==='perfiles')filterP();
+}
+
+// ── LOAD ──────────────────────────────────────────────────────
+async function loadProfiles(){
+  try{
+    const r=await fetch(SCRIPT+'?action=getProfiles');
+    const d=await r.json();
+    allP=(d.profiles||[]).map((p,i)=>({...p,_idx:i}));
+    updateAll();
+  }catch(e){
+    document.getElementById('profBody').innerHTML='<tr><td colspan="8" style="padding:1.5rem;text-align:center;color:#c0392b;font-size:12px">Error al conectar con el servidor. Verificá que el Script esté publicado correctamente.</td></tr>';
+  }
+}
+
+function updateAll(){
+  const st=gs();
+  const approved=allP.filter(p=>st.approved[p._idx]);
+  const pending=allP.filter(p=>!st.approved[p._idx]&&!st.rejected[p._idx]);
+  const matches=st.matches||[];
+  document.getElementById('sTotal').textContent=approved.length;
+  document.getElementById('sH').textContent=approved.filter(p=>p.sexo==='Masculino').length;
+  document.getElementById('sM').textContent=approved.filter(p=>p.sexo==='Femenino').length;
+  document.getElementById('sMat').textContent=matches.filter(m=>!['Casados','Rechazado','No funcionó'].includes(m.status)).length;
+  const bc=document.getElementById('bcPend');
+  bc.textContent=pending.length; bc.classList.toggle('show',pending.length>0);
+  renderRecent(approved);
+  filterP();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+function renderRecent(approved){
+  const rows=[...approved].slice(-5).reverse();
+  document.getElementById('recentBody').innerHTML=rows.length?rows.map(p=>`
+    <tr>
+      <td>${av(p)}</td>
+      <td><div class="tname">${p.nombre||'—'}</div></td>
+      <td>${p.edad||'—'}</td>
+      <td>${city(p)}</td>
+      <td>${p.orientacionReligiosa||'—'}</td>
+      <td><button class="btn b-ghost b-sm" onclick="openProfile(${p._idx})">Ver</button></td>
+    </tr>`).join('')
+    :'<tr><td colspan="6"><div class="empty-state"><div class="es-ico">◎</div><div class="es-txt">Sin perfiles aprobados todavía.</div></div></td></tr>';
+}
+
+// ── PENDIENTES ────────────────────────────────────────────────
+function renderPend(){
+  const st=gs();
+  const pending=allP.filter(p=>!st.approved[p._idx]&&!st.rejected[p._idx]);
+  const el=document.getElementById('pendList');
+  if(!pending.length){el.innerHTML='<div class="empty-state"><div class="es-ico">✓</div><div class="es-txt">Todo al día. No hay perfiles pendientes.</div></div>';return;}
+  el.innerHTML=pending.map(p=>`
+    <div class="pend-card">
+      <div class="pend-hd">
+        ${av(p,44)}
+        <div class="pend-info">
+          <div class="pend-name">${p.nombre||'—'}</div>
+          <div class="pend-detail">${p.edad||'?'} años · ${p.sexo||'—'} · ${p.orientacionReligiosa||'—'} · ${city(p)}</div>
+        </div>
+        <span class="sch s-pendiente">Nuevo</span>
+      </div>
+      <div class="pend-contact">
+        Registrado por: <strong>${p.contactoNombre||'—'}</strong> · ${p.contactoWhatsapp||''}${p.relacion?' · '+p.relacion:''}
+      </div>
+      <div class="pend-acts">
+        <button class="btn b-ghost b-sm" onclick="openProfile(${p._idx})">Ver perfil completo</button>
+        <button class="btn b-ghost b-sm" onclick="openEdit(${p._idx})">✎ Editar</button>
+        <button class="btn b-black b-sm" onclick="approveP(${p._idx})">✓ Aprobar</button>
+        <button class="btn b-danger b-sm" onclick="rejectP(${p._idx})">✕ Rechazar</button>
+      </div>
+    </div>`).join('');
+}
+
+function approveP(idx){
+  const st=gs(); st.approved=st.approved||{}; st.approved[idx]=true; ss(st);
+  addHist(idx,{tipo:'Aprobado',nota:'Perfil aprobado y agregado al sistema.'});
+  updateAll(); renderPend();
+}
+function rejectP(idx){
+  if(!confirm('¿Rechazar este perfil?')) return;
+  const st=gs(); st.rejected=st.rejected||{}; st.rejected[idx]=true; ss(st);
+  updateAll(); renderPend();
+}
+
+// ── PERFILES ──────────────────────────────────────────────────
+function filterP(){
+  const st=gs();
+  const q=document.getElementById('searchQ').value.toLowerCase();
+  const sx=document.getElementById('fSexo').value;
+  const rl=document.getElementById('fRelig').value;
+  const list=allP.filter(p=>{
+    if(!st.approved[p._idx]) return false;
+    return (!q||(p.nombre||'').toLowerCase().includes(q))&&
+           (!sx||p.sexo===sx)&&(!rl||p.orientacionReligiosa===rl);
+  });
+  const body=document.getElementById('profBody');
+  if(!list.length){body.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="es-ico">◎</div><div class="es-txt">Sin resultados.</div></div></td></tr>';return;}
+  body.innerHTML=list.map(p=>`
+    <tr>
+      <td>${av(p)}</td>
+      <td><div class="tname">${p.nombre||'—'}</div></td>
+      <td>${p.edad||'—'}</td>
+      <td><span class="chip ${p.sexo==='Masculino'?'chip-m':'chip-f'}">${p.sexo||'—'}</span></td>
+      <td>${city(p)}</td>
+      <td>${p.orientacionReligiosa||'—'}</td>
+      <td>${p.fecha?new Date(p.fecha).toLocaleDateString('es-AR'):'—'}</td>
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="btn b-ghost b-sm" onclick="openProfile(${p._idx})">Ver</button>
+        <button class="btn b-ghost b-sm" onclick="openEdit(${p._idx})">✎</button>
+        <button class="btn b-ghost b-sm" onclick="openHist(${p._idx})">Historial</button>
+        <button class="btn b-gold b-sm" onclick="openSuggest(${p._idx})">Match ✦</button>
+      </td>
+    </tr>`).join('');
+}
+
+// ── VER PERFIL ────────────────────────────────────────────────
+function openProfile(idx){
+  const p=allP[idx];
+  const st=gs(); const isApp=st.approved[idx];
+  document.getElementById('pmTitle').textContent=p.nombre||'Perfil';
+  document.getElementById('pmSub').textContent=`${p.edad||'?'} años · ${p.sexo||''} · ${p.orientacionReligiosa||''} · ${city(p)}`;
+  const secs=[
+    ['Información personal',[['Edad',p.edad],['Sexo',p.sexo],['Estado civil',p.estadoCivil],['Hijos',p.hijos],['Detalle hijos',p.hijosDetalle],['Nacionalidad',p.nacionalidad],['Residencia',[p.paisResidencia,p.regionProvincia,p.barrioZona].filter(Boolean).join(', ')],['Altura',p.altura]]],
+    ['Contacto',[['Registrado por',p.contactoNombre],['WhatsApp',p.contactoWhatsapp],['Relación',p.relacion]]],
+    ['Observancia',[['Orientación',p.orientacionReligiosa],['Ascendencia',p.ascendencia],['Kashrut',p.kashrut],['Shabat',p.shabat],['Baal teshuvá',p.baalTeshuva],['Converso/a',p.converso],['Antecedentes familia',p.antecedentesFamilia],['Templo',p.templo],['Estudio de Torá',p.estudioDeTora],['Kipá',p.kipa],['Tseniut',p.tseniut],['Cubre pelo',p.cubrePelo]]],
+    ['Educación',[['Profesión',p.profesion],['Primaria',p.primaria],['Secundaria',p.secundaria],['Universidad',p.universidad],['Carrera',p.carrera],['Idiomas',Array.isArray(p.idiomas)?p.idiomas.join(', '):p.idiomas],['Plan de aliá',p.planAlia]]],
+    ['Qué busca',[['Rango de edad',p.edadDesde&&p.edadHasta?`${p.edadDesde}–${p.edadHasta} años`:''],['Abierto a hijos',p.abiertoHijos],['Orientación buscada',Array.isArray(p.orientacionBuscada)?p.orientacionBuscada.join(', '):p.orientacionBuscada],['Dealbreakers',p.dealbreakers],['Persona ideal',p.personaIdeal],['Notas',p.notasExtra]]],
+  ];
+  document.getElementById('pmGrid').innerHTML=secs.map(([s,fs])=>`
+    <div class="psec">${s}</div>
+    <div class="pgrid">${fs.filter(([,v])=>v&&v!=='No sé').map(([k,v])=>`<div class="pf"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>`).join('');
+  document.getElementById('pmActs').innerHTML=`
+    <button class="btn b-ghost b-sm" onclick="openEdit(${idx});closeOv('ovProfile')">✎ Editar</button>
+    <button class="btn b-ghost b-sm" onclick="openHist(${idx});closeOv('ovProfile')">Historial</button>
+    <button class="btn b-gold b-sm" onclick="openSuggest(${idx});closeOv('ovProfile')">Match ✦</button>
+    ${!isApp?`<button class="btn b-black b-sm" onclick="approveP(${idx});closeOv('ovProfile')">✓ Aprobar</button>`:''}
+    ${!isApp?`<button class="btn b-danger b-sm" onclick="rejectP(${idx});closeOv('ovProfile')">✕ Rechazar</button>`:''}
+  `;
+  openOv('ovProfile');
+}
+
+// ── EDITAR PERFIL ─────────────────────────────────────────────
+const RELIG_OPTS=['Simplemente judío/a','Espiritual no religioso','Tradicionalista','Ortodoxo moderno','Ortodoxo','Jasídico','Jabad','Dati leumi','Jaredí'];
+function selOpts(opts,val){return'<option value="">—</option>'+opts.map(o=>`<option${o===val?' selected':''}>${o}</option>`).join('');}
+
+function openEdit(idx){
+  editIdx=idx; const p=allP[idx];
+  document.getElementById('emTitle').textContent=`Editar — ${p.nombre||'Perfil'}`;
+  document.getElementById('emForm').innerHTML=`
+    <div class="ef-sec">Información personal</div>
+    <div class="ef-field"><label>Nombre completo</label><input id="ef-nombre" value="${p.nombre||''}"></div>
+    <div class="ef-field"><label>Edad</label><input id="ef-edad" type="number" value="${p.edad||''}"></div>
+    <div class="ef-field"><label>Sexo</label><select id="ef-sexo">${selOpts(['Femenino','Masculino'],p.sexo)}</select></div>
+    <div class="ef-field"><label>Estado civil</label><select id="ef-estado">${selOpts(['Soltero/a','Divorciado/a','Viudo/a'],p.estadoCivil)}</select></div>
+    <div class="ef-field"><label>Hijos</label><select id="ef-hijos">${selOpts(['No','Sí'],p.hijos)}</select></div>
+    <div class="ef-field"><label>Detalle hijos</label><input id="ef-hijosD" value="${p.hijosDetalle||''}"></div>
+    <div class="ef-field"><label>Nacionalidad</label><input id="ef-nac" value="${p.nacionalidad||''}"></div>
+    <div class="ef-field"><label>País residencia</label><input id="ef-pais" value="${p.paisResidencia||''}"></div>
+    <div class="ef-field"><label>Provincia / Ciudad</label><input id="ef-region" value="${p.regionProvincia||''}"></div>
+    <div class="ef-field"><label>Barrio</label><input id="ef-barrio" value="${p.barrioZona||''}"></div>
+    <div class="ef-field"><label>Altura</label><select id="ef-altura">${selOpts(['Bajo/a','Mediano/a','Alto/a'],p.altura)}</select></div>
+    <div class="ef-sec">Contacto</div>
+    <div class="ef-field"><label>Nombre del contacto</label><input id="ef-cNombre" value="${p.contactoNombre||''}"></div>
+    <div class="ef-field"><label>WhatsApp del contacto</label><input id="ef-cWA" value="${p.contactoWhatsapp||''}"></div>
+    <div class="ef-sec">Observancia</div>
+    <div class="ef-field"><label>Orientación religiosa</label><select id="ef-relig">${selOpts(RELIG_OPTS,p.orientacionReligiosa)}</select></div>
+    <div class="ef-field"><label>Ascendencia</label><select id="ef-asc">${selOpts(['Ashkenazí','Sefardí','Mezcla'],p.ascendencia)}</select></div>
+    <div class="ef-field"><label>Kashrut</label><select id="ef-kash">${selOpts(['Nunca','En casa','Siempre','Parcialmente'],p.kashrut)}</select></div>
+    <div class="ef-field"><label>Shabat</label><select id="ef-shab">${selOpts(['Nada','Kidush y algunos preceptos','Completo'],p.shabat)}</select></div>
+    <div class="ef-field"><label>Baal teshuvá</label><select id="ef-bt">${selOpts(['Sí','No'],p.baalTeshuva)}</select></div>
+    <div class="ef-field"><label>Converso/a</label><select id="ef-conv">${selOpts(['Sí','No'],p.converso)}</select></div>
+    <div class="ef-field ef-full"><label>Antecedentes religiosos de la familia</label><select id="ef-ant">${selOpts(RELIG_OPTS,p.antecedentesFamilia)}</select></div>
+    <div class="ef-field ef-full"><label>Templo</label><input id="ef-templo" value="${p.templo||''}"></div>
+    <div class="ef-field"><label>Estudio de Torá</label><select id="ef-tora">${selOpts(['Nunca','A veces','Una vez a la semana','Varias veces a la semana'],p.estudioDeTora)}</select></div>
+    <div class="ef-field"><label>Kipá</label><select id="ef-kipa">${selOpts(['Sí, siempre','Solo en el templo / ocasiones especiales','No'],p.kipa)}</select></div>
+    <div class="ef-field"><label>Tseniut</label><select id="ef-tsen">${selOpts(['Sí','Parcial','No'],p.tseniut)}</select></div>
+    <div class="ef-field"><label>Cubre pelo</label><select id="ef-pelo">${selOpts(['Sí','No','Parcialmente','Posiblemente'],p.cubrePelo)}</select></div>
+    <div class="ef-sec">Educación</div>
+    <div class="ef-field"><label>Profesión</label><input id="ef-prof" value="${p.profesion||''}"></div>
+    <div class="ef-field"><label>Primaria</label><input id="ef-pri" value="${p.primaria||''}"></div>
+    <div class="ef-field"><label>Secundaria</label><input id="ef-sec" value="${p.secundaria||''}"></div>
+    <div class="ef-field"><label>Universidad</label><input id="ef-univ" value="${p.universidad||''}"></div>
+    <div class="ef-field"><label>Carrera</label><input id="ef-car" value="${p.carrera||''}"></div>
+    <div class="ef-field ef-full"><label>Idiomas</label><input id="ef-idiomas" value="${Array.isArray(p.idiomas)?p.idiomas.join(', '):(p.idiomas||'')}"></div>
+    <div class="ef-field"><label>Plan de aliá</label><select id="ef-alia">${selOpts(['Sí','No','Quizás'],p.planAlia)}</select></div>
+    <div class="ef-sec">Qué busca</div>
+    <div class="ef-field"><label>Edad desde</label><input id="ef-eD" type="number" value="${p.edadDesde||''}"></div>
+    <div class="ef-field"><label>Edad hasta</label><input id="ef-eH" type="number" value="${p.edadHasta||''}"></div>
+    <div class="ef-field"><label>Abierto a hijos</label><select id="ef-abhijos">${selOpts(['Sí','No','Depende'],p.abiertoHijos)}</select></div>
+    <div class="ef-field ef-full"><label>Orientación buscada</label><input id="ef-ob" value="${Array.isArray(p.orientacionBuscada)?p.orientacionBuscada.join(', '):(p.orientacionBuscada||'')}"></div>
+    <div class="ef-field ef-full"><label>Dealbreakers</label><textarea id="ef-deal">${p.dealbreakers||''}</textarea></div>
+    <div class="ef-field ef-full"><label>Persona ideal</label><textarea id="ef-ideal">${p.personaIdeal||''}</textarea></div>
+    <div class="ef-field ef-full"><label>Notas extra</label><textarea id="ef-notas">${p.notasExtra||''}</textarea></div>
+  `;
+  openOv('ovEdit');
+}
+
+function gv(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+
+async function saveEdit(){
+  const p=allP[editIdx];
+  const updated={
+    nombre:gv('ef-nombre'),edad:gv('ef-edad'),sexo:gv('ef-sexo'),
+    estadoCivil:gv('ef-estado'),hijos:gv('ef-hijos'),hijosDetalle:gv('ef-hijosD'),
+    nacionalidad:gv('ef-nac'),paisResidencia:gv('ef-pais'),
+    regionProvincia:gv('ef-region'),barrioZona:gv('ef-barrio'),altura:gv('ef-altura'),
+    contactoNombre:gv('ef-cNombre'),contactoWhatsapp:gv('ef-cWA'),
+    orientacionReligiosa:gv('ef-relig'),ascendencia:gv('ef-asc'),
+    kashrut:gv('ef-kash'),shabat:gv('ef-shab'),baalTeshuva:gv('ef-bt'),
+    converso:gv('ef-conv'),antecedentesFamilia:gv('ef-ant'),
+    templo:gv('ef-templo'),estudioDeTora:gv('ef-tora'),
+    kipa:gv('ef-kipa'),tseniut:gv('ef-tsen'),cubrePelo:gv('ef-pelo'),
+    profesion:gv('ef-prof'),primaria:gv('ef-pri'),secundaria:gv('ef-sec'),
+    universidad:gv('ef-univ'),carrera:gv('ef-car'),
+    idiomas:gv('ef-idiomas').split(',').map(s=>s.trim()).filter(Boolean),
+    planAlia:gv('ef-alia'),
+    edadDesde:gv('ef-eD'),edadHasta:gv('ef-eH'),abiertoHijos:gv('ef-abhijos'),
+    orientacionBuscada:gv('ef-ob').split(',').map(s=>s.trim()).filter(Boolean),
+    dealbreakers:gv('ef-deal'),personaIdeal:gv('ef-ideal'),notasExtra:gv('ef-notas'),
+  };
+  // Actualizar local
+  Object.assign(allP[editIdx], updated);
+  addHist(editIdx,{tipo:'Editado',nota:'Perfil actualizado manualmente.'});
+  // Enviar al Sheet
+  try{
+    await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'updateProfile',rowNum:p._rowNum,profile:updated}),mode:'no-cors'});
+  }catch(e){}
+  closeOv('ovEdit');
+  updateAll();
+}
+
+// ── HISTORIAL ─────────────────────────────────────────────────
+function addHist(idx,event){
+  const st=gs();
+  st.history=st.history||{};
+  st.history[idx]=st.history[idx]||[];
+  st.history[idx].push({...event,fecha:new Date().toISOString()});
+  ss(st);
+}
+
+function openHist(idx){
+  const p=allP[idx];
+  const st=gs();
+  const hist=(st.history&&st.history[idx])||[];
+  const matchHist=(st.matches||[]).filter(m=>m.idxA===idx||m.idxB===idx);
+  document.getElementById('histTitle').textContent=`Historial — ${p.nombre||'Perfil'}`;
+  const allEvents=[
+    ...hist.map(h=>({...h,_type:'event'})),
+    ...matchHist.map(m=>({tipo:'Match',nota:`Match con ${m.idxA===idx?m.nameB:m.nameA} · Estado: ${m.status}`,fecha:m.fecha,_type:'match'}))
+  ].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  document.getElementById('histBody').innerHTML=allEvents.length?allEvents.map(e=>`
+    <div class="hist-item">
+      <div class="hist-dot ${e._type==='match'?'done':''}"></div>
+      <div class="hist-body">
+        <div class="hist-title">${e.tipo}</div>
+        ${e.nota?`<div class="hist-note">${e.nota}</div>`:''}
+        <div class="hist-date">${new Date(e.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+    </div>`).join('')
+    :'<div class="empty-state"><div class="es-ico">○</div><div class="es-txt">Sin eventos registrados todavía.</div></div>';
+  openOv('ovHist');
+}
+
+// ── SCORING ───────────────────────────────────────────────────
+function calcScore(a,b){
+  if(a.sexo===b.sexo) return -1;
+  let s=0;
+  const ord=['Simplemente judío/a','Espiritual no religioso','Tradicionalista','Ortodoxo moderno','Ortodoxo','Jasídico','Jabad','Dati leumi','Jaredí'];
+  const ra=ord.indexOf(a.orientacionReligiosa),rb=ord.indexOf(b.orientacionReligiosa);
+  if(ra!==-1&&rb!==-1){const d=Math.abs(ra-rb);s+=d===0?30:d===1?18:d===2?8:0;}
+  const eA=+a.edad,eB=+b.edad,d1=+a.edadDesde,h1=+a.edadHasta,d2=+b.edadDesde,h2=+b.edadHasta;
+  if(eA&&d2&&h2&&eA>=d2&&eA<=h2) s+=15;
+  if(eB&&d1&&h1&&eB>=d1&&eB<=h1) s+=15;
+  const obA=Array.isArray(a.orientacionBuscada)?a.orientacionBuscada:(a.orientacionBuscada||'').split(',').map(x=>x.trim());
+  const obB=Array.isArray(b.orientacionBuscada)?b.orientacionBuscada:(b.orientacionBuscada||'').split(',').map(x=>x.trim());
+  if(obA.includes(b.orientacionReligiosa)) s+=20;
+  if(obB.includes(a.orientacionReligiosa)) s+=20;
+  if(city(a)&&city(b)&&city(a)===city(b)) s+=10;
+  if(a.hijos==='Sí'&&b.abiertoHijos==='No') s-=20;
+  if(b.hijos==='Sí'&&a.abiertoHijos==='No') s-=20;
+  if(a.planAlia&&b.planAlia&&a.planAlia===b.planAlia) s+=5;
+  return Math.max(0,Math.min(100,s));
+}
+
+// ── SUGGEST ───────────────────────────────────────────────────
+function openSuggest(idx){
+  const st=gs(); const p=allP[idx];
+  const opposite=p.sexo==='Masculino'?'Femenino':'Masculino';
+  const cands=allP
+    .filter(c=>c.sexo===opposite&&c._idx!==idx&&st.approved[c._idx])
+    .map(c=>({c,s:calcScore(p,c)}))
+    .filter(x=>x.s>0)
+    .sort((a,b)=>b.s-a.s).slice(0,12);
+  document.getElementById('sugTitle').textContent=`Candidatos para ${p.nombre}`;
+  document.getElementById('sugBody').innerHTML=cands.length?cands.map(({c,s})=>`
+    <div class="sug-item">
+      ${av(c,40)}
+      <div class="sug-info">
+        <div class="sug-name">${c.nombre}</div>
+        <div class="sug-detail">${c.edad||'?'} años · ${c.orientacionReligiosa||'—'} · ${city(c)}</div>
+      </div>
+      <div class="sug-score"><div class="sug-num">${s}</div><div class="sug-lbl">pts</div></div>
+      <div class="sug-btns">
+        <button class="btn b-ghost b-sm" onclick="openProfile(${c._idx})">Ver</button>
+        <button class="btn b-gold b-sm" onclick="createMatch(${idx},${c._idx})">Match ✦</button>
+      </div>
+    </div>`).join('')
+    :'<div class="empty-state"><div class="es-ico">◎</div><div class="es-txt">Sin candidatos compatibles aprobados.</div></div>';
+  openOv('ovSuggest');
+}
+
+// ── CREAR MATCH ───────────────────────────────────────────────
+function createMatch(idxA,idxB){
+  const st=gs();
+  st.matches=st.matches||[];
+  const exists=st.matches.find(m=>(m.idxA===idxA&&m.idxB===idxB)||(m.idxA===idxB&&m.idxB===idxA));
+  if(exists){alert('Ya existe un match entre estas personas.');return;}
+  const a=allP[idxA],b=allP[idxB];
+  // hombre siempre idxA en el flujo de contacto
+  const hombre=a.sexo==='Masculino'?a:b;
+  const mujer=a.sexo==='Femenino'?a:b;
+  const hIdx=a.sexo==='Masculino'?idxA:idxB;
+  const mIdx=a.sexo==='Femenino'?idxA:idxB;
+  st.matches.push({
+    idxA:hIdx,idxB:mIdx,
+    nameA:hombre.nombre,nameB:mujer.nombre,
+    status:'Propuesto',notes:'',
+    fecha:new Date().toISOString(),
+    contactoH:{resp:'',fecha:'',nota:''},  // hombre primero
+    contactoM:{resp:'',fecha:'',nota:''},
+  });
+  ss(st);
+  addHist(hIdx,{tipo:'Match propuesto',nota:`Match propuesto con ${mujer.nombre}.`});
+  addHist(mIdx,{tipo:'Match propuesto',nota:`Match propuesto con ${hombre.nombre}.`});
+  closeOv('ovSuggest'); closeOv('ovProfile');
+  updateAll();
+  alert(`✦ Match creado: ${hombre.nombre} & ${mujer.nombre}\nPróximo paso: contactar al contacto de ${hombre.nombre}.`);
+}
+
+// ── MATCHES ───────────────────────────────────────────────────
+const SCLS={Propuesto:'s-propuesto',Contactado:'s-contactado',Aceptaron:'s-aceptaron','En salidas':'s-salidas',Comprometidos:'s-comprometidos',Casados:'s-casados',Rechazado:'s-rechazado','No funcionó':'s-nofunciono'};
+const STATS=['Propuesto','Contactado','Aceptaron','En salidas','Comprometidos','Casados','Rechazado','No funcionó'];
+const RESP_OPTS=['Sin respuesta','Sí, interesado/a','No, rechazó','Pendiente de contactar'];
+
+function renderMatches(){
+  const st=gs(); const matches=st.matches||[];
+  const filter=document.getElementById('fMS').value;
+  const list=filter?matches.filter(m=>m.status===filter):matches;
+  const el=document.getElementById('matchList');
+  if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-ico">✦</div><div class="es-txt">No hay matches todavía. Empezá matcheando desde los perfiles.</div></div>';return;}
+  el.innerHTML=[...list].map((m,ri)=>{
+    const i=matches.indexOf(m);
+    const pH=allP[m.idxA],pM=allP[m.idxB];
+    const detH=pH?`${pH.edad||'?'} años · ${pH.orientacionReligiosa||''}`:m.nameA;
+    const detM=pM?`${pM.edad||'?'} años · ${pM.orientacionReligiosa||''}`:m.nameB;
+    const contH=m.contactoH||{resp:'',nota:''};
+    const contM=m.contactoM||{resp:'',nota:''};
+    return `<div class="mc">
+      <div class="mc-hd">
+        <div class="mc-names">${m.nameA}<span class="amp">✦</span>${m.nameB}</div>
+        <span class="sch ${SCLS[m.status]||'s-propuesto'}">${m.status}</span>
+      </div>
+      <div class="mc-pair">
+        <div class="mc-person"><div class="mc-pname">♂ ${m.nameA}</div><div class="mc-pdet">${detH}</div></div>
+        <div class="mc-heart">♥</div>
+        <div class="mc-person"><div class="mc-pname">♀ ${m.nameB}</div><div class="mc-pdet">${detM}</div></div>
+      </div>
+      <div class="contact-flow">
+        <div class="cf-title">Flujo de contacto</div>
+        <div class="cf-step">
+          <div class="cf-dot ${contH.resp&&contH.resp!=='Pendiente de contactar'?'done':contH.resp?'pending':''}"></div>
+          <div class="cf-label">1. Contactar a <strong>${m.nameA}</strong> (hombre primero)</div>
+          <select class="cf-sel" onchange="updContacto(${i},'H',this.value)">
+            ${RESP_OPTS.map(o=>`<option${(contH.resp||'')=== o?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div class="cf-step">
+          <div class="cf-dot ${contM.resp&&contM.resp!=='Pendiente de contactar'?'done':contM.resp?'pending':''}"></div>
+          <div class="cf-label">2. Contactar a <strong>${m.nameB}</strong> (mujer)</div>
+          <select class="cf-sel" onchange="updContacto(${i},'M',this.value)">
+            ${RESP_OPTS.map(o=>`<option${(contM.resp||'')=== o?' selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      ${m.notes?`<div class="mc-note">📝 ${m.notes}</div>`:''}
+      <div class="mc-foot">
+        <select class="status-sel" onchange="updStatus(${i},this.value)">
+          ${STATS.map(s=>`<option${m.status===s?' selected':''}>${s}</option>`).join('')}
+        </select>
+        <input class="notes-inp" placeholder="Agregar nota..." value="${m.notes||''}" onchange="updNote(${i},this.value)">
+        <button class="btn b-danger b-sm" onclick="delMatch(${i})">✕</button>
+      </div>
+    </div>`;}).join('');
+}
+
+function updContacto(i,who,resp){
+  const st=gs();
+  const key='contacto'+who;
+  st.matches[i][key]=st.matches[i][key]||{};
+  st.matches[i][key].resp=resp;
+  st.matches[i][key].fecha=new Date().toISOString();
+  // Auto-actualizar estado si ambos dijeron sí
+  const cH=st.matches[i].contactoH||{};
+  const cM=st.matches[i].contactoM||{};
+  if(cH.resp==='Sí, interesado/a'&&cM.resp==='Sí, interesado/a') st.matches[i].status='Aceptaron';
+  else if(cH.resp==='No, rechazó'||cM.resp==='No, rechazó') st.matches[i].status='Rechazado';
+  else if(cH.resp||cM.resp) st.matches[i].status='Contactado';
+  const idxP=who==='H'?st.matches[i].idxA:st.matches[i].idxB;
+  const otroNombre=who==='H'?st.matches[i].nameB:st.matches[i].nameA;
+  addHist(idxP,{tipo:'Respuesta a match',nota:`Respondió "${resp}" al match con ${otroNombre}.`});
+  ss(st); updateAll(); renderMatches();
+}
+function updStatus(i,v){const st=gs();st.matches[i].status=v;ss(st);updateAll();renderMatches();}
+function updNote(i,v){const st=gs();st.matches[i].notes=v;ss(st);}
+function delMatch(i){if(!confirm('¿Eliminar este match?'))return;const st=gs();st.matches.splice(i,1);ss(st);updateAll();renderMatches();}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function city(p){return p.barrioZona||p.regionProvincia||p.paisResidencia||'—';}
+function av(p,size=32){
+  const s=`width:${size}px;height:${size}px;font-size:${Math.round(size*0.44)}px`;
+  return p.foto?`<img class="av" src="${p.foto}" style="${s}" onerror="this.outerHTML='<div class=\\'av-ph\\' style=\\'${s}\\'>👤</div>'">`:`<div class="av-ph" style="${s}">👤</div>`;
+}
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id,e){if(e&&e.target!==document.getElementById(id))return;document.getElementById(id).classList.remove('open');}
+</script>
+</body>
+</html>
