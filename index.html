@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garden Mates</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+
+:root{
+  --navy:#1a2d6b;
+  --navy-dark:#0f1c45;
+  --cream:#f5f0e8;
+  --white:#fafaf8;
+  --gold:#c9a84c;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--navy-dark);overflow-x:hidden}
+
+/* ── LANDING ─-─ */
+.landing{position:relative;height:100vh;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.video-bg{position:absolute;inset:0;z-index:0}
+.video-bg video{width:100%;height:100%;object-fit:cover;display:none}
+.video-bg video.active{display:block}
+.video-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,60,.52) 0%,rgba(10,20,60,.68) 100%);z-index:1}
+.landing-content{position:relative;z-index:2;text-align:center;padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.6rem}
+.logo-wrap img{height:180px;width:auto;max-width:85vw}
+.landing-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,42px);font-weight:300;color:var(--white);line-height:1.25;letter-spacing:.01em}
+.landing-tagline em{font-style:italic;color:var(--gold)}
+.landing-sub{font-size:clamp(13px,1.8vw,15px);color:rgba(255,255,255,.72);font-weight:300;line-height:1.75;max-width:440px}
+.landing-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:.4rem}
+.btn-primary{padding:13px 32px;background:var(--white);color:var(--navy-dark);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.03em;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:var(--cream);transform:translateY(-1px)}
+.lang-bar{position:absolute;top:1.4rem;right:1.8rem;z-index:10;display:flex;gap:4px}
+.lang-btn{background:none;border:none;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;font-family:'Inter',sans-serif;padding:4px 8px;border-radius:4px;transition:all .15s;letter-spacing:.04em}
+.lang-btn.active{color:var(--white);background:rgba(255,255,255,.12)}
+.lang-btn:hover{color:var(--white)}
+
+/* ── FORM ── */
+.form-wrap{display:none;min-height:100vh;background:var(--white)}
+.form-header{background:var(--navy);padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
+.form-header img{height:38px;filter:brightness(0) invert(1)}
+.form-header-back{background:none;border:none;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:color .15s;margin-left:auto}
+.form-header-back:hover{color:var(--white)}
+.form-inner{max-width:640px;margin:0 auto;padding:2.5rem 1.5rem}
+
+/* PROGRESS */
+.progbar{display:flex;gap:5px;margin-bottom:1.8rem}
+.pd{height:3px;border-radius:2px;flex:1;background:#e0e0e0;transition:background .2s}
+.pd.done{background:var(--navy)}
+
+/* CARD */
+.card{background:var(--white);border-radius:14px;padding:2rem;margin-bottom:1rem;border:1px solid #ebebeb;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.step{display:none}.step.active{display:block}
+.step-label{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--navy-dark);margin-bottom:4px}
+.step-desc{font-size:13px;color:#888;margin-bottom:1.2rem;line-height:1.5;min-height:1em}
+.sec-title-form{font-size:10px;font-weight:500;color:#999;text-transform:uppercase;letter-spacing:.08em;margin:1.3rem 0 .7rem;border-bottom:1px solid #f0f0ee;padding-bottom:5px}
+.field{margin-bottom:1rem}
+.field-row{display:flex;align-items:flex-start;gap:10px}
+.field-row>div:first-child{flex:1}
+label.fl{display:block;font-size:12.5px;color:#555;margin-bottom:4px}
+.req{color:#c0392b;margin-left:2px}
+input[type=text],input[type=number],input[type=tel],input[type=file],select,textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid #e0e0e0;border-radius:8px;background:var(--white);color:var(--navy-dark);outline:none;transition:border-color .18s;font-family:'Inter',sans-serif}
+input:focus,select:focus,textarea:focus{border-color:var(--navy)}
+input[type=file]{padding:7px 11px;cursor:pointer}
+input.skipped,select.skipped,textarea.skipped{background:#f9f9f7;color:#bbb;border-color:#eee}
+textarea{resize:vertical;min-height:80px;line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pill-group{display:flex;flex-wrap:wrap;gap:7px}
+.pill-group label{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--navy-dark);cursor:pointer;padding:6px 13px;border:1px solid #e0e0e0;border-radius:20px;background:var(--white);transition:all .12s;user-select:none;font-family:'Inter',sans-serif}
+.pill-group label:has(input:checked){background:#e8eeff;border-color:#8fa8e8;color:var(--navy)}
+.pill-group input{display:none}
+.pill-group.skipped{opacity:.35;pointer-events:none}
+.anota-box{display:flex;gap:12px;margin-bottom:1.2rem}
+.anota-card{flex:1;border:1px solid #e0e0e0;border-radius:12px;padding:1.3rem;cursor:pointer;text-align:center;transition:all .12s}
+.anota-card:hover{border-color:#8fa8e8}
+.anota-card.sel{border:2px solid var(--navy);background:#eef0ff}
+.anota-card svg{color:#aaa;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto}
+.anota-card.sel svg{color:var(--navy)}
+.anota-card p{font-size:14px;font-weight:500;color:var(--navy-dark);margin-bottom:3px}
+.anota-card.sel p{color:var(--navy)}
+.anota-card span{font-size:12px;color:#888}
+.lang-bar-form{display:flex;align-items:center;gap:4px;margin-bottom:1.5rem}
+.lang-bar-form span{font-size:11.5px;color:#aaa}
+.lang-btn-form{background:none;border:none;font-size:12.5px;color:#999;cursor:pointer;padding:3px 7px;border-radius:4px;font-family:'Inter',sans-serif;transition:all .12s}
+.lang-btn-form.active{color:var(--navy);font-weight:500;background:#eef0ff}
+.lang-sep{color:#ddd;font-size:11px}
+.btn-row{display:flex;gap:10px;margin-top:1.5rem;align-items:center;flex-wrap:wrap}
+.btn-p{background:var(--navy);color:var(--white);border:none;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-p:hover{opacity:.88}.btn-p:disabled{opacity:.4;cursor:not-allowed}
+.btn-s{background:transparent;color:#777;border:1px solid #ddd;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-nose{background:#f5f5f3;color:#999;border:1px solid #eee;padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;white-space:nowrap;transition:all .15s;margin-top:22px;font-family:'Inter',sans-serif}
+.btn-nose.active{background:#fff8e1;border-color:#ffc107;color:#856404}
+.err-msg{color:#c0392b;font-size:13px;font-weight:500;margin-top:10px;width:100%}
+.cond{display:none;margin-top:.7rem;padding:.9rem;background:#f9f9f7;border-radius:8px;border:1px solid #eee}
+.height-cards{display:flex;gap:10px;flex:1}
+.hcard{flex:1;border:1px solid #e0e0e0;border-radius:8px;padding:.9rem .5rem;cursor:pointer;text-align:center;transition:all .12s}
+.hcard:hover{border-color:#8fa8e8}
+.hcard.sel{border:2px solid var(--navy);background:#eef0ff}
+.hcard.skipped{opacity:.35;pointer-events:none}
+.hcard svg{display:block;margin:0 auto 6px}
+.hcard .hlabel{font-size:13px;font-weight:500;color:var(--navy-dark);margin-bottom:3px}
+.hcard.sel .hlabel{color:var(--navy)}
+.hcard .hsub{font-size:11px;color:#888}
+.success-wrap{text-align:center;padding:2rem 1rem}
+.success-ico{font-size:44px;margin-bottom:1rem}
+.next-btns{display:flex;flex-direction:column;gap:10px;margin-top:1.5rem}
+.btn-next{padding:12px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif}
+.btn-anotar-otro{background:var(--navy);color:var(--white)}
+.btn-terminar{background:#f0f0ee;color:#555;border:1px solid #ddd}
+.sending{font-size:13px;color:#888;margin-left:4px;display:none}
+@media(max-width:600px){.g2{grid-template-columns:1fr}.anota-box{flex-direction:column}.height-cards{gap:6px}}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landingPage">
+  <section class="landing">
+    <div class="lang-bar">
+      <button class="lang-btn active" id="btnES" onclick="setLang('es')">ES</button>
+      <span style="color:rgba(255,255,255,.3);font-size:11px">|</span>
+      <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+    <div class="video-bg" id="videoBg"></div>
+    <div class="video-overlay"></div>
+    <div class="landing-content">
+      <div class="logo-wrap">
+        <img src="https://raw.githubusercontent.com/gardenmatesss-rgb/gardenmates/main/assets/1.png" alt="Garden Mates">
+      </div>
+      <div class="landing-tagline" id="ltTagline">Seamos socios en la <em>búsqueda de shidujim</em></div>
+      <div class="landing-sub" id="ltSub">Una red discreta de personas unidas por la mitzvá más hermosa: acercar almas.</div>
+      <div class="landing-btns">
+        <a href="#" class="btn-primary" id="ltBtn" onclick="showForm();return false;">Quiero anotar a alguien</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ FORM ══════════════════════════════════════════════════ -->
+<div class="form-wrap" id="formPage">
+  <div class="form-header">
+    <img src="https://raw.githubusercontent.com/gardenmatesss-rgb/gardenmates/main/assets/1.png" alt="Garden Mates">
+    <button class="form-header-back" onclick="showLanding()">← Volver</button>
+  </div>
+  <div class="form-inner">
+    <div class="progbar" id="pb"></div>
+
+    <!-- PASO 1 -->
+    <div class="card step active" id="s0">
+      <div class="step-label" id="l0">Paso 1 de 6</div>
+      <h2 id="h0">¿Cómo vas a usar el formulario?</h2>
+      <p class="step-desc" id="d0">Toda la información es confidencial.</p>
+      <div class="anota-box">
+        <div class="anota-card sel" id="cSelf" onclick="setMode('self')">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <p id="cardSelfTitle">Me anoto yo</p>
+          <span id="cardSelfSub">Quiero que me tengan en cuenta</span>
+        </div>
+        <div class="anota-card" id="cOther" onclick="setMode('other')">
+          <svg width="32" height="28" viewBox="0 0 32 28" fill="none"><circle cx="12" cy="10" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M2 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="10" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M22 16c2.761 0 5.239 1.119 7.045 2.93" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <p id="cardOtherTitle">Anoto a alguien</p>
+          <span id="cardOtherSub">Conozco a alguien que está buscando</span>
+        </div>
+      </div>
+      <div class="lang-bar-form">
+        <span>Idioma / Language:</span>
+        <button class="lang-btn-form active" id="fBtnES" onclick="setLang('es')">Español</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn-form" id="fBtnEN" onclick="setLang('en')">English</button>
+      </div>
+      <div class="btn-row"><button class="btn-p" id="btn0" onclick="go(1)">Continuar →</button></div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div class="card step" id="s1">
+      <div class="step-label" id="l1">Paso 2 de 6</div>
+      <h2 id="h1">Tu contacto</h2>
+      <p class="step-desc" id="d1">Para avisarte si encontramos una buena compatibilidad.</p>
+      <div class="g2">
+        <div class="field"><label class="fl" id="lCNombre">Nombre <span class="req">*</span></label><input type="text" id="contactoNombre" placeholder="Nombre"></div>
+        <div class="field"><label class="fl" id="lCApellido">Apellido <span class="req">*</span></label><input type="text" id="contactoApellido" placeholder="Apellido"></div>
+      </div>
+      <div class="field"><label class="fl" id="lCWA">WhatsApp <span class="req">*</span></label><input type="tel" id="contactoWhatsapp" placeholder="+54 11..."></div>
+      <div class="field" id="relacionWrap" style="display:none">
+        <label class="fl" id="lRelacion">Tu relación con esa persona</label>
+        <div class="pill-group">
+          <label><input type="radio" name="rel" value="Amigo/a"> <span class="rl">Amigo/a</span></label>
+          <label><input type="radio" name="rel" value="Familiar"> <span class="rl">Familiar</span></label>
+          <label><input type="radio" name="rel" value="Conocido/a"> <span class="rl">Conocido/a</span></label>
+          <label><input type="radio" name="rel" value="Otro"> <span class="rl">Otro</span></label>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-s" id="back1" onclick="go(0)">← Volver</button>
+        <button class="btn-p" id="next1" onclick="validar(2)">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div class="card step" id="s2">
+      <div class="step-label" id="l2">Paso 3 de 6</div>
+      <h2 id="h2">Tu información</h2>
+      <p class="step-desc" id="d2"></p>
+      <div class="g2">
+        <div class="field"><label class="fl" id="lNombre">Nombre <span class="req">*</span></label><input type="text" id="nombre" placeholder="Nombre"></div>
+        <div class="field"><label class="fl" id="lApellido">Apellido <span class="req">*</span></label><input type="text" id="apellido" placeholder="Apellido"></div>
+      </div>
+      <div class="g2">
+        <div class="field">
+          <label class="fl" id="lEdad">Edad <span class="req">*</span></label>
+          <div class="field-row">
+            <div><input type="number" id="edad" min="18" max="99" placeholder="ej. 28"></div>
+            <button class="btn-nose" id="nose-edad" onclick="toggleNose('edad')" style="display:none">No sé</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="fl" id="lSexo">Sexo <span class="req">*</span></label>
+          <div class="field-row">
+            <div><div class="pill-group" id="pg-sexo">
+              <label><input type="radio" name="sexo" value="Femenino" onchange="setSexo('F')"> <span id="lblF">Femenino</span></label>
+              <label><input type="radio" name="sexo" value="Masculino" onchange="setSexo('M')"> <span id="lblM">Masculino</span></label>
+            </div></div>
+            <button class="btn-nose" id="nose-sexo" onclick="toggleNosePg('pg-sexo','sexo')" style="display:none">No sé</button>
+          </div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="field">
+          <label class="fl" id="lEstado">Estado civil <span class="req">*</span></label>
+          <div class="field-row">
+            <div><select id="estadoCivil"><option value="">—</option><option id="oSoltero">Soltero/a</option><option id="oDivorciado">Divorciado/a</option><option id="oViudo">Viudo/a</option></select></div>
+            <button class="btn-nose" id="nose-estado" onclick="toggleNose('estadoCivil')" style="display:none">No sé</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="fl" id="lHijos">Hijos <span class="req">*</span></label>
+          <div class="field-row">
+            <div>
+              <div class="pill-group" id="pg-hijos">
+                <label><input type="radio" name="hijos" value="No" onchange="showCond('hijosD',false)"> <span id="lblNo">No</span></label>
+                <label><input type="radio" name="hijos" value="Sí" onchange="showCond('hijosD',true)"> <span id="lblSi">Sí</span></label>
+              </div>
+              <div class="cond" id="hijosD"><input type="text" id="hijosDetalle" placeholder="Cuántos y edades"></div>
+            </div>
+            <button class="btn-nose" id="nose-hijos" onclick="toggleNosePg('pg-hijos','hijos')" style="display:none">No sé</button>
+          </div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="field">
+          <label class="fl" id="lNac">Nacionalidad <span class="req">*</span></label>
+          <div class="field-row">
+            <div>
+              <select id="selNac"><option value="">— País —</option><option>Argentina</option><option>Israel</option><option>Estados Unidos</option><option>Brasil</option><option>Uruguay</option><option>Chile</option><option>México</option><option>Colombia</option><option>España</option><option>Francia</option><option>Alemania</option><option>Italia</option><option>Reino Unido</option><option>Canadá</option><option>Australia</option><option>Sudáfrica</option><option>Venezuela</option><option>Perú</option><option>Bolivia</option><option>Paraguay</option><option>Ecuador</option><option>Costa Rica</option><option>Panamá</option><option>Guatemala</option><option>Cuba</option><option>República Dominicana</option><option>Holanda</option><option>Bélgica</option><option>Suiza</option><option>Austria</option><option>Portugal</option><option>Hungría</option><option>Polonia</option><option>Rusia</option><option>Ucrania</option><option>Turquía</option><option>Marruecos</option><option>Irán</option><option value="otro_nac">Otro</option></select>
+              <div id="otroNacWrap" style="display:none;margin-top:6px"><input type="text" id="otroNac" placeholder="País"></div>
+            </div>
+            <button class="btn-nose" id="nose-nac" onclick="toggleNose('selNac')" style="display:none">No sé</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="fl" id="lPais">País de residencia <span class="req">*</span></label>
+          <div class="field-row">
+            <div><select id="selPais" onchange="onPaisChange(this.value)"><option value="">— País —</option><option>Argentina</option><option>Israel</option><option>Estados Unidos</option><option>Brasil</option><option>Uruguay</option><option>Chile</option><option>México</option><option>Colombia</option><option>España</option><option>Francia</option><option>Alemania</option><option>Italia</option><option>Reino Unido</option><option>Canadá</option><option>Australia</option><option>Sudáfrica</option><option>Venezuela</option><option>Perú</option><option>Bolivia</option><option>Paraguay</option><option>Ecuador</option><option>Costa Rica</option><option>Panamá</option><option>Guatemala</option><option>Cuba</option><option>República Dominicana</option><option>Holanda</option><option>Bélgica</option><option>Suiza</option><option>Austria</option><option>Portugal</option><option>Hungría</option><option>Polonia</option><option>Rusia</option><option>Ucrania</option><option>Turquía</option><option>Marruecos</option><option>Irán</option><option value="otro_res">Otro</option></select></div>
+            <button class="btn-nose" id="nose-pais" onclick="toggleNose('selPais')" style="display:none">No sé</button>
+          </div>
+        </div>
+      </div>
+      <div class="field" id="otroResWrap" style="display:none"><label class="fl" id="lOtroPais">¿En qué país?</label><input type="text" id="otroRes" placeholder="País"></div>
+      <div class="field" id="regionWrap" style="display:none"><label class="fl" id="regionLabel">Provincia</label><select id="selRegion" onchange="onRegionChange(this.value)"></select></div>
+      <div class="field" id="otroRegWrap" style="display:none"><label class="fl" id="otroRegLabel">¿Cuál?</label><input type="text" id="otroReg"></div>
+      <div class="field" id="barrioWrap" style="display:none"><label class="fl" id="barrioLabel">Barrio</label><select id="selBarrio" onchange="onBarrioChange(this.value)"></select></div>
+      <div class="field" id="otroBarrioWrap" style="display:none"><label class="fl">¿Cuál?</label><input type="text" id="otroBarrio"></div>
+      <div class="sec-title-form" id="secAltura">Altura</div>
+      <div class="field-row" style="align-items:center;gap:12px">
+        <div class="height-cards">
+          <div class="hcard" id="hBajo" onclick="selHeight('Bajo/a')">
+            <svg width="34" height="52" viewBox="0 0 34 52"><circle cx="17" cy="6" r="6" fill="#aaa"/><rect x="9" y="14" width="16" height="20" rx="4" fill="#aaa"/><rect x="9" y="36" width="6" height="16" rx="3" fill="#aaa"/><rect x="19" y="36" width="6" height="16" rx="3" fill="#aaa"/></svg>
+            <div class="hlabel" id="hBajoLbl">Bajo/a</div><div class="hsub">— 1.60</div>
+          </div>
+          <div class="hcard" id="hMedio" onclick="selHeight('Mediano/a')">
+            <svg width="34" height="64" viewBox="0 0 34 64"><circle cx="17" cy="6" r="6" fill="#aaa"/><rect x="9" y="14" width="16" height="26" rx="4" fill="#aaa"/><rect x="9" y="42" width="6" height="22" rx="3" fill="#aaa"/><rect x="19" y="42" width="6" height="22" rx="3" fill="#aaa"/></svg>
+            <div class="hlabel" id="hMedioLbl">Mediano/a</div><div class="hsub">1.60–1.75</div>
+          </div>
+          <div class="hcard" id="hAlto" onclick="selHeight('Alto/a')">
+            <svg width="34" height="78" viewBox="0 0 34 78"><circle cx="17" cy="6" r="6" fill="#aaa"/><rect x="9" y="14" width="16" height="34" rx="4" fill="#aaa"/><rect x="9" y="50" width="6" height="28" rx="3" fill="#aaa"/><rect x="19" y="50" width="6" height="28" rx="3" fill="#aaa"/></svg>
+            <div class="hlabel" id="hAltoLbl">Alto/a</div><div class="hsub">+ 1.75</div>
+          </div>
+        </div>
+        <button class="btn-nose" id="nose-altura" onclick="toggleNoseAltura()" style="display:none;margin-top:0">No sé</button>
+      </div>
+      <div class="sec-title-form" id="secFoto">Foto</div>
+      <div class="field">
+        <label class="fl" id="lFoto">Foto <span class="req">*</span></label>
+        <input type="file" id="fotoInput" accept="image/*">
+      </div>
+      <div class="btn-row">
+        <button class="btn-s" id="back2" onclick="go(1)">← Volver</button>
+        <button class="btn-p" id="next2" onclick="validar(3)">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- PASO 4 -->
+    <div class="card step" id="s3">
+      <div class="step-label" id="l3">Paso 4 de 6</div>
+      <h2 id="h3">Observancia y vida judía</h2>
+      <p class="step-desc" id="d3"></p>
+      <div class="field">
+        <label class="fl" id="lRelig">Orientación religiosa <span class="req">*</span></label>
+        <div class="field-row">
+          <div><div class="pill-group" id="pg-relig">
+            <label><input type="radio" name="relig" value="Simplemente judío/a"> Simplemente judío/a</label>
+            <label><input type="radio" name="relig" value="Espiritual no religioso"> Espiritual no religioso</label>
+            <label><input type="radio" name="relig" value="Tradicionalista"> Tradicionalista</label>
+            <label><input type="radio" name="relig" value="Ortodoxo moderno"> Ortodoxo moderno</label>
+            <label><input type="radio" name="relig" value="Ortodoxo"> Ortodoxo</label>
+            <label><input type="radio" name="relig" value="Jasídico"> Jasídico</label>
+            <label><input type="radio" name="relig" value="Jabad"> Jabad</label>
+            <label><input type="radio" name="relig" value="Dati leumi"> Dati leumi</label>
+            <label><input type="radio" name="relig" value="Jaredí"> Jaredí</label>
+          </div></div>
+          <button class="btn-nose" id="nose-relig" onclick="toggleNosePg('pg-relig','relig')" style="display:none">No sé</button>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="field"><label class="fl" id="lAsc">Ascendencia <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-asc"><label><input type="radio" name="asc" value="Ashkenazí"> Ashkenazí</label><label><input type="radio" name="asc" value="Sefardí"> Sefardí</label><label><input type="radio" name="asc" value="Mezcla"> Mezcla</label></div></div><button class="btn-nose" id="nose-asc" onclick="toggleNosePg('pg-asc','asc')" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lKash">Kashrut <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-kash"><label><input type="radio" name="kash" value="Nunca"> Nunca</label><label><input type="radio" name="kash" value="En casa"> En casa</label><label><input type="radio" name="kash" value="Siempre"> Siempre</label><label><input type="radio" name="kash" value="Parcialmente"> Parcialmente</label></div></div><button class="btn-nose" id="nose-kash" onclick="toggleNosePg('pg-kash','kash')" style="display:none">No sé</button></div></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label class="fl" id="lShab">Shabat <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-shab"><label><input type="radio" name="shab" value="Nada"> Nada</label><label><input type="radio" name="shab" value="Kidush y algunos preceptos"> Kidush y algunos preceptos</label><label><input type="radio" name="shab" value="Completo"> Completo</label></div></div><button class="btn-nose" id="nose-shab" onclick="toggleNosePg('pg-shab','shab')" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lBT">Baal teshuvá <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-bt"><label><input type="radio" name="bt" value="Sí"> Sí</label><label><input type="radio" name="bt" value="No"> No</label></div></div><button class="btn-nose" id="nose-bt" onclick="toggleNosePg('pg-bt','bt')" style="display:none">No sé</button></div></div>
+      </div>
+      <div class="field"><label class="fl" id="lConv">Converso/a <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-conv"><label><input type="radio" name="conv" value="Sí"> Sí</label><label><input type="radio" name="conv" value="No"> No</label></div></div><button class="btn-nose" id="nose-conv" onclick="toggleNosePg('pg-conv','conv')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lAnt">Antecedentes religiosos de la familia <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-ant"><label><input type="radio" name="ant" value="Simplemente judío/a"> Simplemente judío/a</label><label><input type="radio" name="ant" value="Espiritual no religioso"> Espiritual no religioso</label><label><input type="radio" name="ant" value="Tradicionalista"> Tradicionalista</label><label><input type="radio" name="ant" value="Ortodoxo moderno"> Ortodoxo moderno</label><label><input type="radio" name="ant" value="Ortodoxo"> Ortodoxo</label><label><input type="radio" name="ant" value="Jasídico"> Jasídico</label><label><input type="radio" name="ant" value="Jabad"> Jabad</label><label><input type="radio" name="ant" value="Dati leumi"> Dati leumi</label><label><input type="radio" name="ant" value="Jaredí"> Jaredí</label></div></div><button class="btn-nose" id="nose-ant" onclick="toggleNosePg('pg-ant','ant')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lTemplo">Templo al que concurre <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="templo" placeholder="Nombre del templo"></div><button class="btn-nose" id="nose-templo" onclick="toggleNose('templo')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lTora">Estudio de Torá <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-tora"><label><input type="radio" name="tora" value="Nunca"> Nunca</label><label><input type="radio" name="tora" value="A veces"> A veces</label><label><input type="radio" name="tora" value="Una vez a la semana"> Una vez a la semana</label><label><input type="radio" name="tora" value="Varias veces a la semana"> Varias veces a la semana</label></div></div><button class="btn-nose" id="nose-tora" onclick="toggleNosePg('pg-tora','tora')" style="display:none">No sé</button></div></div>
+      <div id="kipaWrap" class="field" style="display:none"><label class="fl" id="lKipa">¿Usa kipá habitualmente? <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-kipa"><label><input type="radio" name="kipa" value="Sí, siempre"> Sí, siempre</label><label><input type="radio" name="kipa" value="Solo en el templo / ocasiones especiales"> Solo en el templo</label><label><input type="radio" name="kipa" value="No"> No</label></div></div><button class="btn-nose" id="nose-kipa" onclick="toggleNosePg('pg-kipa','kipa')" style="display:none">No sé</button></div></div>
+      <div id="tseniutWrap" class="field" style="display:none"><label class="fl" id="lTsen">Tseniut <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-tsen"><label><input type="radio" name="tsen" value="Sí"> Sí</label><label><input type="radio" name="tsen" value="Parcial"> Parcial</label><label><input type="radio" name="tsen" value="No"> No</label></div></div><button class="btn-nose" id="nose-tsen" onclick="toggleNosePg('pg-tsen','tsen')" style="display:none">No sé</button></div></div>
+      <div id="peloWrap" class="field" style="display:none"><label class="fl" id="lPelo">¿Piensa cubrirse el pelo de casada? <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-pelo"><label><input type="radio" name="pelo" value="Sí"> Sí</label><label><input type="radio" name="pelo" value="No"> No</label><label><input type="radio" name="pelo" value="Parcialmente"> Parcialmente</label><label><input type="radio" name="pelo" value="Posiblemente"> Posiblemente</label></div></div><button class="btn-nose" id="nose-pelo" onclick="toggleNosePg('pg-pelo','pelo')" style="display:none">No sé</button></div></div>
+      <div class="btn-row"><button class="btn-s" id="back3" onclick="go(2)">← Volver</button><button class="btn-p" id="next3" onclick="validar(4)">Continuar →</button></div>
+    </div>
+
+    <!-- PASO 5 -->
+    <div class="card step" id="s4">
+      <div class="step-label" id="l4">Paso 5 de 6</div>
+      <h2 id="h4">Educación e idiomas</h2>
+      <p class="step-desc" id="d4"></p>
+      <div class="field"><label class="fl" id="lProf">Profesión / ocupación <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="profesion" placeholder="ej. Médica, contador..."></div><button class="btn-nose" id="nose-prof" onclick="toggleNose('profesion')" style="display:none">No sé</button></div></div>
+      <div class="g2">
+        <div class="field"><label class="fl" id="lPri">Escuela primaria <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="primaria" placeholder="Institución"></div><button class="btn-nose" id="nose-pri" onclick="toggleNose('primaria')" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lSec">Escuela secundaria <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="secundaria" placeholder="Institución"></div><button class="btn-nose" id="nose-sec" onclick="toggleNose('secundaria')" style="display:none">No sé</button></div></div>
+      </div>
+      <div class="field"><label class="fl" id="lUniv">Universidad / terciario <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-univ"><label><input type="radio" name="univ" value="si" onchange="showCond('univD',true)"> Sí estudió</label><label><input type="radio" name="univ" value="no" onchange="showCond('univD',false)"> No aplica</label></div><div class="cond" id="univD"><div class="g2"><input type="text" id="universidad" placeholder="Institución"><input type="text" id="carrera" placeholder="Carrera"></div></div></div><button class="btn-nose" id="nose-univ" onclick="toggleNosePg('pg-univ','univ')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lIdiomas">Idiomas que habla <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="idiomasGroup"><label><input type="checkbox" value="Español"> Español</label><label><input type="checkbox" value="Hebreo"> Hebreo</label><label><input type="checkbox" value="Inglés"> Inglés</label><label><input type="checkbox" value="Francés"> Francés</label><label><input type="checkbox" value="Portugués"> Portugués</label><label><input type="checkbox" value="Italiano"> Italiano</label><label><input type="checkbox" value="Ídish"> Ídish</label><label><input type="checkbox" value="Otro"> Otro</label></div></div><button class="btn-nose" id="nose-idiomas" onclick="toggleNosePg('idiomasGroup','idiomas')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lAlia">Plan de aliá <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-alia"><label><input type="radio" name="alia" value="Sí"> Sí</label><label><input type="radio" name="alia" value="No"> No</label><label><input type="radio" name="alia" value="Quizás"> Quizás</label></div></div><button class="btn-nose" id="nose-alia" onclick="toggleNosePg('pg-alia','alia')" style="display:none">No sé</button></div></div>
+      <div class="btn-row"><button class="btn-s" id="back4" onclick="go(3)">← Volver</button><button class="btn-p" id="next4" onclick="validar(5)">Continuar →</button></div>
+    </div>
+
+    <!-- PASO 6 -->
+    <div class="card step" id="s5">
+      <div class="step-label" id="l5">Paso 6 de 6</div>
+      <h2 id="h5">¿Qué está buscando?</h2>
+      <p class="step-desc" id="d5"></p>
+      <div class="g2">
+        <div class="field"><label class="fl" id="lRango">Rango de edad <span class="req">*</span></label><div class="field-row"><div class="g2" style="flex:1"><input type="number" id="edadDesde" placeholder="Desde" min="18" max="99"><input type="number" id="edadHasta" placeholder="Hasta" min="18" max="99"></div><button class="btn-nose" id="nose-rango" onclick="toggleNoseRango()" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lAbHijos">¿Abierto/a a alguien con hijos? <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-abhijos"><label><input type="radio" name="abhijos" value="Sí"> Sí</label><label><input type="radio" name="abhijos" value="No"> No</label><label><input type="radio" name="abhijos" value="Depende"> Depende</label></div></div><button class="btn-nose" id="nose-abhijos" onclick="toggleNosePg('pg-abhijos','abhijos')" style="display:none">No sé</button></div></div>
+      </div>
+      <div class="field"><label class="fl" id="lOrientB">Orientación religiosa buscada <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="orientBuscadaGroup"><label><input type="checkbox" value="Simplemente judío/a"> Simplemente judío/a</label><label><input type="checkbox" value="Espiritual no religioso"> Espiritual no religioso</label><label><input type="checkbox" value="Tradicionalista"> Tradicionalista</label><label><input type="checkbox" value="Ortodoxo moderno"> Ortodoxo moderno</label><label><input type="checkbox" value="Ortodoxo"> Ortodoxo</label><label><input type="checkbox" value="Jasídico"> Jasídico</label><label><input type="checkbox" value="Jabad"> Jabad</label><label><input type="checkbox" value="Dati leumi"> Dati leumi</label><label><input type="checkbox" value="Jaredí"> Jaredí</label></div></div><button class="btn-nose" id="nose-orientb" onclick="toggleNosePg('orientBuscadaGroup','orientb')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lDeal">Dealbreakers <span class="req">*</span></label><div class="field-row"><div style="flex:1"><textarea id="dealbreakers" placeholder="ej. No fumador/a, que quiera vivir en Israel..."></textarea></div><button class="btn-nose" id="nose-deal" onclick="toggleNose('dealbreakers')" style="display:none;margin-top:0">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lIdeal">¿Cómo describirías a la persona ideal? <span class="req">*</span></label><div class="field-row"><div style="flex:1"><textarea id="personaIdeal" placeholder="Qué valores busca, qué tipo de relación imagina..."></textarea></div><button class="btn-nose" id="nose-ideal" onclick="toggleNose('personaIdeal')" style="display:none;margin-top:0">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lNotas">Algo más para agregar</label><div class="field-row"><div style="flex:1"><textarea id="notasExtra" placeholder="Cualquier información adicional..."></textarea></div><button class="btn-nose" id="nose-notas" onclick="toggleNose('notasExtra')" style="display:none;margin-top:0">No sé</button></div></div>
+      <div class="btn-row">
+        <button class="btn-s" id="back5" onclick="go(4)">← Volver</button>
+        <button class="btn-p" id="btnEnviar" onclick="enviar()">Enviar registro ✓</button>
+        <span class="sending" id="sendingMsg">Enviando...</span>
+      </div>
+    </div>
+
+    <!-- DONE -->
+    <div class="card step" id="sDone">
+      <div class="success-wrap">
+        <div class="success-ico">✅</div>
+        <h2 id="doneTitle" style="margin-bottom:8px;font-family:'Cormorant Garamond',serif;font-size:26px">¡Registro enviado!</h2>
+        <p id="doneMsg" style="font-size:14px;color:#666;max-width:360px;margin:0 auto;line-height:1.7">El perfil quedó guardado. Si encontramos una compatibilidad, nos comunicamos de manera discreta.</p>
+        <div class="next-btns" id="nextBtns"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── VIDEO ─────────────────────────────────────────────────────
+function initVideos(){
+  const bg=document.getElementById('videoBg');
+  const v=document.createElement('video');
+  v.src='https://drive.google.com/uc?export=download&id=1UAi1vVOrHwB_nG5U4izIPIL1nkTQXanT';
+  v.muted=true; v.playsInline=true; v.loop=true;
+  v.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0';
+  v.addEventListener('error',()=>showFallback());
+  bg.appendChild(v);
+  v.play().catch(()=>showFallback());
+}
+
+function showFallback(){
+  const bg=document.getElementById('videoBg');
+  bg.innerHTML='';
+  bg.style.cssText='position:absolute;inset:0;background:linear-gradient(135deg,#0f1c45 0%,#1a2d6b 40%,#2a3d7b 70%,#0f1c45 100%);background-size:400% 400%;animation:gradAnim 8s ease infinite';
+  const style=document.createElement('style');
+  style.textContent='@keyframes gradAnim{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}';
+  document.head.appendChild(style);
+}
+
+function nextVideo(){}
+
+// ── NAV ───────────────────────────────────────────────────────
+function showForm(){
+  document.getElementById('landingPage').style.display='none';
+  document.getElementById('formPage').style.display='block';
+  window.scrollTo(0,0);
+  buildProg();updProg(0);
+}
+function showLanding(){
+  document.getElementById('formPage').style.display='none';
+  document.getElementById('landingPage').style.display='block';
+  window.scrollTo(0,0);
+}
+
+// ── TRADUCCIONES ──────────────────────────────────────────────
+const TX={
+  es:{
+    noSe:'No sé',siSe:'Sí sé',continuar:'Continuar →',volver:'← Volver',paso:'Paso',de:'de',
+    ltTagline:'Seamos socios en la búsqueda de shidujim',
+    ltSub:'Una red discreta de personas unidas por la mitzvá más hermosa: acercar almas.',
+    ltBtn:'Quiero anotar a alguien',
+    h0:'¿Cómo vas a usar el formulario?',d0:'Toda la información es confidencial.',
+    cardSelf:'Me anoto yo',cardSelfSub:'Quiero que me tengan en cuenta',
+    cardOther:'Anoto a alguien',cardOtherSub:'Conozco a alguien que está buscando',
+    h1self:'Tu contacto',h1other:'Tus datos de contacto',
+    d1self:'Para avisarte si encontramos una buena compatibilidad.',d1other:'Nos comunicamos con vos, no con la persona anotada.',
+    h2self:'Tu información',h2other:'Información de la persona',d2other:'Usá "No sé" si no tenés un dato.',
+    h3:'Observancia y vida judía',d3other:'Usá "No sé" si no tenés un dato.',
+    h4:'Educación e idiomas',d4other:'Usá "No sé" si no tenés un dato.',
+    h5:'¿Qué está buscando?',d5other:'Usá "No sé" si no tenés un dato.',
+    enviar:'Enviar registro ✓',enviando:'Enviando...',
+    doneTitle:'¡Registro enviado!',doneMsg:'El perfil quedó guardado. Si encontramos una compatibilidad, nos comunicamos de manera discreta.',
+    btnAnotarSelf:'Anotar a alguien más',btnAnotarOther:'Anotar a otra persona',btnTerminar:'Listo, ya terminé',
+    eNombre:'Por favor ingresá tu nombre.',eApellido:'Por favor ingresá tu apellido.',eWA:'Por favor ingresá tu WhatsApp.',
+    eNombreP:'Por favor ingresá el nombre.',eApellidoP:'Por favor ingresá el apellido.',eSexo:'Por favor indicá el sexo.',
+    eEdad:'Por favor ingresá la edad.',eEstado:'Por favor seleccioná el estado civil.',eFoto:'Por favor subí una foto.',
+    eRelig:'Por favor seleccioná la orientación religiosa.',eAsc:'Por favor seleccioná la ascendencia.',eKash:'Por favor indicá kashrut.',
+    eShab:'Por favor indicá shabat.',eBT:'¿Es baal teshuvá?',eConv:'¿Es converso/a?',
+    eAnt:'Por favor seleccioná los antecedentes religiosos de la familia.',eTora:'Por favor indicá el estudio de Torá.',
+    eAlia:'Por favor indicá el plan de aliá.',eRango:'Por favor ingresá el rango de edad buscado.',
+    eAbHijos:'¿Está abierto/a a alguien con hijos?',eOrientB:'Por favor seleccioná al menos una orientación buscada.',
+    eDeal:'Por favor completá los dealbreakers.',eIdeal:'Por favor describí a la persona ideal.',
+    eUniv:'Por favor indicá universidad / terciario.',eIdiomas:'Por favor seleccioná al menos un idioma.',
+    ePri:'Por favor ingresá la escuela primaria.',eSec:'Por favor ingresá la escuela secundaria.',eProf:'Por favor ingresá la profesión.',
+  },
+  en:{
+    noSe:"Don't know",siSe:'I know',continuar:'Continue →',volver:'← Back',paso:'Step',de:'of',
+    ltTagline:'Let us be partners in the search for shiduchim',
+    ltSub:'A discreet network of people united by the most beautiful mitzvah: bringing souls together.',
+    ltBtn:'I want to register someone',
+    h0:'How will you use this form?',d0:'All information is confidential.',
+    cardSelf:'Register myself',cardSelfSub:'I want to be considered for a match',
+    cardOther:'Register someone else',cardOtherSub:"I know someone who's looking",
+    h1self:'Your contact info',h1other:'Your contact details',
+    d1self:"We'll reach out if we find a good match.",d1other:"We'll contact you, not the person you're registering.",
+    h2self:'Your information',h2other:"Person's information",d2other:"Use \"Don't know\" if you're unsure.",
+    h3:'Jewish observance & lifestyle',d3other:"Use \"Don't know\" if you're unsure.",
+    h4:'Education & languages',d4other:"Use \"Don't know\" if you're unsure.",
+    h5:"What are they looking for?",d5other:"Use \"Don't know\" if you're unsure.",
+    enviar:'Submit ✓',enviando:'Sending...',
+    doneTitle:'Registration submitted!',doneMsg:"The profile has been saved. If we find a match, we'll reach out discreetly.",
+    btnAnotarSelf:'Register someone else',btnAnotarOther:'Register another person',btnTerminar:'Done',
+    eNombre:'Please enter your first name.',eApellido:'Please enter your last name.',eWA:'Please enter your WhatsApp.',
+    eNombreP:"Please enter the first name.",eApellidoP:"Please enter the last name.",eSexo:'Please indicate gender.',
+    eEdad:'Please enter the age.',eEstado:'Please select marital status.',eFoto:'Please upload a photo.',
+    eRelig:'Please select a religious orientation.',eAsc:'Please select a background.',eKash:'Please indicate kashrut.',
+    eShab:'Please indicate Shabbat.',eBT:'Is this person a baal teshuvah?',eConv:'Is this person a convert?',
+    eAnt:"Please select the family's religious background.",eTora:'Please indicate Torah study.',
+    eAlia:'Please indicate aliyah plans.',eRango:'Please enter the desired age range.',
+    eAbHijos:'Open to someone with children?',eOrientB:'Please select at least one orientation.',
+    eDeal:'Please fill in dealbreakers.',eIdeal:'Please describe the ideal person.',
+    eUniv:'Please indicate university.',eIdiomas:'Please select at least one language.',
+    ePri:'Please enter primary school.',eSec:'Please enter high school.',eProf:'Please enter profession.',
+  }
+};
+
+function tr(k){return TX[lang][k]||TX.es[k]||k;}
+
+function setLang(l){
+  lang=l;
+  document.getElementById('btnES').classList.toggle('active',l==='es');
+  document.getElementById('btnEN').classList.toggle('active',l==='en');
+  const fES=document.getElementById('fBtnES'),fEN=document.getElementById('fBtnEN');
+  if(fES)fES.classList.toggle('active',l==='es');
+  if(fEN)fEN.classList.toggle('active',l==='en');
+  applyLang();
+}
+
+function applyLang(){
+  const isO=mode==='other';
+  setText('ltTagline',tr('ltTagline')); setText('ltSub',tr('ltSub')); setText('ltBtn',tr('ltBtn'));
+  for(let i=0;i<6;i++){const el=document.getElementById('l'+i);if(el)el.textContent=tr('paso')+' '+(i+1)+' '+tr('de')+' 6';}
+  setText('h0',tr('h0'));setText('d0',tr('d0'));
+  setText('cardSelfTitle',tr('cardSelf'));setText('cardSelfSub',tr('cardSelfSub'));
+  setText('cardOtherTitle',tr('cardOther'));setText('cardOtherSub',tr('cardOtherSub'));
+  setText('btn0',tr('continuar'));
+  setText('h1',isO?tr('h1other'):tr('h1self'));setText('d1',isO?tr('d1other'):tr('d1self'));
+  setText('h2',isO?tr('h2other'):tr('h2self'));setText('d2',isO?tr('d2other'):'');
+  setText('h3',tr('h3'));setText('d3',isO?tr('d3other'):'');
+  setText('h4',tr('h4'));setText('d4',isO?tr('d4other'):'');
+  setText('h5',tr('h5'));setText('d5',isO?tr('d5other'):'');
+  setText('btnEnviar',tr('enviar'));
+  ['back1','back2','back3','back4','back5'].forEach(id=>setText(id,tr('volver')));
+  ['next1','next2','next3','next4'].forEach(id=>setText(id,tr('continuar')));
+  document.querySelectorAll('.btn-nose:not(.active)').forEach(b=>b.textContent=tr('noSe'));
+  document.querySelectorAll('.btn-nose.active').forEach(b=>b.textContent=tr('siSe'));
+  setText('doneTitle',tr('doneTitle'));setText('doneMsg',tr('doneMsg'));
+}
+function setText(id,text){const el=document.getElementById(id);if(el)el.textContent=text;}
+
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzDUUmzlIWWPDvuDM3f6eRR3VFDjQ7cGGNTR3SIXsduP6iFhriST4TZwxMUxNvozHkW/exec';
+const STEPS=6;
+let mode='self',sexo=null,alturaVal='',noseState={},lang='es';
+
+// ── PROGRESO ──────────────────────────────────────────────────
+function buildProg(){const pb=document.getElementById('pb');pb.innerHTML='';for(let i=0;i<STEPS;i++){const d=document.createElement('div');d.className='pd';d.id='pd'+i;pb.appendChild(d);}}
+function updProg(n){for(let i=0;i<STEPS;i++){const d=document.getElementById('pd'+i);if(d)d.classList.toggle('done',i<=n);}}
+
+// ── FORM NAV ──────────────────────────────────────────────────
+function go(n,keepContact=false){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('s'+n);if(el)el.classList.add('active');
+  updProg(n); window.scrollTo(0,0);
+  const isO=mode==='other';
+  if(n===1){setText('h1',isO?tr('h1other'):tr('h1self'));setText('d1',isO?tr('d1other'):tr('d1self'));document.getElementById('relacionWrap').style.display=isO?'block':'none';}
+  if(n===2){
+    setText('h2',isO?tr('h2other'):tr('h2self')); setText('d2',isO?tr('d2other'):'');
+    const noseIds=['nose-edad','nose-sexo','nose-estado','nose-hijos','nose-nac','nose-pais','nose-altura','nose-relig','nose-asc','nose-kash','nose-shab','nose-bt','nose-conv','nose-ant','nose-templo','nose-tora','nose-kipa','nose-tsen','nose-pelo','nose-prof','nose-pri','nose-sec','nose-univ','nose-idiomas','nose-alia','nose-rango','nose-abhijos','nose-orientb','nose-deal','nose-ideal','nose-notas'];
+    noseIds.forEach(id=>{const b=document.getElementById(id);if(b)b.style.display=isO?'':'none';});
+    ['s3','s4','s5'].forEach(sid=>{const step=document.getElementById(sid);if(!step)return;step.querySelectorAll('.req').forEach(r=>{r.style.display=isO?'none':'inline';});});
+    document.getElementById('back2').onclick=()=>go(keepContact?2:1);
+  }
+  if(n===3)setText('d3',isO?tr('d3other'):'');
+  if(n===4)setText('d4',isO?tr('d4other'):'');
+  if(n===5)setText('d5',isO?tr('d5other'):'');
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('cSelf').classList.toggle('sel',m==='self');
+  document.getElementById('cOther').classList.toggle('sel',m==='other');
+}
+function setSexo(s){sexo=s;document.getElementById('kipaWrap').style.display=s==='M'?'block':'none';document.getElementById('tseniutWrap').style.display=s==='F'?'block':'none';document.getElementById('peloWrap').style.display=s==='F'?'block':'none';}
+function showCond(id,show){document.getElementById(id).style.display=show?'block':'none';}
+function selHeight(h){if(noseState['altura'])return;alturaVal=h;['hBajo','hMedio','hAlto'].forEach(id=>document.getElementById(id).classList.remove('sel'));const map={'Bajo/a':'hBajo','Mediano/a':'hMedio','Alto/a':'hAlto'};if(map[h])document.getElementById(map[h]).classList.add('sel');}
+
+// ── NO SÉ ─────────────────────────────────────────────────────
+function toggleNose(fieldId){const el=document.getElementById(fieldId);const btn=document.getElementById('nose-'+fieldId);if(!el||!btn)return;if(!noseState[fieldId]){noseState[fieldId]=el.value;el.value='';el.disabled=true;el.classList.add('skipped');btn.classList.add('active');btn.textContent=tr('siSe');}else{el.value=noseState[fieldId]||'';el.disabled=false;el.classList.remove('skipped');btn.classList.remove('active');btn.textContent=tr('noSe');delete noseState[fieldId];}}
+function toggleNosePg(pgId,key){const pg=document.getElementById(pgId);const btn=document.getElementById('nose-'+key);if(!pg||!btn)return;const k='pg-'+key;if(!noseState[k]){noseState[k]=true;pg.classList.add('skipped');btn.classList.add('active');btn.textContent=tr('siSe');}else{pg.classList.remove('skipped');btn.classList.remove('active');btn.textContent=tr('noSe');delete noseState[k];}}
+function toggleNoseAltura(){const btn=document.getElementById('nose-altura');if(!noseState['altura']){noseState['altura']=alturaVal;alturaVal='';['hBajo','hMedio','hAlto'].forEach(id=>document.getElementById(id).classList.add('skipped'));btn.classList.add('active');btn.textContent=tr('siSe');}else{['hBajo','hMedio','hAlto'].forEach(id=>document.getElementById(id).classList.remove('skipped'));btn.classList.remove('active');btn.textContent=tr('noSe');delete noseState['altura'];}}
+function toggleNoseRango(){const d=document.getElementById('edadDesde'),h=document.getElementById('edadHasta');const btn=document.getElementById('nose-rango');if(!noseState['rango']){noseState['rango']=true;d.disabled=true;h.disabled=true;d.classList.add('skipped');h.classList.add('skipped');btn.classList.add('active');btn.textContent=tr('siSe');}else{d.disabled=false;h.disabled=false;d.classList.remove('skipped');h.classList.remove('skipped');btn.classList.remove('active');btn.textContent=tr('noSe');delete noseState['rango'];}}
+
+// ── VALIDACIÓN ────────────────────────────────────────────────
+function mostrarErr(msg){let err=document.getElementById('validErr');if(!err){err=document.createElement('p');err.id='validErr';err.className='err-msg';}const active=document.querySelector('.step.active');const btnRow=active.querySelector('.btn-row');if(!btnRow.contains(err))btnRow.appendChild(err);err.textContent=msg;err.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function limpiarErr(){const e=document.getElementById('validErr');if(e)e.remove();}
+function getRadio(name){const el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:'';}
+function getChecks(gid){return Array.from(document.querySelectorAll('#'+gid+' input[type=checkbox]:checked')).map(e=>e.value);}
+function val(id){const el=document.getElementById(id);return el&&!el.disabled?el.value.trim():'';}
+function ns(k){return!!noseState[k];}
+function nsPg(k){return!!noseState['pg-'+k];}
+
+function validar(n){
+  limpiarErr();const isO=mode==='other';
+  if(n===2){if(!val('contactoNombre'))return mostrarErr(tr('eNombre'));if(!val('contactoApellido'))return mostrarErr(tr('eApellido'));if(!val('contactoWhatsapp'))return mostrarErr(tr('eWA'));}
+  if(n===3){if(!val('nombre'))return mostrarErr(tr('eNombreP'));if(!val('apellido'))return mostrarErr(tr('eApellidoP'));if(!nsPg('sexo')&&!getRadio('sexo'))return mostrarErr(tr('eSexo'));if(!ns('edad')&&!val('edad'))return mostrarErr(tr('eEdad'));if(!ns('estadoCivil')&&!val('estadoCivil'))return mostrarErr(tr('eEstado'));const foto=document.getElementById('fotoInput');if(!foto.files||!foto.files[0])return mostrarErr(tr('eFoto'));}
+  if(n===4&&!isO){if(!nsPg('relig')&&!getRadio('relig'))return mostrarErr(tr('eRelig'));if(!nsPg('asc')&&!getRadio('asc'))return mostrarErr(tr('eAsc'));if(!nsPg('kash')&&!getRadio('kash'))return mostrarErr(tr('eKash'));if(!nsPg('shab')&&!getRadio('shab'))return mostrarErr(tr('eShab'));if(!nsPg('bt')&&!getRadio('bt'))return mostrarErr(tr('eBT'));if(!nsPg('conv')&&!getRadio('conv'))return mostrarErr(tr('eConv'));if(!nsPg('ant')&&!getRadio('ant'))return mostrarErr(tr('eAnt'));if(!nsPg('tora')&&!getRadio('tora'))return mostrarErr(tr('eTora'));}
+  if(n===5&&!isO){if(!ns('profesion')&&!val('profesion'))return mostrarErr(tr('eProf'));if(!ns('primaria')&&!val('primaria'))return mostrarErr(tr('ePri'));if(!ns('secundaria')&&!val('secundaria'))return mostrarErr(tr('eSec'));if(!nsPg('univ')&&!getRadio('univ'))return mostrarErr(tr('eUniv'));if(!nsPg('idiomas')&&getChecks('idiomasGroup').length===0)return mostrarErr(tr('eIdiomas'));if(!nsPg('alia')&&!getRadio('alia'))return mostrarErr(tr('eAlia'));}
+  go(n);
+}
+
+// ── GEOGRAFÍA ─────────────────────────────────────────────────
+const CABA=['Agronomía','Almagro','Balvanera','Barracas','Belgrano','Boedo','Caballito','Chacarita','Coghlan','Colegiales','Constitución','Flores','Floresta','La Boca','La Paternal','Liniers','Mataderos','Monte Castro','Monserrat','Nueva Pompeya','Núñez','Palermo','Parque Avellaneda','Parque Chacabuco','Parque Chas','Parque Patricios','Puerto Madero','Recoleta','Retiro','Saavedra','San Cristóbal','San Nicolás','San Telmo','Vélez Sársfield','Versalles','Villa Crespo','Villa del Parque','Villa Devoto','Villa Gral. Mitre','Villa Lugano','Villa Luro','Villa Ortúzar','Villa Pueyrredón','Villa Real','Villa Riachuelo','Villa Santa Rita','Villa Soldati','Villa Urquiza','Otro'];
+const PCIAS=['Buenos Aires (provincia)','Catamarca','Chaco','Chubut','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán','Otro'];
+const IL=['Tel Aviv','Jerusalén','Haifa','Beer Sheva','Rishon LeZion','Raanana','Netanya','Modiin','Herzliya','Petaj Tikva','Ashdod','Ashkelon','Holon','Bnei Brak','Otra'];
+const US=['Nueva York','Florida','California','Texas','New Jersey','Illinois','Massachusetts','Otro'];
+const regionData={'Argentina':{label:'Provincia / Ciudad',regions:['Capital Federal (CABA)',...PCIAS]},'Israel':{label:'Ciudad',regions:IL},'Estados Unidos':{label:'Estado',regions:US}};
+
+function onPaisChange(pais){const rw=document.getElementById('regionWrap'),bw=document.getElementById('barrioWrap'),orw=document.getElementById('otroResWrap'),oregw=document.getElementById('otroRegWrap'),obarw=document.getElementById('otroBarrioWrap');bw.style.display='none';obarw.style.display='none';oregw.style.display='none';if(pais==='otro_res'){orw.style.display='block';rw.style.display='none';return;}orw.style.display='none';if(!regionData[pais]){rw.style.display='none';return;}const data=regionData[pais];document.getElementById('regionLabel').textContent=data.label;const sr=document.getElementById('selRegion');sr.innerHTML='<option value="">— Seleccionar —</option>';data.regions.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;sr.appendChild(o);});rw.style.display='block';}
+function onRegionChange(region){const pais=document.getElementById('selPais').value;const bw=document.getElementById('barrioWrap'),oregw=document.getElementById('otroRegWrap'),obarw=document.getElementById('otroBarrioWrap');bw.style.display='none';obarw.style.display='none';if(region==='Otro'||region==='Otra'){oregw.style.display='block';document.getElementById('otroRegLabel').textContent=pais==='Israel'?'¿Qué ciudad?':'¿Cuál?';return;}oregw.style.display='none';const sb=document.getElementById('selBarrio');if(pais==='Argentina'){if(region==='Capital Federal (CABA)'){document.getElementById('barrioLabel').textContent='Barrio';sb.innerHTML='<option value="">— Seleccionar —</option>';CABA.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;sb.appendChild(o);});bw.style.display='block';}else if(region!=='Otro'){document.getElementById('barrioLabel').textContent='Ciudad';sb.innerHTML='<option value="">— Seleccionar —</option><option>Otro</option>';bw.style.display='block';}}if(pais==='Estados Unidos'&&region!=='Otro'){document.getElementById('barrioLabel').textContent='Ciudad';sb.innerHTML='<option value="">— Seleccionar —</option><option>Otro</option>';bw.style.display='block';}}
+function onBarrioChange(v){document.getElementById('otroBarrioWrap').style.display=(v==='Otro'||v==='Otra')?'block':'none';}
+document.getElementById('selNac').addEventListener('change',function(){document.getElementById('otroNacWrap').style.display=this.value==='otro_nac'?'block':'none';});
+document.getElementById('selBarrio').addEventListener('change',function(){onBarrioChange(this.value);});
+function getPaisRes(){const p=document.getElementById('selPais');return p.disabled?'':p.value==='otro_res'?val('otroRes'):p.value;}
+function getRegion(){const r=document.getElementById('selRegion').value;return(r==='Otro'||r==='Otra')?val('otroReg'):r;}
+function getBarrio(){const b=document.getElementById('selBarrio').value;return(b==='Otro'||b==='Otra')?val('otroBarrio'):b;}
+function getNac(){const n=document.getElementById('selNac');return n.disabled?'':n.value==='otro_nac'?val('otroNac'):n.value;}
+
+// ── ENVÍO ─────────────────────────────────────────────────────
+async function fotoABase64(){const input=document.getElementById('fotoInput');if(!input||input.disabled||!input.files||!input.files[0])return null;const file=input.files[0];return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res({data:r.result.split(',')[1],mimeType:file.type,nombre:file.name});r.onerror=rej;r.readAsDataURL(file);});}
+
+async function enviar(){
+  limpiarErr();const isO=mode==='other';
+  if(!isO){if(!nsPg('abhijos')&&!getRadio('abhijos'))return mostrarErr(tr('eAbHijos'));if(!nsPg('orientb')&&getChecks('orientBuscadaGroup').length===0)return mostrarErr(tr('eOrientB'));if(!ns('dealbreakers')&&!val('dealbreakers'))return mostrarErr(tr('eDeal'));if(!ns('personaIdeal')&&!val('personaIdeal'))return mostrarErr(tr('eIdeal'));if(!nsPg('rango')&&(!val('edadDesde')||!val('edadHasta')))return mostrarErr(tr('eRango'));}
+  const btn=document.getElementById('btnEnviar');const msg=document.getElementById('sendingMsg');
+  btn.disabled=true;msg.style.display='inline';
+  let foto=null;try{foto=await fotoABase64();}catch(e){}
+  const datos={modo:mode,contactoNombre:val('contactoNombre')+' '+val('contactoApellido'),contactoWhatsapp:val('contactoWhatsapp'),relacion:getRadio('rel'),nombre:val('nombre')+' '+val('apellido'),edad:ns('edad')?'No sé':val('edad'),sexo:nsPg('sexo')?'No sé':getRadio('sexo'),estadoCivil:ns('estadoCivil')?'No sé':val('estadoCivil'),hijos:nsPg('hijos')?'No sé':getRadio('hijos'),hijosDetalle:val('hijosDetalle'),nacionalidad:getNac(),paisResidencia:getPaisRes(),regionProvincia:getRegion(),barrioZona:getBarrio(),altura:noseState['altura']?'No sé':alturaVal,foto:foto,orientacionReligiosa:nsPg('relig')?'No sé':getRadio('relig'),ascendencia:nsPg('asc')?'No sé':getRadio('asc'),kashrut:nsPg('kash')?'No sé':getRadio('kash'),shabat:nsPg('shab')?'No sé':getRadio('shab'),baalTeshuva:nsPg('bt')?'No sé':getRadio('bt'),converso:nsPg('conv')?'No sé':getRadio('conv'),antecedentesFamilia:nsPg('ant')?'No sé':getRadio('ant'),templo:ns('templo')?'No sé':val('templo'),estudioDeTora:nsPg('tora')?'No sé':getRadio('tora'),kipa:nsPg('kipa')?'No sé':getRadio('kipa'),tseniut:nsPg('tsen')?'No sé':getRadio('tsen'),cubrePelo:nsPg('pelo')?'No sé':getRadio('pelo'),profesion:ns('profesion')?'No sé':val('profesion'),primaria:ns('primaria')?'No sé':val('primaria'),secundaria:ns('secundaria')?'No sé':val('secundaria'),universidad:val('universidad'),carrera:val('carrera'),idiomas:nsPg('idiomas')?['No sé']:getChecks('idiomasGroup'),planAlia:nsPg('alia')?'No sé':getRadio('alia'),edadDesde:noseState['rango']?'No sé':val('edadDesde'),edadHasta:noseState['rango']?'No sé':val('edadHasta'),abiertoHijos:nsPg('abhijos')?'No sé':getRadio('abhijos'),orientacionBuscada:nsPg('orientb')?['No sé']:getChecks('orientBuscadaGroup'),dealbreakers:ns('dealbreakers')?'No sé':val('dealbreakers'),personaIdeal:ns('personaIdeal')?'No sé':val('personaIdeal'),notasExtra:ns('notasExtra')?'No sé':val('notasExtra')};
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(datos),mode:'no-cors'});
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sDone').classList.add('active');
+    document.querySelectorAll('.pd').forEach(d=>d.classList.add('done'));
+    window.scrollTo(0,0);
+    setText('doneTitle',tr('doneTitle')); setText('doneMsg',tr('doneMsg'));
+    const btns=document.getElementById('nextBtns');
+    const lbl=mode==='self'?tr('btnAnotarSelf'):tr('btnAnotarOther');
+    btns.innerHTML=`<button class="btn-next btn-anotar-otro" onclick="anotarOtro()">${lbl}</button><button class="btn-next btn-terminar" onclick="terminar()">${tr('btnTerminar')}</button>`;
+  }catch(e){mostrarErr('Error al enviar. Intentá de nuevo.');btn.disabled=false;msg.style.display='none';}
+}
+
+function anotarOtro(){
+  document.querySelectorAll('input:not([type=radio]):not([type=checkbox]),select,textarea').forEach(el=>{if(!['contactoNombre','contactoApellido','contactoWhatsapp'].includes(el.id)){el.value='';el.disabled=false;el.classList.remove('skipped');}});
+  document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(el=>el.checked=false);
+  document.querySelectorAll('.btn-nose').forEach(btn=>{btn.classList.remove('active');btn.textContent=tr('noSe');});
+  document.querySelectorAll('.pill-group').forEach(pg=>pg.classList.remove('skipped'));
+  ['hBajo','hMedio','hAlto'].forEach(id=>document.getElementById(id).classList.remove('sel','skipped'));
+  noseState={}; alturaVal=''; sexo=null;
+  document.getElementById('kipaWrap').style.display='none';
+  document.getElementById('tseniutWrap').style.display='none';
+  document.getElementById('peloWrap').style.display='none';
+  mode='other'; go(2,true);
+}
+function terminar(){setText('doneTitle',lang==='es'?'¡Todo listo!':'All done!');setText('doneMsg',lang==='es'?'Gracias por tu tiempo.':'Thank you for your time.');document.getElementById('nextBtns').innerHTML='';}
+
+initVideos();
+</script>
+</body>
+</html>
