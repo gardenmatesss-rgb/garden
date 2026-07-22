@@ -18,7 +18,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:var(--white);color:var(--navy-dark);overflow-x:hidden}
 
-/* ── LANDING ─-─ */
+/* ── LANDING ── */
 .landing{position:relative;height:100vh;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 .video-bg{position:absolute;inset:0;z-index:0}
 .video-bg video{width:100%;height:100%;object-fit:cover;display:none}
@@ -396,7 +396,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
 function initVideos(){
   const bg=document.getElementById('videoBg');
   const v=document.createElement('video');
-  v.src='https://drive.google.com/uc?export=download&id=1UAi1vVOrHwB_nG5U4izIPIL1nkTQXanT';
+  v.src='https://res.cloudinary.com/jh7ewgi4/video/upload/v1784669976/landing_video_kiavie.mp4';
   v.muted=true; v.playsInline=true; v.loop=true;
   v.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0';
   v.addEventListener('error',()=>showFallback());
