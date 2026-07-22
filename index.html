@@ -124,7 +124,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <span style="color:rgba(255,255,255,.3);font-size:11px">|</span>
       <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
     </div>
-    <div class="video-bg" id="videoBg"></div>
+    <div class="video-bg" id="videoBg">
+  <video autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover">
+    <source src="https://res.cloudinary.com/jh7ewgi4/video/upload/v1784669976/landing_video_kiavie.mp4" type="video/mp4">
+  </video>
+</div>
     <div class="video-overlay"></div>
     <div class="landing-content">
       <div class="logo-wrap">
@@ -394,29 +398,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
 <script>
 // ── VIDEO ─────────────────────────────────────────────────────
 function initVideos(){
-  const bg=document.getElementById('videoBg');
-  const v=document.createElement('video');
-  v.src='https://res.cloudinary.com/jh7ewgi4/video/upload/v1784669976/landing_video_kiavie.mp4';
-  v.muted=true;
-  v.setAttribute('muted','');
-  v.playsInline=true;
-  v.setAttribute('playsinline','');
-  v.autoplay=true;
-  v.setAttribute('autoplay','');
-  v.loop=true;
-  v.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity 1s';
-  v.addEventListener('error', ()=>showFallback());
-  v.addEventListener('canplay', ()=>{ v.style.opacity='1'; });
-  bg.appendChild(v);
-  // Intentar play de múltiples formas
-  const playPromise = v.play();
-  if(playPromise !== undefined){
-    playPromise.catch(()=>{
-      // Si falla, esperar interacción del usuario
-      document.addEventListener('click', ()=>v.play(), {once:true});
-      document.addEventListener('touchstart', ()=>v.play(), {once:true});
-    });
-  }
+  const v=document.querySelector('#videoBg video');
+  if(!v) return;
+  v.play().catch(()=>{
+    document.addEventListener('click',()=>v.play(),{once:true});
+  });
 }
 
 function showFallback(){
