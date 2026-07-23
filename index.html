@@ -146,7 +146,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
 <div class="form-wrap" id="formPage">
   <div class="form-header">
     <img src="https://raw.githubusercontent.com/gardenmatesss-rgb/garden/main/assets/1.png" alt="Garden Mates">
-    <button class="form-header-back" onclick="showLanding()">← Volver</button>
+    <button class="form-header-back" onclick="showLanding()">Volver</button>
   </div>
   <div class="form-inner">
     <div class="progbar" id="pb"></div>
@@ -174,7 +174,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
         <span class="lang-sep">|</span>
         <button class="lang-btn-form" id="fBtnEN" onclick="setLang('en')">English</button>
       </div>
-      <div class="btn-row"><button class="btn-p" id="btn0" onclick="go(1)">Continuar →</button></div>
+      <div class="btn-row"><button class="btn-p" id="btn0" onclick="go(1)">Continuar</button></div>
     </div>
 
     <!-- PASO 2 -->
@@ -183,10 +183,10 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <h2 id="h1">Tu contacto</h2>
       <p class="step-desc" id="d1">Para avisarte si encontramos una buena compatibilidad.</p>
       <div class="g2">
-        <div class="field"><label class="fl" id="lCNombre">Nombre <span class="req">*</span></label><input type="text" id="contactoNombre" placeholder="Nombre"></div>
-        <div class="field"><label class="fl" id="lCApellido">Apellido <span class="req">*</span></label><input type="text" id="contactoApellido" placeholder="Apellido"></div>
+        <div class="field"><label class="fl" id="lCNombre">Nombre <span class="req">*</span></label><input type="text" id="contactoNombre" data-ph-es="Nombre" data-ph-en="First name" placeholder="Nombre"></div>
+        <div class="field"><label class="fl" id="lCApellido">Apellido <span class="req">*</span></label><input type="text" id="contactoApellido" data-ph-es="Apellido" data-ph-en="Last name" placeholder="Apellido"></div>
       </div>
-      <div class="field"><label class="fl" id="lCWA">WhatsApp <span class="req">*</span></label><input type="tel" id="contactoWhatsapp" placeholder="+54 11..."></div>
+      <div class="field"><label class="fl" id="lCWA">WhatsApp <span class="req">*</span></label><input type="tel" id="contactoWhatsapp" data-ph-es="+54 11..." data-ph-en="+1 212..." placeholder="+54 11..."></div>
       <div class="field" id="relacionWrap" style="display:none">
         <label class="fl" id="lRelacion">Tu relación con esa persona</label>
         <div class="pill-group">
@@ -197,8 +197,8 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
         </div>
       </div>
       <div class="btn-row">
-        <button class="btn-s" id="back1" onclick="go(0)">← Volver</button>
-        <button class="btn-p" id="next1" onclick="validar(2)">Continuar →</button>
+        <button class="btn-s" id="back1" onclick="go(0)">Volver</button>
+        <button class="btn-p" id="next1" onclick="validar(2)">Continuar</button>
       </div>
     </div>
 
@@ -208,14 +208,14 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <h2 id="h2">Tu información</h2>
       <p class="step-desc" id="d2"></p>
       <div class="g2">
-        <div class="field"><label class="fl" id="lNombre">Nombre <span class="req">*</span></label><input type="text" id="nombre" placeholder="Nombre"></div>
-        <div class="field"><label class="fl" id="lApellido">Apellido <span class="req">*</span></label><input type="text" id="apellido" placeholder="Apellido"></div>
+        <div class="field"><label class="fl" id="lNombre">Nombre <span class="req">*</span></label><input type="text" id="nombre" data-ph-es="Nombre" data-ph-en="First name" placeholder="Nombre"></div>
+        <div class="field"><label class="fl" id="lApellido">Apellido <span class="req">*</span></label><input type="text" id="apellido" data-ph-es="Apellido" data-ph-en="Last name" placeholder="Apellido"></div>
       </div>
       <div class="g2">
         <div class="field">
           <label class="fl" id="lEdad">Edad <span class="req">*</span></label>
           <div class="field-row">
-            <div><input type="number" id="edad" min="18" max="99" placeholder="ej. 28"></div>
+            <div><input type="number" id="edad" data-ph-es="ej. 28" data-ph-en="e.g. 28" placeholder="ej. 28" min="18" max="99"></div>
             <button class="btn-nose" id="nose-edad" onclick="toggleNose('edad')" style="display:none">No sé</button>
           </div>
         </div>
@@ -246,7 +246,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
                 <label><input type="radio" name="hijos" value="No" onchange="showCond('hijosD',false)"> <span id="lblNo">No</span></label>
                 <label><input type="radio" name="hijos" value="Sí" onchange="showCond('hijosD',true)"> <span id="lblSi">Sí</span></label>
               </div>
-              <div class="cond" id="hijosD"><input type="text" id="hijosDetalle" placeholder="Cuántos y edades"></div>
+              <div class="cond" id="hijosD"><input type="text" id="hijosDetalle" data-ph-es="Cuántos y edades" data-ph-en="How many and ages" placeholder="Cuántos y edades"></div>
             </div>
             <button class="btn-nose" id="nose-hijos" onclick="toggleNosePg('pg-hijos','hijos')" style="display:none">No sé</button>
           </div>
@@ -258,7 +258,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
           <div class="field-row">
             <div>
               <select id="selNac"><option value="">— País —</option><option>Argentina</option><option>Israel</option><option>Estados Unidos</option><option>Brasil</option><option>Uruguay</option><option>Chile</option><option>México</option><option>Colombia</option><option>España</option><option>Francia</option><option>Alemania</option><option>Italia</option><option>Reino Unido</option><option>Canadá</option><option>Australia</option><option>Sudáfrica</option><option>Venezuela</option><option>Perú</option><option>Bolivia</option><option>Paraguay</option><option>Ecuador</option><option>Costa Rica</option><option>Panamá</option><option>Guatemala</option><option>Cuba</option><option>República Dominicana</option><option>Holanda</option><option>Bélgica</option><option>Suiza</option><option>Austria</option><option>Portugal</option><option>Hungría</option><option>Polonia</option><option>Rusia</option><option>Ucrania</option><option>Turquía</option><option>Marruecos</option><option>Irán</option><option value="otro_nac">Otro</option></select>
-              <div id="otroNacWrap" style="display:none;margin-top:6px"><input type="text" id="otroNac" placeholder="País"></div>
+              <div id="otroNacWrap" style="display:none;margin-top:6px"><input type="text" id="otroNac" data-ph-es="País" data-ph-en="Country" placeholder="País"></div>
             </div>
             <button class="btn-nose" id="nose-nac" onclick="toggleNose('selNac')" style="display:none">No sé</button>
           </div>
@@ -271,11 +271,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
           </div>
         </div>
       </div>
-      <div class="field" id="otroResWrap" style="display:none"><label class="fl" id="lOtroPais">¿En qué país?</label><input type="text" id="otroRes" placeholder="País"></div>
+      <div class="field" id="otroResWrap" style="display:none"><label class="fl" id="lOtroPais">¿En qué país?</label><input type="text" id="otroRes" data-ph-es="País" data-ph-en="Country" placeholder="País"></div>
       <div class="field" id="regionWrap" style="display:none"><label class="fl" id="regionLabel">Provincia</label><select id="selRegion" onchange="onRegionChange(this.value)"></select></div>
-      <div class="field" id="otroRegWrap" style="display:none"><label class="fl" id="otroRegLabel">¿Cuál?</label><input type="text" id="otroReg"></div>
+      <div class="field" id="otroRegWrap" style="display:none"><label class="fl" id="otroRegLabel">¿Cuál?</label><input type="text" id="otroReg" data-ph-es="Ciudad / localidad" data-ph-en="City / town" placeholder="Ciudad / localidad"></div>
       <div class="field" id="barrioWrap" style="display:none"><label class="fl" id="barrioLabel">Barrio</label><select id="selBarrio" onchange="onBarrioChange(this.value)"></select></div>
-      <div class="field" id="otroBarrioWrap" style="display:none"><label class="fl">¿Cuál?</label><input type="text" id="otroBarrio"></div>
+      <div class="field" id="otroBarrioWrap" style="display:none"><label class="fl">¿Cuál?</label><input type="text" id="otroBarrio" data-ph-es="Barrio" data-ph-en="Neighborhood" placeholder="Barrio"></div>
       <div class="sec-title-form" id="secAltura">Altura</div>
       <div class="field-row" style="align-items:center;gap:12px">
         <div class="height-cards">
@@ -300,8 +300,8 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
         <input type="file" id="fotoInput" accept="image/*">
       </div>
       <div class="btn-row">
-        <button class="btn-s" id="back2" onclick="go(1)">← Volver</button>
-        <button class="btn-p" id="next2" onclick="validar(3)">Continuar →</button>
+        <button class="btn-s" id="back2" onclick="go(1)">Volver</button>
+        <button class="btn-p" id="next2" onclick="validar(3)">Continuar</button>
       </div>
     </div>
 
@@ -310,6 +310,17 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <div class="step-label" id="l3">Paso 4 de 6</div>
       <h2 id="h3">Observancia y vida judía</h2>
       <p class="step-desc" id="d3"></p>
+      <div class="field">
+        <label class="fl" id="lAbuelaM">¿Tu abuela materna es o fue judía? <span class="req">*</span></label>
+        <div class="field-row">
+          <div><div class="pill-group" id="pg-abuelam">
+            <label><input type="radio" name="abuelam" value="Sí"> <span id="lblAbuelaS">Sí</span></label>
+            <label><input type="radio" name="abuelam" value="No"> <span id="lblAbuelaNo">No</span></label>
+            <label><input type="radio" name="abuelam" value="No sé"> <span id="lblAbuelaNS">No estoy seguro/a</span></label>
+          </div></div>
+          <button class="btn-nose" id="nose-abuelam" onclick="toggleNosePg('pg-abuelam','abuelam')" style="display:none">No sé</button>
+        </div>
+      </div>
       <div class="field">
         <label class="fl" id="lRelig">Orientación religiosa <span class="req">*</span></label>
         <div class="field-row">
@@ -337,12 +348,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       </div>
       <div class="field"><label class="fl" id="lConv">Converso/a <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-conv"><label><input type="radio" name="conv" value="Sí"> Sí</label><label><input type="radio" name="conv" value="No"> No</label></div></div><button class="btn-nose" id="nose-conv" onclick="toggleNosePg('pg-conv','conv')" style="display:none">No sé</button></div></div>
       <div class="field"><label class="fl" id="lAnt">Antecedentes religiosos de la familia <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-ant"><label><input type="radio" name="ant" value="Simplemente judío/a"> Simplemente judío/a</label><label><input type="radio" name="ant" value="Espiritual no religioso"> Espiritual no religioso</label><label><input type="radio" name="ant" value="Tradicionalista"> Tradicionalista</label><label><input type="radio" name="ant" value="Ortodoxo moderno"> Ortodoxo moderno</label><label><input type="radio" name="ant" value="Ortodoxo"> Ortodoxo</label><label><input type="radio" name="ant" value="Jasídico"> Jasídico</label><label><input type="radio" name="ant" value="Jabad"> Jabad</label><label><input type="radio" name="ant" value="Dati leumi"> Dati leumi</label><label><input type="radio" name="ant" value="Jaredí"> Jaredí</label></div></div><button class="btn-nose" id="nose-ant" onclick="toggleNosePg('pg-ant','ant')" style="display:none">No sé</button></div></div>
-      <div class="field"><label class="fl" id="lTemplo">Templo al que concurre <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="templo" placeholder="Nombre del templo"></div><button class="btn-nose" id="nose-templo" onclick="toggleNose('templo')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lTemplo">Templo al que concurre <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="templo" data-ph-es="Nombre del templo" data-ph-en="Synagogue name" placeholder="Nombre del templo"></div><button class="btn-nose" id="nose-templo" onclick="toggleNose('templo')" style="display:none">No sé</button></div></div>
       <div class="field"><label class="fl" id="lTora">Estudio de Torá <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-tora"><label><input type="radio" name="tora" value="Nunca"> Nunca</label><label><input type="radio" name="tora" value="A veces"> A veces</label><label><input type="radio" name="tora" value="Una vez a la semana"> Una vez a la semana</label><label><input type="radio" name="tora" value="Varias veces a la semana"> Varias veces a la semana</label></div></div><button class="btn-nose" id="nose-tora" onclick="toggleNosePg('pg-tora','tora')" style="display:none">No sé</button></div></div>
       <div id="kipaWrap" class="field" style="display:none"><label class="fl" id="lKipa">¿Usa kipá habitualmente? <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-kipa"><label><input type="radio" name="kipa" value="Sí, siempre"> Sí, siempre</label><label><input type="radio" name="kipa" value="Solo en el templo / ocasiones especiales"> Solo en el templo</label><label><input type="radio" name="kipa" value="No"> No</label></div></div><button class="btn-nose" id="nose-kipa" onclick="toggleNosePg('pg-kipa','kipa')" style="display:none">No sé</button></div></div>
       <div id="tseniutWrap" class="field" style="display:none"><label class="fl" id="lTsen">Tseniut <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-tsen"><label><input type="radio" name="tsen" value="Sí"> Sí</label><label><input type="radio" name="tsen" value="Parcial"> Parcial</label><label><input type="radio" name="tsen" value="No"> No</label></div></div><button class="btn-nose" id="nose-tsen" onclick="toggleNosePg('pg-tsen','tsen')" style="display:none">No sé</button></div></div>
       <div id="peloWrap" class="field" style="display:none"><label class="fl" id="lPelo">¿Piensa cubrirse el pelo de casada? <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-pelo"><label><input type="radio" name="pelo" value="Sí"> Sí</label><label><input type="radio" name="pelo" value="No"> No</label><label><input type="radio" name="pelo" value="Parcialmente"> Parcialmente</label><label><input type="radio" name="pelo" value="Posiblemente"> Posiblemente</label></div></div><button class="btn-nose" id="nose-pelo" onclick="toggleNosePg('pg-pelo','pelo')" style="display:none">No sé</button></div></div>
-      <div class="btn-row"><button class="btn-s" id="back3" onclick="go(2)">← Volver</button><button class="btn-p" id="next3" onclick="validar(4)">Continuar →</button></div>
+      <div class="btn-row"><button class="btn-s" id="back3" onclick="go(2)">Volver</button><button class="btn-p" id="next3" onclick="validar(4)">Continuar</button></div>
     </div>
 
     <!-- PASO 5 -->
@@ -350,15 +361,15 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <div class="step-label" id="l4">Paso 5 de 6</div>
       <h2 id="h4">Educación e idiomas</h2>
       <p class="step-desc" id="d4"></p>
-      <div class="field"><label class="fl" id="lProf">Profesión / ocupación <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="profesion" placeholder="ej. Médica, contador..."></div><button class="btn-nose" id="nose-prof" onclick="toggleNose('profesion')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lProf">Profesión / ocupación <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="profesion" data-ph-es="ej. Médica, contador..." data-ph-en="e.g. Doctor, accountant..." placeholder="ej. Médica, contador..."></div><button class="btn-nose" id="nose-prof" onclick="toggleNose('profesion')" style="display:none">No sé</button></div></div>
       <div class="g2">
-        <div class="field"><label class="fl" id="lPri">Escuela primaria <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="primaria" placeholder="Institución"></div><button class="btn-nose" id="nose-pri" onclick="toggleNose('primaria')" style="display:none">No sé</button></div></div>
-        <div class="field"><label class="fl" id="lSec">Escuela secundaria <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="secundaria" placeholder="Institución"></div><button class="btn-nose" id="nose-sec" onclick="toggleNose('secundaria')" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lPri">Escuela primaria <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="primaria" data-ph-es="Institución" data-ph-en="School name" placeholder="Institución"></div><button class="btn-nose" id="nose-pri" onclick="toggleNose('primaria')" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lSec">Escuela secundaria <span class="req">*</span></label><div class="field-row"><div style="flex:1"><input type="text" id="secundaria" data-ph-es="Institución" data-ph-en="School name" placeholder="Institución"></div><button class="btn-nose" id="nose-sec" onclick="toggleNose('secundaria')" style="display:none">No sé</button></div></div>
       </div>
-      <div class="field"><label class="fl" id="lUniv">Universidad / terciario <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-univ"><label><input type="radio" name="univ" value="si" onchange="showCond('univD',true)"> Sí estudió</label><label><input type="radio" name="univ" value="no" onchange="showCond('univD',false)"> No aplica</label></div><div class="cond" id="univD"><div class="g2"><input type="text" id="universidad" placeholder="Institución"><input type="text" id="carrera" placeholder="Carrera"></div></div></div><button class="btn-nose" id="nose-univ" onclick="toggleNosePg('pg-univ','univ')" style="display:none">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lUniv">Universidad / terciario <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-univ"><label><input type="radio" name="univ" value="si" onchange="showCond('univD',true)"> Sí estudió</label><label><input type="radio" name="univ" value="no" onchange="showCond('univD',false)"> No aplica</label></div><div class="cond" id="univD"><div class="g2"><input type="text" id="universidad" data-ph-es="Institución" data-ph-en="University name" placeholder="Institución"><input type="text" id="carrera" data-ph-es="Carrera" data-ph-en="Degree / field" placeholder="Carrera"></div></div></div><button class="btn-nose" id="nose-univ" onclick="toggleNosePg('pg-univ','univ')" style="display:none">No sé</button></div></div>
       <div class="field"><label class="fl" id="lIdiomas">Idiomas que habla <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="idiomasGroup"><label><input type="checkbox" value="Español"> Español</label><label><input type="checkbox" value="Hebreo"> Hebreo</label><label><input type="checkbox" value="Inglés"> Inglés</label><label><input type="checkbox" value="Francés"> Francés</label><label><input type="checkbox" value="Portugués"> Portugués</label><label><input type="checkbox" value="Italiano"> Italiano</label><label><input type="checkbox" value="Ídish"> Ídish</label><label><input type="checkbox" value="Otro"> Otro</label></div></div><button class="btn-nose" id="nose-idiomas" onclick="toggleNosePg('idiomasGroup','idiomas')" style="display:none">No sé</button></div></div>
       <div class="field"><label class="fl" id="lAlia">Plan de aliá <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-alia"><label><input type="radio" name="alia" value="Sí"> Sí</label><label><input type="radio" name="alia" value="No"> No</label><label><input type="radio" name="alia" value="Quizás"> Quizás</label></div></div><button class="btn-nose" id="nose-alia" onclick="toggleNosePg('pg-alia','alia')" style="display:none">No sé</button></div></div>
-      <div class="btn-row"><button class="btn-s" id="back4" onclick="go(3)">← Volver</button><button class="btn-p" id="next4" onclick="validar(5)">Continuar →</button></div>
+      <div class="btn-row"><button class="btn-s" id="back4" onclick="go(3)">Volver</button><button class="btn-p" id="next4" onclick="validar(5)">Continuar</button></div>
     </div>
 
     <!-- PASO 6 -->
@@ -367,16 +378,16 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <h2 id="h5">¿Qué está buscando?</h2>
       <p class="step-desc" id="d5"></p>
       <div class="g2">
-        <div class="field"><label class="fl" id="lRango">Rango de edad <span class="req">*</span></label><div class="field-row"><div class="g2" style="flex:1"><input type="number" id="edadDesde" placeholder="Desde" min="18" max="99"><input type="number" id="edadHasta" placeholder="Hasta" min="18" max="99"></div><button class="btn-nose" id="nose-rango" onclick="toggleNoseRango()" style="display:none">No sé</button></div></div>
+        <div class="field"><label class="fl" id="lRango">Rango de edad <span class="req">*</span></label><div class="field-row"><div class="g2" style="flex:1"><input type="number" id="edadDesde" data-ph-es="Desde" data-ph-en="From" placeholder="Desde" min="18" max="99"><input type="number" id="edadHasta" data-ph-es="Hasta" data-ph-en="To" placeholder="Hasta" min="18" max="99"></div><button class="btn-nose" id="nose-rango" onclick="toggleNoseRango()" style="display:none">No sé</button></div></div>
         <div class="field"><label class="fl" id="lAbHijos">¿Abierto/a a alguien con hijos? <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="pg-abhijos"><label><input type="radio" name="abhijos" value="Sí"> Sí</label><label><input type="radio" name="abhijos" value="No"> No</label><label><input type="radio" name="abhijos" value="Depende"> Depende</label></div></div><button class="btn-nose" id="nose-abhijos" onclick="toggleNosePg('pg-abhijos','abhijos')" style="display:none">No sé</button></div></div>
       </div>
       <div class="field"><label class="fl" id="lOrientB">Orientación religiosa buscada <span class="req">*</span></label><div class="field-row"><div><div class="pill-group" id="orientBuscadaGroup"><label><input type="checkbox" value="Simplemente judío/a"> Simplemente judío/a</label><label><input type="checkbox" value="Espiritual no religioso"> Espiritual no religioso</label><label><input type="checkbox" value="Tradicionalista"> Tradicionalista</label><label><input type="checkbox" value="Ortodoxo moderno"> Ortodoxo moderno</label><label><input type="checkbox" value="Ortodoxo"> Ortodoxo</label><label><input type="checkbox" value="Jasídico"> Jasídico</label><label><input type="checkbox" value="Jabad"> Jabad</label><label><input type="checkbox" value="Dati leumi"> Dati leumi</label><label><input type="checkbox" value="Jaredí"> Jaredí</label></div></div><button class="btn-nose" id="nose-orientb" onclick="toggleNosePg('orientBuscadaGroup','orientb')" style="display:none">No sé</button></div></div>
-      <div class="field"><label class="fl" id="lDeal">Dealbreakers <span class="req">*</span></label><div class="field-row"><div style="flex:1"><textarea id="dealbreakers" placeholder="ej. No fumador/a, que quiera vivir en Israel..."></textarea></div><button class="btn-nose" id="nose-deal" onclick="toggleNose('dealbreakers')" style="display:none;margin-top:0">No sé</button></div></div>
-      <div class="field"><label class="fl" id="lIdeal">¿Cómo describirías a la persona ideal? <span class="req">*</span></label><div class="field-row"><div style="flex:1"><textarea id="personaIdeal" placeholder="Qué valores busca, qué tipo de relación imagina..."></textarea></div><button class="btn-nose" id="nose-ideal" onclick="toggleNose('personaIdeal')" style="display:none;margin-top:0">No sé</button></div></div>
-      <div class="field"><label class="fl" id="lNotas">Algo más para agregar</label><div class="field-row"><div style="flex:1"><textarea id="notasExtra" placeholder="Cualquier información adicional..."></textarea></div><button class="btn-nose" id="nose-notas" onclick="toggleNose('notasExtra')" style="display:none;margin-top:0">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lDeal">Dealbreakers <span class="req">*</span></label><div class="field-row"><div style="flex:1"><textarea id="dealbreakers" data-ph-es="ej. No fumador/a, que quiera vivir en Israel..." data-ph-en="e.g. Non-smoker, wants to live in Israel..." placeholder="ej. No fumador/a, que quiera vivir en Israel..."></textarea></div><button class="btn-nose" id="nose-deal" onclick="toggleNose('dealbreakers')" style="display:none;margin-top:0">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lIdeal">¿Cómo describirías a la persona ideal? <span class="req">*</span></label><div class="field-row"><div style="flex:1"><textarea id="personaIdeal" data-ph-es="Qué valores busca, qué tipo de relación imagina..." data-ph-en="Values, relationship goals..." placeholder="Qué valores busca, qué tipo de relación imagina..."></textarea></div><button class="btn-nose" id="nose-ideal" onclick="toggleNose('personaIdeal')" style="display:none;margin-top:0">No sé</button></div></div>
+      <div class="field"><label class="fl" id="lNotas">Algo más para agregar</label><div class="field-row"><div style="flex:1"><textarea id="notasExtra" data-ph-es="Cualquier información adicional..." data-ph-en="Any additional information..." placeholder="Cualquier información adicional..."></textarea></div><button class="btn-nose" id="nose-notas" onclick="toggleNose('notasExtra')" style="display:none;margin-top:0">No sé</button></div></div>
       <div class="btn-row">
-        <button class="btn-s" id="back5" onclick="go(4)">← Volver</button>
-        <button class="btn-p" id="btnEnviar" onclick="enviar()">Enviar registro ✓</button>
+        <button class="btn-s" id="back5" onclick="go(4)">Volver</button>
+        <button class="btn-p" id="btnEnviar" onclick="enviar()">Enviar registro</button>
         <span class="sending" id="sendingMsg">Enviando...</span>
       </div>
     </div>
@@ -384,7 +395,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
     <!-- DONE -->
     <div class="card step" id="sDone">
       <div class="success-wrap">
-        <div class="success-ico">✅</div>
+        
         <h2 id="doneTitle" style="margin-bottom:8px;font-family:'Cormorant Garamond',serif;font-size:26px">¡Registro enviado!</h2>
         <p id="doneMsg" style="font-size:14px;color:#666;max-width:360px;margin:0 auto;line-height:1.7">El perfil quedó guardado. Si encontramos una compatibilidad, nos comunicamos de manera discreta.</p>
         <div class="next-btns" id="nextBtns"></div>
@@ -431,7 +442,7 @@ function showLanding(){
 // ── TRADUCCIONES ──────────────────────────────────────────────
 const TX={
   es:{
-    noSe:'No sé',siSe:'Sí sé',continuar:'Continuar →',volver:'← Volver',paso:'Paso',de:'de',
+    noSe:'No sé',siSe:'Sí sé',continuar:'Continuar',volver:'Volver',paso:'Paso',de:'de',
     ltTagline:'Seamos socios en su unión',
     ltSub:'Conectamos personas compatibles para construir relaciones reales y duraderas.',
     ltBtn:'Comenzar',
@@ -444,7 +455,7 @@ const TX={
     h3:'Observancia y vida judía',d3other:'Usá "No sé" si no tenés un dato.',
     h4:'Educación e idiomas',d4other:'Usá "No sé" si no tenés un dato.',
     h5:'¿Qué está buscando?',d5other:'Usá "No sé" si no tenés un dato.',
-    enviar:'Enviar registro ✓',enviando:'Enviando...',
+    enviar:'Enviar registro',enviando:'Enviando...',
     doneTitle:'¡Registro enviado!',doneMsg:'El perfil quedó guardado. Si encontramos una compatibilidad, nos comunicamos de manera discreta.',
     btnAnotarSelf:'Anotar a alguien más',btnAnotarOther:'Anotar a otra persona',btnTerminar:'Listo, ya terminé',
     eNombre:'Por favor ingresá tu nombre.',eApellido:'Por favor ingresá tu apellido.',eWA:'Por favor ingresá tu WhatsApp.',
@@ -460,8 +471,8 @@ const TX={
     ePri:'Por favor ingresá la escuela primaria.',eSec:'Por favor ingresá la escuela secundaria.',eProf:'Por favor ingresá la profesión.',
   },
   en:{
-    noSe:"Don't know",siSe:'I know',continuar:'Continue →',volver:'← Back',paso:'Step',de:'of',
-    ltTagline:'Partners in lasting union',
+    noSe:"Don't know",siSe:'I know',continuar:'Continue',volver:'Back',paso:'Step',de:'of',
+    ltTagline:'Partners in their union',
     ltSub:'We connect compatible people to build real and lasting relationships.',
     ltBtn:'Start',
     h0:'How will you use this form?',d0:'All information is confidential.',
@@ -473,7 +484,7 @@ const TX={
     h3:'Jewish observance & lifestyle',d3other:"Use \"Don't know\" if you're unsure.",
     h4:'Education & languages',d4other:"Use \"Don't know\" if you're unsure.",
     h5:"What are they looking for?",d5other:"Use \"Don't know\" if you're unsure.",
-    enviar:'Submit ✓',enviando:'Sending...',
+    enviar:'Submit',enviando:'Sending...',
     doneTitle:'Registration submitted!',doneMsg:"The profile has been saved. If we find a match, we'll reach out discreetly.",
     btnAnotarSelf:'Register someone else',btnAnotarOther:'Register another person',btnTerminar:'Done',
     eNombre:'Please enter your first name.',eApellido:'Please enter your last name.',eWA:'Please enter your WhatsApp.',
@@ -521,6 +532,42 @@ function applyLang(){
   document.querySelectorAll('.btn-nose:not(.active)').forEach(b=>b.textContent=tr('noSe'));
   document.querySelectorAll('.btn-nose.active').forEach(b=>b.textContent=tr('siSe'));
   setText('doneTitle',tr('doneTitle'));setText('doneMsg',tr('doneMsg'));
+  // Actualizar placeholders
+  document.querySelectorAll('[data-ph-es]').forEach(el=>{
+    el.placeholder = lang==='es' ? el.getAttribute('data-ph-es') : el.getAttribute('data-ph-en');
+  });
+  // Actualizar labels del form
+  const labelsES = {
+    lCNombre:'Nombre',lCApellido:'Apellido',lCWA:'WhatsApp',lRelacion:'Tu relación con esa persona',
+    lNombre:'Nombre',lApellido:'Apellido',lEdad:'Edad',lSexo:'Sexo',lEstado:'Estado civil',
+    lHijos:'Hijos',lNac:'Nacionalidad',lPais:'País de residencia',lFoto:'Foto',
+    lAbuelaM:'¿Tu abuela materna es o fue judía?',lRelig:'Orientación religiosa',lAsc:'Ascendencia',lKash:'Kashrut',lShab:'Shabat',
+    lBT:'Baal teshuvá',lConv:'Converso/a',lAnt:'Antecedentes religiosos de la familia',
+    lTemplo:'Templo al que concurre',lTora:'Estudio de Torá',lKipa:'¿Usa kipá habitualmente?',
+    lTsen:'Tseniut',lPelo:'¿Piensa cubrirse el pelo de casada?',lProf:'Profesión / ocupación',
+    lPri:'Escuela primaria',lSec:'Escuela secundaria',lUniv:'Universidad / terciario',
+    lIdiomas:'Idiomas que habla',lAlia:'Plan de aliá',lRango:'Rango de edad buscado',
+    lAbHijos:'¿Abierto/a a alguien con hijos?',lOrientB:'Orientación religiosa buscada',
+    lDeal:'Dealbreakers',lIdeal:'¿Cómo describirías a la persona ideal?',lNotas:'Algo más para agregar'
+  };
+  const labelsEN = {
+    lCNombre:'First name',lCApellido:'Last name',lCWA:'WhatsApp',lRelacion:'Your relationship with this person',
+    lNombre:'First name',lApellido:'Last name',lEdad:'Age',lSexo:'Gender',lEstado:'Marital status',
+    lHijos:'Children',lNac:'Nationality',lPais:'Country of residence',lFoto:'Photo',
+    lAbuelaM:'Is or was your maternal grandmother Jewish?',lRelig:'Religious orientation',lAsc:'Background',lKash:'Kashrut',lShab:'Shabbat',
+    lBT:'Baal teshuvah',lConv:'Convert',lAnt:"Family's religious background",
+    lTemplo:'Synagogue',lTora:'Torah study',lKipa:'Wears a kippah?',
+    lTsen:'Tzniut',lPelo:'Plans to cover hair after marriage?',lProf:'Profession / occupation',
+    lPri:'Primary school',lSec:'High school',lUniv:'University / college',
+    lIdiomas:'Languages spoken',lAlia:'Aliyah plans',lRango:'Desired age range',
+    lAbHijos:'Open to someone with children?',lOrientB:'Desired religious orientation',
+    lDeal:'Dealbreakers',lIdeal:'Describe the ideal person',lNotas:'Anything else to add'
+  };
+  const labels = lang==='es' ? labelsES : labelsEN;
+  Object.entries(labels).forEach(([id,text])=>{
+    const el=document.getElementById(id);
+    if(el){ const req=el.querySelector('.req'); el.textContent=text+' '; if(req)el.appendChild(req); }
+  });
 }
 function setText(id,text){const el=document.getElementById(id);if(el)el.textContent=text;}
 
@@ -579,7 +626,8 @@ function validar(n){
   limpiarErr();const isO=mode==='other';
   if(n===2){if(!val('contactoNombre'))return mostrarErr(tr('eNombre'));if(!val('contactoApellido'))return mostrarErr(tr('eApellido'));if(!val('contactoWhatsapp'))return mostrarErr(tr('eWA'));}
   if(n===3){if(!val('nombre'))return mostrarErr(tr('eNombreP'));if(!val('apellido'))return mostrarErr(tr('eApellidoP'));if(!nsPg('sexo')&&!getRadio('sexo'))return mostrarErr(tr('eSexo'));if(!ns('edad')&&!val('edad'))return mostrarErr(tr('eEdad'));if(!ns('estadoCivil')&&!val('estadoCivil'))return mostrarErr(tr('eEstado'));const foto=document.getElementById('fotoInput');if(!foto.files||!foto.files[0])return mostrarErr(tr('eFoto'));}
-  if(n===4&&!isO){if(!nsPg('relig')&&!getRadio('relig'))return mostrarErr(tr('eRelig'));if(!nsPg('asc')&&!getRadio('asc'))return mostrarErr(tr('eAsc'));if(!nsPg('kash')&&!getRadio('kash'))return mostrarErr(tr('eKash'));if(!nsPg('shab')&&!getRadio('shab'))return mostrarErr(tr('eShab'));if(!nsPg('bt')&&!getRadio('bt'))return mostrarErr(tr('eBT'));if(!nsPg('conv')&&!getRadio('conv'))return mostrarErr(tr('eConv'));if(!nsPg('ant')&&!getRadio('ant'))return mostrarErr(tr('eAnt'));if(!nsPg('tora')&&!getRadio('tora'))return mostrarErr(tr('eTora'));}
+  if(n===4&&!isO){if(!nsPg('abuelam')&&!getRadio('abuelam'))return mostrarErr(lang==='es'?'Por favor respondé la pregunta sobre tu abuela materna.':'Please answer the question about your maternal grandmother.');
+    if(!nsPg('relig')&&!getRadio('relig'))return mostrarErr(tr('eRelig'));if(!nsPg('asc')&&!getRadio('asc'))return mostrarErr(tr('eAsc'));if(!nsPg('kash')&&!getRadio('kash'))return mostrarErr(tr('eKash'));if(!nsPg('shab')&&!getRadio('shab'))return mostrarErr(tr('eShab'));if(!nsPg('bt')&&!getRadio('bt'))return mostrarErr(tr('eBT'));if(!nsPg('conv')&&!getRadio('conv'))return mostrarErr(tr('eConv'));if(!nsPg('ant')&&!getRadio('ant'))return mostrarErr(tr('eAnt'));if(!nsPg('tora')&&!getRadio('tora'))return mostrarErr(tr('eTora'));}
   if(n===5&&!isO){if(!ns('profesion')&&!val('profesion'))return mostrarErr(tr('eProf'));if(!ns('primaria')&&!val('primaria'))return mostrarErr(tr('ePri'));if(!ns('secundaria')&&!val('secundaria'))return mostrarErr(tr('eSec'));if(!nsPg('univ')&&!getRadio('univ'))return mostrarErr(tr('eUniv'));if(!nsPg('idiomas')&&getChecks('idiomasGroup').length===0)return mostrarErr(tr('eIdiomas'));if(!nsPg('alia')&&!getRadio('alia'))return mostrarErr(tr('eAlia'));}
   go(n);
 }
@@ -610,7 +658,7 @@ async function enviar(){
   const btn=document.getElementById('btnEnviar');const msg=document.getElementById('sendingMsg');
   btn.disabled=true;msg.style.display='inline';
   let foto=null;try{foto=await fotoABase64();}catch(e){}
-  const datos={modo:mode,contactoNombre:val('contactoNombre')+' '+val('contactoApellido'),contactoWhatsapp:val('contactoWhatsapp'),relacion:getRadio('rel'),nombre:val('nombre')+' '+val('apellido'),edad:ns('edad')?'No sé':val('edad'),sexo:nsPg('sexo')?'No sé':getRadio('sexo'),estadoCivil:ns('estadoCivil')?'No sé':val('estadoCivil'),hijos:nsPg('hijos')?'No sé':getRadio('hijos'),hijosDetalle:val('hijosDetalle'),nacionalidad:getNac(),paisResidencia:getPaisRes(),regionProvincia:getRegion(),barrioZona:getBarrio(),altura:noseState['altura']?'No sé':alturaVal,foto:foto,orientacionReligiosa:nsPg('relig')?'No sé':getRadio('relig'),ascendencia:nsPg('asc')?'No sé':getRadio('asc'),kashrut:nsPg('kash')?'No sé':getRadio('kash'),shabat:nsPg('shab')?'No sé':getRadio('shab'),baalTeshuva:nsPg('bt')?'No sé':getRadio('bt'),converso:nsPg('conv')?'No sé':getRadio('conv'),antecedentesFamilia:nsPg('ant')?'No sé':getRadio('ant'),templo:ns('templo')?'No sé':val('templo'),estudioDeTora:nsPg('tora')?'No sé':getRadio('tora'),kipa:nsPg('kipa')?'No sé':getRadio('kipa'),tseniut:nsPg('tsen')?'No sé':getRadio('tsen'),cubrePelo:nsPg('pelo')?'No sé':getRadio('pelo'),profesion:ns('profesion')?'No sé':val('profesion'),primaria:ns('primaria')?'No sé':val('primaria'),secundaria:ns('secundaria')?'No sé':val('secundaria'),universidad:val('universidad'),carrera:val('carrera'),idiomas:nsPg('idiomas')?['No sé']:getChecks('idiomasGroup'),planAlia:nsPg('alia')?'No sé':getRadio('alia'),edadDesde:noseState['rango']?'No sé':val('edadDesde'),edadHasta:noseState['rango']?'No sé':val('edadHasta'),abiertoHijos:nsPg('abhijos')?'No sé':getRadio('abhijos'),orientacionBuscada:nsPg('orientb')?['No sé']:getChecks('orientBuscadaGroup'),dealbreakers:ns('dealbreakers')?'No sé':val('dealbreakers'),personaIdeal:ns('personaIdeal')?'No sé':val('personaIdeal'),notasExtra:ns('notasExtra')?'No sé':val('notasExtra')};
+  const datos={modo:mode,contactoNombre:val('contactoNombre')+' '+val('contactoApellido'),contactoWhatsapp:val('contactoWhatsapp'),relacion:getRadio('rel'),nombre:val('nombre')+' '+val('apellido'),edad:ns('edad')?'No sé':val('edad'),sexo:nsPg('sexo')?'No sé':getRadio('sexo'),estadoCivil:ns('estadoCivil')?'No sé':val('estadoCivil'),hijos:nsPg('hijos')?'No sé':getRadio('hijos'),hijosDetalle:val('hijosDetalle'),nacionalidad:getNac(),paisResidencia:getPaisRes(),regionProvincia:getRegion(),barrioZona:getBarrio(),altura:noseState['altura']?'No sé':alturaVal,foto:foto,orientacionReligiosa:nsPg('relig')?'No sé':getRadio('relig'),ascendencia:nsPg('asc')?'No sé':getRadio('asc'),abuelaMaterna:nsPg('abuelam')?'No sé':getRadio('abuelam'),kashrut:nsPg('kash')?'No sé':getRadio('kash'),shabat:nsPg('shab')?'No sé':getRadio('shab'),baalTeshuva:nsPg('bt')?'No sé':getRadio('bt'),converso:nsPg('conv')?'No sé':getRadio('conv'),antecedentesFamilia:nsPg('ant')?'No sé':getRadio('ant'),templo:ns('templo')?'No sé':val('templo'),estudioDeTora:nsPg('tora')?'No sé':getRadio('tora'),kipa:nsPg('kipa')?'No sé':getRadio('kipa'),tseniut:nsPg('tsen')?'No sé':getRadio('tsen'),cubrePelo:nsPg('pelo')?'No sé':getRadio('pelo'),profesion:ns('profesion')?'No sé':val('profesion'),primaria:ns('primaria')?'No sé':val('primaria'),secundaria:ns('secundaria')?'No sé':val('secundaria'),universidad:val('universidad'),carrera:val('carrera'),idiomas:nsPg('idiomas')?['No sé']:getChecks('idiomasGroup'),planAlia:nsPg('alia')?'No sé':getRadio('alia'),edadDesde:noseState['rango']?'No sé':val('edadDesde'),edadHasta:noseState['rango']?'No sé':val('edadHasta'),abiertoHijos:nsPg('abhijos')?'No sé':getRadio('abhijos'),orientacionBuscada:nsPg('orientb')?['No sé']:getChecks('orientBuscadaGroup'),dealbreakers:ns('dealbreakers')?'No sé':val('dealbreakers'),personaIdeal:ns('personaIdeal')?'No sé':val('personaIdeal'),notasExtra:ns('notasExtra')?'No sé':val('notasExtra')};
   try{
     await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(datos),mode:'no-cors'});
     document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
