@@ -19,14 +19,15 @@
 body{font-family:'Inter',sans-serif;background:var(--white);color:var(--navy-dark);overflow-x:hidden}
 
 /* ── LANDING ── */
-.landing{position:relative;height:100vh;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;width:100%}
+.landing{position:relative;height:100vh;max-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;width:100%}
 .video-bg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
 .video-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,60,.35) 0%,rgba(10,20,60,.5) 100%);z-index:1}
-.landing-content{position:relative;z-index:2;text-align:center;padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.6rem}
-.logo-wrap img{height:570px;width:auto;max-width:90vw}
-.landing-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4vw,42px);font-weight:300;color:var(--white);line-height:1.25;letter-spacing:.01em}
+.landing-content{position:relative;z-index:2;text-align:center;padding:1rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.logo-wrap img{height:auto;width:clamp(200px,32vw,420px);max-width:85vw}
+@media(max-width:768px){.logo-wrap img{width:clamp(180px,58vw,300px)}}
+.landing-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.8vw,34px);font-weight:300;color:var(--white);line-height:1.2;letter-spacing:.08em;text-transform:uppercase;font-style:italic}
 .landing-tagline em{font-style:italic;color:var(--gold)}
-.landing-sub{font-size:clamp(13px,1.8vw,15px);color:rgba(255,255,255,.72);font-weight:300;line-height:1.75;max-width:440px}
+.landing-sub{font-size:clamp(12px,1.4vw,15px);color:rgba(255,255,255,.78);font-weight:300;line-height:1.6;max-width:480px;letter-spacing:.02em}
 .landing-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:.4rem}
 .btn-primary{padding:13px 32px;background:var(--white);color:var(--navy-dark);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.03em;transition:all .2s;text-decoration:none;display:inline-block}
 .btn-primary:hover{background:var(--cream);transform:translateY(-1px)}
@@ -132,10 +133,10 @@ textarea{resize:vertical;min-height:80px;line-height:1.5}
       <div class="logo-wrap">
         <img src="https://raw.githubusercontent.com/gardenmatesss-rgb/garden/main/assets/1.png" alt="Garden Mates">
       </div>
-      <div class="landing-tagline" id="ltTagline">Seamos socios en la <em>búsqueda de shidujim</em></div>
-      <div class="landing-sub" id="ltSub">Una red discreta de personas unidas por la mitzvá más hermosa: acercar almas.</div>
+      <div class="landing-tagline" id="ltTagline">Seamos socios en su unión</div>
+      <div class="landing-sub" id="ltSub">Conectamos personas compatibles para construir relaciones reales y duraderas.</div>
       <div class="landing-btns">
-        <a href="#" class="btn-primary" id="ltBtn" onclick="showForm();return false;">Quiero anotar a alguien</a>
+        <a href="#" class="btn-primary" id="ltBtn" onclick="showForm();return false;">Comenzar</a>
       </div>
     </div>
   </section>
@@ -431,9 +432,9 @@ function showLanding(){
 const TX={
   es:{
     noSe:'No sé',siSe:'Sí sé',continuar:'Continuar →',volver:'← Volver',paso:'Paso',de:'de',
-    ltTagline:'Seamos socios en la búsqueda de shidujim',
-    ltSub:'Una red discreta de personas unidas por la mitzvá más hermosa: acercar almas.',
-    ltBtn:'Quiero anotar a alguien',
+    ltTagline:'Seamos socios en su unión',
+    ltSub:'Conectamos personas compatibles para construir relaciones reales y duraderas.',
+    ltBtn:'Comenzar',
     h0:'¿Cómo vas a usar el formulario?',d0:'Toda la información es confidencial.',
     cardSelf:'Me anoto yo',cardSelfSub:'Quiero que me tengan en cuenta',
     cardOther:'Anoto a alguien',cardOtherSub:'Conozco a alguien que está buscando',
@@ -460,9 +461,9 @@ const TX={
   },
   en:{
     noSe:"Don't know",siSe:'I know',continuar:'Continue →',volver:'← Back',paso:'Step',de:'of',
-    ltTagline:'Let us be partners in the search for shiduchim',
-    ltSub:'A discreet network of people united by the most beautiful mitzvah: bringing souls together.',
-    ltBtn:'I want to register someone',
+    ltTagline:'Partners in lasting union',
+    ltSub:'We connect compatible people to build real and lasting relationships.',
+    ltBtn:'Start',
     h0:'How will you use this form?',d0:'All information is confidential.',
     cardSelf:'Register myself',cardSelfSub:'I want to be considered for a match',
     cardOther:'Register someone else',cardOtherSub:"I know someone who's looking",
@@ -641,4 +642,3 @@ initVideos();
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                            
