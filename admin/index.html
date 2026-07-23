@@ -3,223 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shidujim — Panel</title>
+<title>Garden Mates — Admin</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
 :root{
-  --black:#0f0f0f;--white:#fafaf8;--gold:#b8912a;--gold-light:#e8d5a0;
-  --gold-muted:#f5edd8;--gray-50:#f7f7f5;--gray-100:#f0f0ee;
-  --gray-200:#e2e2de;--gray-400:#a8a89e;--gray-600:#68685e;
-  --sidebar-w:240px;--r:10px;
+  --navy:#1a2d6b;
+  --navy-dark:#0f1c45;
+  --navy-mid:#243580;
+  --white:#fafaf8;
+  --cream:#f5f0e8;
+  --gold:#c9a84c;
+  --gold-light:#e8d5a0;
+  --gray-50:#f7f7f5;
+  --gray-100:#efefed;
+  --gray-200:#e0e0dc;
+  --gray-400:#a8a89e;
+  --gray-600:#66665e;
+  --red:#c0392b;
+  --red-bg:#fff0ee;
+  --green:#1a7040;
+  --green-bg:#e8f5ee;
+  --sidebar:220px;
 }
+
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--black);font-size:13px;line-height:1.5}
+body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-dark);font-size:13px;line-height:1.5;overflow-x:hidden}
 
-/* LOGIN */
-.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--black)}
-.login-box{width:340px;background:var(--white);border-radius:14px;overflow:hidden}
-.login-accent{height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold))}
-.login-inner{padding:2.4rem 2rem 2rem}
-.login-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;margin-bottom:2px}
-.login-sub{font-size:11px;color:var(--gray-400);letter-spacing:.04em;margin-bottom:1.8rem}
-.login-box input{width:100%;padding:10px 13px;border:1px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:9px;background:var(--white);color:var(--black);transition:border-color .18s}
-.login-box input:focus{border-color:var(--gold)}
-.login-box .btn-login{width:100%;padding:11px;background:var(--black);color:var(--white);border:none;border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;letter-spacing:.03em;margin-top:2px}
-.login-box .btn-login:hover{opacity:.85}
-.login-err{color:#c0392b;font-size:11px;margin-top:7px;display:none}
+/* ── LOGIN ── */
+.login-page{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-video{position:absolute;inset:0;overflow:hidden}
+.login-video video{width:100%;height:100%;object-fit:cover}
+.login-overlay{position:absolute;inset:0;background:rgba(10,20,60,.72)}
+.login-box{position:relative;z-index:2;width:360px;text-align:center}
+.login-logo{height:120px;width:auto;margin-bottom:2rem;filter:brightness(0) invert(1)}
+.login-card{background:rgba(255,255,255,.97);border-radius:16px;padding:2rem;backdrop-filter:blur(10px)}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--navy-dark);margin-bottom:1.4rem;letter-spacing:.02em}
+.login-card input{width:100%;padding:10px 13px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:10px;transition:border-color .18s}
+.login-card input:focus{border-color:var(--navy)}
+.login-submit{width:100%;padding:11px;background:var(--navy);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.03em;transition:opacity .2s;margin-top:2px}
+.login-submit:hover{opacity:.88}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;display:none}
 
-/* SHELL */
-.app{display:none}
-.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--black);display:flex;flex-direction:column;z-index:100}
-.sb-top{padding:1.6rem 1.4rem 1rem;border-bottom:1px solid #1e1e1e}
-.sb-logo{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--white);letter-spacing:.01em}
-.sb-logo em{color:var(--gold);font-style:normal}
-.sb-role{font-size:9.5px;color:#3a3a3a;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-.nav{padding:.8rem 0;flex:1;overflow-y:auto}
-.nav-sec{font-size:9px;color:#333;letter-spacing:.1em;text-transform:uppercase;padding:.9rem 1.4rem .3rem}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 1.4rem;color:var(--gray-400);cursor:pointer;font-size:12.5px;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif;transition:all .14s;position:relative}
-.ni:hover{color:var(--white);background:rgba(255,255,255,.04)}
-.ni.active{color:var(--white);background:rgba(255,255,255,.06)}
-.ni .ico{font-size:13px;width:17px;text-align:center;opacity:.7}
-.ni.active .ico{opacity:1}
-.ni .badge-count{margin-left:auto;background:var(--gold);color:var(--white);font-size:9px;font-weight:600;padding:1px 6px;border-radius:10px;display:none}
-.ni .badge-count.show{display:inline}
-.sb-foot{padding:1rem 1.4rem;border-top:1px solid #1a1a1a}
-.sb-user{font-size:11px;color:#333;margin-bottom:.4rem}
-.btn-out{font-size:11px;color:var(--gray-600);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:color .14s;padding:0}
-.btn-out:hover{color:var(--white)}
-.main{margin-left:var(--sidebar-w);padding:2.2rem 2.5rem;min-height:100vh}
+/* ── APP ── */
+.app{display:none;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar);height:100vh;background:var(--navy-dark);display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:1.6rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo img{height:52px;filter:brightness(0) invert(1);width:auto}
+.sb-nav{flex:1;padding:.8rem 0;overflow-y:auto}
+.sb-section{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:.12em;text-transform:uppercase;padding:.9rem 1.4rem .3rem}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 1.4rem;color:rgba(255,255,255,.5);cursor:pointer;font-size:12.5px;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif;transition:all .14s;position:relative}
+.sb-item:hover{color:var(--white);background:rgba(255,255,255,.05)}
+.sb-item.active{color:var(--white);background:rgba(255,255,255,.08)}
+.sb-item .sb-ico{font-size:13px;width:16px;text-align:center}
+.sb-badge{margin-left:auto;background:var(--gold);color:var(--white);font-size:9px;font-weight:600;padding:2px 6px;border-radius:10px;display:none}
+.sb-badge.show{display:inline}
+.sb-foot{padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,.06)}
+.sb-user{font-size:11px;color:rgba(255,255,255,.3);margin-bottom:.4rem}
+.sb-logout{font-size:11.5px;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:color .14s;padding:0}
+.sb-logout:hover{color:var(--white)}
+
+.main{margin-left:var(--sidebar);padding:2rem 2.5rem;min-height:100vh}
 .page{display:none}.page.active{display:block}
-.ph{margin-bottom:1.8rem}
-.pt{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;line-height:1.1}
-.ps{font-size:11.5px;color:var(--gray-600);margin-top:3px}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin-bottom:.3rem}
+.page-sub{font-size:12px;color:var(--gray-600);margin-bottom:1.8rem}
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem}
-.sc{background:var(--white);border-radius:var(--r);padding:1.3rem 1.4rem;border:1px solid var(--gray-200);position:relative;overflow:hidden}
-.sc-num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;line-height:1}
-.sc-lbl{font-size:10.5px;color:var(--gray-600);margin-top:3px;letter-spacing:.02em}
-.sc-ico{position:absolute;top:1.1rem;right:1.1rem;font-size:17px;opacity:.15}
+/* ── INICIO ── */
+.notif-bar{display:flex;gap:10px;margin-bottom:1.6rem;flex-wrap:wrap}
+.notif{display:flex;align-items:center;gap:10px;padding:.9rem 1.2rem;background:var(--white);border-radius:10px;border:1px solid var(--gray-200);cursor:pointer;transition:border-color .15s;flex:1;min-width:180px}
+.notif:hover{border-color:var(--navy)}
+.notif-count{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--navy);line-height:1}
+.notif-label{font-size:12px;color:var(--gray-600);margin-top:1px}
+.notif.alert{border-color:var(--gold-light);background:#fffdf5}
+.notif.alert .notif-count{color:var(--gold)}
+.recent-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.9rem}
 
-/* CARDS/TABLE */
-.card{background:var(--white);border-radius:var(--r);border:1px solid var(--gray-200);overflow:hidden}
-.toolbar{display:flex;gap:9px;margin-bottom:1.1rem;flex-wrap:wrap;align-items:center}
-.si{position:relative;flex:1;min-width:180px;max-width:260px}
-.si input{width:100%;padding:8px 11px 8px 32px;border:1px solid var(--gray-200);border-radius:7px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white);transition:border-color .18s}
-.si input:focus{border-color:var(--gold)}
-.si-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:13px;pointer-events:none}
-select.fsel{padding:8px 11px;border:1px solid var(--gray-200);border-radius:7px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white);cursor:pointer;transition:border-color .18s}
-select.fsel:focus{border-color:var(--gold)}
-table{width:100%;border-collapse:collapse}
-th{padding:10px 14px;text-align:left;font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600);background:var(--gray-50);border-bottom:1px solid var(--gray-100);white-space:nowrap}
-td{padding:11px 14px;border-bottom:1px solid var(--gray-50);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#fdfdf9}
-.av{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gray-200)}
-.av-ph{width:32px;height:32px;border-radius:50%;background:var(--gray-100);border:1.5px solid var(--gray-200);display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:500}
+/* ── PERFILES ── */
+.toolbar{display:flex;gap:8px;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center}
+.search-box{position:relative;flex:1;min-width:180px;max-width:260px}
+.search-box input{width:100%;padding:8px 11px 8px 32px;border:1px solid var(--gray-200);border-radius:8px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white);transition:border-color .18s}
+.search-box input:focus{border-color:var(--navy)}
+.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:13px;pointer-events:none}
+.fsel{padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white);cursor:pointer}
+.fsel:focus{border-color:var(--navy)}
+.btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .14s;white-space:nowrap}
+.btn-navy{background:var(--navy);color:var(--white)}.btn-navy:hover{opacity:.88}
+.btn-ghost{background:var(--white);color:var(--gray-600);border:1px solid var(--gray-200)}.btn-ghost:hover{border-color:var(--gray-400);color:var(--navy-dark)}
+.btn-gold{background:var(--gold);color:var(--white)}.btn-gold:hover{opacity:.9}
+.btn-danger{background:var(--white);color:var(--red);border:1px solid #fcc}.btn-danger:hover{background:var(--red-bg)}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+
+/* ── CARDS GRID ── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.profile-card{background:var(--white);border-radius:12px;border:1px solid var(--gray-200);overflow:hidden;cursor:pointer;transition:all .15s;position:relative}
+.profile-card:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:0 4px 16px rgba(10,20,60,.08)}
+.profile-card.red-flag{border-color:#f5c0bb;background:#fff8f7}
+.profile-card.red-flag::after{content:'Revisar';position:absolute;top:8px;right:8px;background:var(--red);color:var(--white);font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;letter-spacing:.04em}
+.pc-foto{width:100%;aspect-ratio:1;object-fit:cover;background:var(--gray-100);display:block}
+.pc-foto-ph{width:100%;aspect-ratio:1;background:var(--gray-100);display:flex;align-items:center;justify-content:center}
+.pc-body{padding:.8rem .9rem}
+.pc-name{font-size:13.5px;font-weight:500;color:var(--navy-dark);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-detail{font-size:11.5px;color:var(--gray-600)}
+.pc-chip{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500;margin-top:5px}
 .chip-m{background:#e6eeff;color:#1a46a0}
 .chip-f{background:#fce5f5;color:#8a1a70}
-.chip-new{background:var(--gold-muted);color:#7a5a00;border:1px solid var(--gold-light)}
-.chip-ok{background:#e6f5ec;color:#1a7040}
-.tname{font-weight:500;font-size:13px;color:var(--black)}
-.tsub{font-size:11px;color:var(--gray-400);margin-top:1px}
-.empty-state{padding:3rem;text-align:center}
-.es-ico{font-size:28px;opacity:.3;margin-bottom:.6rem}
-.es-txt{font-size:12.5px;color:var(--gray-400)}
+.chip-pend{background:var(--gold-light);color:#7a5800}
 
-/* BUTTONS */
-.btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;letter-spacing:.02em;transition:all .14s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
-.b-black{background:var(--black);color:var(--white)}.b-black:hover{opacity:.85}
-.b-gold{background:var(--gold);color:var(--white)}.b-gold:hover{opacity:.9}
-.b-ghost{background:transparent;color:var(--gray-600);border:1px solid var(--gray-200)}.b-ghost:hover{border-color:var(--gray-400);color:var(--black)}
-.b-danger{background:transparent;color:#c0392b;border:1px solid #fcc}.b-danger:hover{background:#fff0f0}
-.b-sm{padding:5px 10px;font-size:11.5px}
+/* ── EMPTY ── */
+.empty{padding:3rem;text-align:center;color:var(--gray-400);font-size:13px}
 
-/* OVERLAYS */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+/* ── OVERLAYS ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .ov.open{display:flex}
-.modal{background:var(--white);border-radius:14px;width:92%;max-width:700px;max-height:90vh;overflow-y:auto;position:relative}
-.modal-hd{padding:1.6rem 1.8rem 1.1rem;border-bottom:1px solid var(--gray-100);position:sticky;top:0;background:var(--white);z-index:2;display:flex;align-items:flex-start;justify-content:space-between}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500}
-.modal-sub{font-size:11px;color:var(--gray-400);margin-top:2px}
-.btn-x{background:none;border:none;font-size:19px;cursor:pointer;color:var(--gray-400);padding:3px;line-height:1}.btn-x:hover{color:var(--black)}
+.modal{background:var(--white);border-radius:16px;width:92%;max-width:720px;max-height:90vh;overflow-y:auto}
+.modal-hd{padding:1.5rem 1.8rem 1rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:2}
+.modal-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500}
+.modal-sub{font-size:12px;color:var(--gray-600);margin-top:2px}
+.btn-x{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray-400);padding:3px}.btn-x:hover{color:var(--navy-dark)}
 .modal-bd{padding:1.4rem 1.8rem 1.8rem}
-
-/* PROFILE VIEW */
-.psec{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:1.3rem 0 .7rem;padding-bottom:.4rem;border-bottom:1px solid var(--gold-muted)}
+.psec{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--gold-light)}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px 2rem}
-.pf{padding:5px 0}
-.pf .k{font-size:9.5px;color:var(--gray-400);letter-spacing:.04em;margin-bottom:2px;text-transform:uppercase}
-.pf .v{font-size:13px;color:var(--black)}
-.modal-acts{display:flex;gap:7px;margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--gray-100);flex-wrap:wrap}
+.pf{padding:5px 0;border-bottom:1px solid var(--gray-50)}
+.pf .k{font-size:9.5px;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+.pf .v{font-size:13px;color:var(--navy-dark)}
+.modal-acts{display:flex;gap:8px;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--gray-100);flex-wrap:wrap}
+.red-alert{background:var(--red-bg);border:1px solid #fcc;border-radius:10px;padding:.8rem 1rem;margin-bottom:1rem;font-size:13px;color:var(--red);display:none}
+.red-alert.show{display:block}
 
-/* EDIT FORM */
+/* ── EDIT FORM ── */
 .ef-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
 .ef-full{grid-column:1/-1}
-.ef-sec{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;padding-bottom:.4rem;border-bottom:1px solid var(--gold-muted);grid-column:1/-1}
+.ef-sec{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;padding-bottom:.4rem;border-bottom:1px solid var(--gold-light);grid-column:1/-1}
 .ef-field{display:flex;flex-direction:column;gap:4px}
 .ef-field label{font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em}
-.ef-field input,.ef-field select,.ef-field textarea{padding:8px 10px;border:1px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;background:var(--white);color:var(--black);transition:border-color .18s}
-.ef-field input:focus,.ef-field select:focus,.ef-field textarea:focus{border-color:var(--gold)}
-.ef-field textarea{min-height:70px;resize:vertical;line-height:1.4}
-.save-bar{display:flex;gap:8px;justify-content:flex-end;margin-top:1.4rem;padding-top:1.1rem;border-top:1px solid var(--gray-100)}
+.ef-field input,.ef-field select,.ef-field textarea{padding:8px 10px;border:1px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;background:var(--white);transition:border-color .18s}
+.ef-field input:focus,.ef-field select:focus,.ef-field textarea:focus{border-color:var(--navy)}
+.ef-field textarea{min-height:70px;resize:vertical}
 
-/* HISTORIAL */
-.hist-item{display:flex;gap:10px;padding:.7rem 0;border-bottom:1px solid var(--gray-50)}
+/* ── HISTORIAL ── */
+.hist-item{display:flex;gap:10px;padding:.75rem 0;border-bottom:1px solid var(--gray-50)}
 .hist-item:last-child{border-bottom:none}
 .hist-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0}
+.hist-dot.match{background:var(--navy)}
 .hist-body{flex:1}
-.hist-title{font-size:13px;font-weight:500;color:var(--black)}
-.hist-date{font-size:10.5px;color:var(--gray-400);margin-top:1px}
-.hist-note{font-size:11.5px;color:var(--gray-600);margin-top:3px;font-style:italic}
+.hist-t{font-size:13px;font-weight:500}
+.hist-n{font-size:11.5px;color:var(--gray-600);margin-top:2px;font-style:italic}
+.hist-d{font-size:10.5px;color:var(--gray-400);margin-top:2px}
 
-/* SUGGEST */
-.sug-item{display:flex;align-items:center;gap:12px;padding:.9rem;border-radius:9px;border:1px solid var(--gray-200);margin-bottom:7px;transition:border-color .15s}
-.sug-item:hover{border-color:var(--gold-light)}
-.sug-info{flex:1}
-.sug-name{font-size:13.5px;font-weight:500}
-.sug-detail{font-size:11px;color:var(--gray-600);margin-top:2px}
-.sug-score{text-align:center;min-width:48px}
-.sug-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--gold);line-height:1}
-.sug-lbl{font-size:9px;color:var(--gray-400);letter-spacing:.04em;text-transform:uppercase}
-.sug-btns{display:flex;flex-direction:column;gap:5px;min-width:82px}
+/* ── MATCHING ── */
+.match-modal{max-width:860px}
+.match-layout{display:grid;grid-template-columns:280px 1fr;gap:1.5rem;min-height:400px}
+.match-filters{background:var(--gray-50);border-radius:10px;padding:1.2rem;border:1px solid var(--gray-200)}
+.mf-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600);margin-bottom:1rem}
+.filter-row{display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--gray-100)}
+.filter-row:last-child{border-bottom:none}
+.filter-name{font-size:12px;color:var(--navy-dark);font-weight:400}
+.filter-name.base{color:var(--gray-400);font-size:11px}
+.filter-toggle{display:flex;gap:4px}
+.ft-btn{padding:3px 8px;border-radius:6px;font-size:10.5px;cursor:pointer;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-family:'Inter',sans-serif;transition:all .12s}
+.ft-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.ft-btn.active.igual{background:var(--navy)}
+.ft-btn.active.spec{background:var(--gold)}
+.filter-spec{margin-top:6px;display:none}
+.filter-spec.show{display:block}
+.filter-spec select,.filter-spec input{width:100%;padding:5px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none}
+.filter-spec select[multiple]{height:80px}
+.match-results{overflow-y:auto;max-height:500px}
+.mr-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.mr-count{font-size:12px;color:var(--gray-600)}
+.match-cand{display:flex;align-items:center;gap:12px;padding:.9rem;border-radius:10px;border:1px solid var(--gray-200);margin-bottom:8px;background:var(--white);transition:border-color .15s;cursor:pointer}
+.match-cand:hover{border-color:var(--navy)}
+.mc-av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gray-200);flex-shrink:0}
+.mc-av-ph{width:44px;height:44px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mc-info{flex:1}
+.mc-name{font-size:13.5px;font-weight:500}
+.mc-det{font-size:11.5px;color:var(--gray-600);margin-top:2px}
+.mc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.mc-tag{padding:2px 7px;border-radius:10px;font-size:10px;background:var(--gray-100);color:var(--gray-600)}
+.mc-score{text-align:center;min-width:44px}
+.mc-score-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--navy);line-height:1}
+.mc-score-lbl{font-size:9px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.04em}
+.name-search{display:flex;gap:8px;margin-bottom:1rem}
+.name-search input{flex:1;padding:8px 11px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;outline:none}
+.name-search input:focus{border-color:var(--navy)}
 
-/* MATCHES */
-.mc{background:var(--white);border-radius:var(--r);border:1px solid var(--gray-200);padding:1.3rem 1.4rem;margin-bottom:9px;transition:border-color .2s}
-.mc:hover{border-color:var(--gold-light)}
+/* ── MATCHES PAGE ── */
+.match-card{background:var(--white);border-radius:12px;border:1px solid var(--gray-200);padding:1.3rem 1.4rem;margin-bottom:10px;transition:border-color .2s}
+.match-card:hover{border-color:var(--gold-light)}
 .mc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
 .mc-names{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500}
-.mc-names .amp{color:var(--gold);margin:0 5px}
-.mc-pair{display:grid;grid-template-columns:1fr 28px 1fr;gap:7px;align-items:center;margin-bottom:.9rem}
-.mc-person{background:var(--gray-50);border-radius:7px;padding:.65rem .85rem}
+.mc-names .amp{color:var(--gold);margin:0 6px}
+.mc-pair{display:grid;grid-template-columns:1fr 24px 1fr;gap:8px;align-items:center;margin-bottom:.9rem}
+.mc-person{background:var(--gray-50);border-radius:8px;padding:.65rem .85rem}
 .mc-pname{font-size:13px;font-weight:500}
 .mc-pdet{font-size:11px;color:var(--gray-600);margin-top:2px}
 .mc-heart{text-align:center;font-size:14px;color:var(--gold)}
-
-/* CONTACT FLOW */
 .contact-flow{background:var(--gray-50);border-radius:8px;padding:.9rem 1rem;margin-bottom:.9rem;border:1px solid var(--gray-100)}
-.cf-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-600);margin-bottom:.7rem}
-.cf-step{display:flex;align-items:center;gap:8px;padding:.4rem 0}
-.cf-dot{width:6px;height:6px;border-radius:50%;background:var(--gray-300);flex-shrink:0}
+.cf-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-600);margin-bottom:.6rem}
+.cf-step{display:flex;align-items:center;gap:8px;padding:.35rem 0}
+.cf-dot{width:6px;height:6px;border-radius:50%;background:var(--gray-200);flex-shrink:0}
 .cf-dot.done{background:var(--gold)}
-.cf-dot.pending{background:var(--gray-200);border:1.5px solid var(--gold)}
-.cf-label{font-size:12px;color:var(--black);flex:1}
-.cf-status{font-size:11px;color:var(--gray-400)}
-.cf-status.yes{color:#1a7040;font-weight:500}
-.cf-status.no{color:#c0392b;font-weight:500}
-.cf-status.wait{color:var(--gold)}
-select.cf-sel{padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:11.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white)}
-select.cf-sel:focus{border-color:var(--gold)}
-
-.mc-foot{display:flex;gap:7px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--gray-100);padding-top:.85rem}
-select.status-sel{padding:6px 9px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;outline:none;background:var(--white);cursor:pointer}
-select.status-sel:focus{border-color:var(--gold)}
-input.notes-inp{flex:1;min-width:120px;padding:6px 9px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;outline:none}
-input.notes-inp:focus{border-color:var(--gold)}
+.cf-dot.pending{background:var(--white);border:1.5px solid var(--gold)}
+.cf-label{font-size:12px;flex:1}
+.cf-sel{padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:11.5px;font-family:'Inter',sans-serif;outline:none;background:var(--white)}
+.mc-foot{display:flex;gap:7px;align-items:center;border-top:1px solid var(--gray-100);padding-top:.85rem;flex-wrap:wrap}
+.status-sel{padding:6px 9px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;outline:none;background:var(--white)}
+.notes-inp{flex:1;min-width:120px;padding:6px 9px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;font-family:'Inter',sans-serif;outline:none}
+.notes-inp:focus,.status-sel:focus,.cf-sel:focus{border-color:var(--navy)}
 .mc-note{font-size:11px;color:var(--gray-600);font-style:italic;margin-bottom:.75rem;padding:.45rem .75rem;background:var(--gray-50);border-radius:6px;border-left:2px solid var(--gold-light)}
-
-/* STATUS CHIPS */
 .sch{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
-.s-pendiente{background:#fff8e1;color:#7a5800}
 .s-propuesto{background:#e6eeff;color:#1a46a0}
 .s-contactado{background:#e6f5ff;color:#1a6090}
 .s-aceptaron{background:#e6f5ec;color:#1a6040}
 .s-salidas{background:#f0e6ff;color:#6a1a9f}
 .s-comprometidos{background:#fff0e6;color:#9f5a1a}
-.s-casados{background:var(--black);color:var(--gold)}
-.s-rechazado{background:#fee6e6;color:#c0392b}
+.s-casados{background:var(--navy-dark);color:var(--gold)}
+.s-rechazado{background:#fee6e6;color:var(--red)}
 .s-nofunciono{background:var(--gray-100);color:var(--gray-600)}
-
-/* PENDING CARD */
-.pend-card{background:var(--white);border-radius:var(--r);border:1px solid var(--gray-200);padding:1.3rem 1.4rem;margin-bottom:9px}
-.pend-hd{display:flex;align-items:center;gap:12px;margin-bottom:.9rem}
-.pend-info{flex:1}
-.pend-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500}
-.pend-detail{font-size:11.5px;color:var(--gray-600);margin-top:2px}
-.pend-contact{font-size:12px;color:var(--gray-600);margin-bottom:.9rem;padding:.6rem .9rem;background:var(--gray-50);border-radius:7px}
-.pend-acts{display:flex;gap:7px;flex-wrap:wrap}
-
-@media(max-width:860px){
-  :root{--sidebar-w:54px}
-  .sb-top .sb-role,.ni span:not(.ico),.ni .badge-count,.sb-foot .sb-user,.btn-out{display:none}
-  .main{padding:1.5rem}
-  .stats{grid-template-columns:1fr 1fr}
-}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
+<div id="loginPage" class="login-page">
+  <div class="login-video">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/jh7ewgi4/video/upload/v1784669976/landing_video_kiavie.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="login-overlay"></div>
   <div class="login-box">
-    <div class="login-accent"></div>
-    <div class="login-inner">
-      <div class="login-title">Shidujim</div>
-      <div class="login-sub">Panel de administración · Acceso privado</div>
+    <img class="login-logo" src="https://raw.githubusercontent.com/gardenmatesss-rgb/garden/main/assets/1.png" alt="Garden Mates">
+    <div class="login-card">
+      <div class="login-title">Acceso privado</div>
       <input type="text" id="lu" placeholder="Usuario" autocomplete="off">
       <input type="password" id="lp" placeholder="Contraseña">
-      <button class="btn-login" onclick="doLogin()">Ingresar</button>
+      <button class="login-submit" onclick="doLogin()">Entrar</button>
       <p class="login-err" id="loginErr">Usuario o contraseña incorrectos.</p>
     </div>
   </div>
@@ -228,85 +247,79 @@ input.notes-inp:focus{border-color:var(--gold)}
 <!-- APP -->
 <div class="app" id="app">
   <aside class="sidebar">
-    <div class="sb-top">
-      <div class="sb-logo">Shidu<em>jim</em></div>
-      <div class="sb-role">Panel privado</div>
+    <div class="sb-logo">
+      <img src="https://raw.githubusercontent.com/gardenmatesss-rgb/garden/main/assets/1.png" alt="Garden Mates">
     </div>
-    <nav class="nav">
-      <div class="nav-sec">Principal</div>
-      <button class="ni active" onclick="showPage('dashboard',this)"><span class="ico">◈</span><span>Inicio</span></button>
-      <button class="ni" onclick="showPage('pendientes',this)"><span class="ico">◎</span><span>Pendientes</span><span class="badge-count" id="bcPend">0</span></button>
-      <button class="ni" onclick="showPage('perfiles',this)"><span class="ico">◉</span><span>Perfiles</span></button>
-      <div class="nav-sec">Matches</div>
-      <button class="ni" onclick="showPage('matches',this)"><span class="ico">✦</span><span>Matches</span></button>
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <button class="sb-item active" onclick="showPage('inicio',this)"><span class="sb-ico">◈</span>Inicio<span class="sb-badge" id="badgePend">0</span></button>
+      <button class="sb-item" onclick="showPage('perfiles',this)"><span class="sb-ico">◉</span>Perfiles</button>
+      <div class="sb-section">Matches</div>
+      <button class="sb-item" onclick="showPage('matches',this)"><span class="sb-ico">◎</span>Matches<span class="sb-badge" id="badgeMatches">0</span></button>
     </nav>
     <div class="sb-foot">
       <div class="sb-user">nikisel</div>
-      <button class="btn-out" onclick="logout()">Salir →</button>
+      <button class="sb-logout" onclick="logout()">Salir</button>
     </div>
   </aside>
 
   <main class="main">
 
-    <!-- DASHBOARD -->
-    <div class="page active" id="page-dashboard">
-      <div class="ph"><div class="pt" id="dashGreet">Bienvenida</div><div class="ps" id="dashDate"></div></div>
-      <div class="stats">
-        <div class="sc"><div class="sc-ico">◉</div><div class="sc-num" id="sTotal">—</div><div class="sc-lbl">Perfiles activos</div></div>
-        <div class="sc"><div class="sc-ico">◎</div><div class="sc-num" id="sH">—</div><div class="sc-lbl">Hombres</div></div>
-        <div class="sc"><div class="sc-ico">◎</div><div class="sc-num" id="sM">—</div><div class="sc-lbl">Mujeres</div></div>
-        <div class="sc"><div class="sc-ico">✦</div><div class="sc-num" id="sMat">—</div><div class="sc-lbl">Matches activos</div></div>
+    <!-- INICIO -->
+    <div class="page active" id="page-inicio">
+      <div class="page-title">Bienvenida</div>
+      <div class="page-sub" id="fechaHoy"></div>
+      <div class="notif-bar">
+        <div class="notif alert" onclick="showPage('perfiles',document.querySelectorAll('.sb-item')[1]);filterTab('pendiente')">
+          <div><div class="notif-count" id="nPend">—</div><div class="notif-label">Pendientes de revisión</div></div>
+        </div>
+        <div class="notif" onclick="showPage('matches',document.querySelectorAll('.sb-item')[2])">
+          <div><div class="notif-count" id="nMatchAct">—</div><div class="notif-label">Matches activos</div></div>
+        </div>
+        <div class="notif">
+          <div><div class="notif-count" id="nTotal">—</div><div class="notif-label">Perfiles activos</div></div>
+        </div>
+        <div class="notif">
+          <div><div class="notif-count" id="nH">—</div><div class="notif-label">Hombres</div></div>
+        </div>
+        <div class="notif">
+          <div><div class="notif-count" id="nM">—</div><div class="notif-label">Mujeres</div></div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
-        <div style="font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600)">Últimos perfiles aprobados</div>
-      </div>
-      <div class="card"><table>
-        <thead><tr><th></th><th>Nombre</th><th>Edad</th><th>Ciudad</th><th>Orientación</th><th></th></tr></thead>
-        <tbody id="recentBody"><tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--gray-400);font-size:12px">Cargando...</td></tr></tbody>
-      </table></div>
-    </div>
-
-    <!-- PENDIENTES -->
-    <div class="page" id="page-pendientes">
-      <div class="ph"><div class="pt">Pendientes de revisión</div><div class="ps">Revisá y aprobá cada perfil antes de que entre al sistema de matching.</div></div>
-      <div id="pendList"><div style="padding:2rem;text-align:center;color:var(--gray-400);font-size:12px">Cargando...</div></div>
+      <div class="recent-title">Últimos perfiles aprobados</div>
+      <div class="cards-grid" id="recentGrid"></div>
     </div>
 
     <!-- PERFILES -->
     <div class="page" id="page-perfiles">
-      <div class="ph"><div class="pt">Perfiles</div></div>
+      <div class="page-title">Perfiles</div>
       <div class="toolbar">
-        <div class="si"><span class="si-ico">⌕</span><input id="searchQ" placeholder="Buscar..." oninput="filterP()"></div>
-        <select class="fsel" id="fSexo" onchange="filterP()">
+        <div class="search-box"><span class="search-ico">⌕</span><input id="searchQ" placeholder="Buscar..." oninput="renderProfiles()"></div>
+        <select class="fsel" id="fSexo" onchange="renderProfiles()">
           <option value="">Todos</option><option value="Masculino">Hombres</option><option value="Femenino">Mujeres</option>
         </select>
-        <select class="fsel" id="fRelig" onchange="filterP()">
-          <option value="">Toda orientación</option>
-          <option>Simplemente judío/a</option><option>Espiritual no religioso</option>
-          <option>Tradicionalista</option><option>Ortodoxo moderno</option>
-          <option>Ortodoxo</option><option>Jasídico</option>
-          <option>Jabad</option><option>Dati leumi</option><option>Jaredí</option>
+        <select class="fsel" id="fTab" onchange="renderProfiles()">
+          <option value="aprobado">Aprobados</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="todos">Todos</option>
         </select>
-        <button class="btn b-ghost b-sm" onclick="loadProfiles()">↻</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadProfiles()">Actualizar</button>
       </div>
-      <div class="card"><table>
-        <thead><tr><th></th><th>Nombre</th><th>Edad</th><th>Sexo</th><th>Ciudad</th><th>Orientación</th><th>Ingreso</th><th></th></tr></thead>
-        <tbody id="profBody"><tr><td colspan="8" style="padding:1.5rem;text-align:center;color:var(--gray-400);font-size:12px">Cargando...</td></tr></tbody>
-      </table></div>
+      <div class="cards-grid" id="profilesGrid"></div>
     </div>
 
     <!-- MATCHES -->
     <div class="page" id="page-matches">
-      <div class="ph"><div class="pt">Matches</div></div>
+      <div class="page-title">Matches</div>
       <div class="toolbar">
-        <select class="fsel" id="fMS" onchange="renderMatches()">
+        <select class="fsel" id="fMatchStatus" onchange="renderMatches()">
           <option value="">Todos los estados</option>
           <option>Propuesto</option><option>Contactado</option><option>Aceptaron</option>
           <option>En salidas</option><option>Comprometidos</option><option>Casados</option>
           <option>Rechazado</option><option>No funcionó</option>
         </select>
       </div>
-      <div id="matchList"></div>
+      <div id="matchesList"></div>
     </div>
 
   </main>
@@ -316,28 +329,29 @@ input.notes-inp:focus{border-color:var(--gold)}
 <div class="ov" id="ovProfile" onclick="closeOv('ovProfile',event)">
   <div class="modal">
     <div class="modal-hd">
-      <div><div class="modal-title" id="pmTitle">Perfil</div><div class="modal-sub" id="pmSub"></div></div>
+      <div><div class="modal-name" id="pmName"></div><div class="modal-sub" id="pmSub"></div></div>
       <button class="btn-x" onclick="closeOv('ovProfile')">×</button>
     </div>
     <div class="modal-bd">
+      <div class="red-alert" id="redAlert">Esta persona indicó que su abuela materna NO es judía. Revisá antes de aprobar.</div>
       <div id="pmGrid"></div>
       <div class="modal-acts" id="pmActs"></div>
     </div>
   </div>
 </div>
 
-<!-- MODAL: EDITAR PERFIL -->
+<!-- MODAL: EDITAR -->
 <div class="ov" id="ovEdit" onclick="closeOv('ovEdit',event)">
   <div class="modal">
     <div class="modal-hd">
-      <div><div class="modal-title" id="emTitle">Editar perfil</div></div>
+      <div><div class="modal-name" id="emName">Editar perfil</div></div>
       <button class="btn-x" onclick="closeOv('ovEdit')">×</button>
     </div>
     <div class="modal-bd">
       <div class="ef-grid" id="emForm"></div>
-      <div class="save-bar">
-        <button class="btn b-ghost" onclick="closeOv('ovEdit')">Cancelar</button>
-        <button class="btn b-gold" onclick="saveEdit()">Guardar cambios</button>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--gray-100)">
+        <button class="btn btn-ghost" onclick="closeOv('ovEdit')">Cancelar</button>
+        <button class="btn btn-gold" onclick="saveEdit()">Guardar cambios</button>
       </div>
     </div>
   </div>
@@ -345,65 +359,87 @@ input.notes-inp:focus{border-color:var(--gold)}
 
 <!-- MODAL: HISTORIAL -->
 <div class="ov" id="ovHist" onclick="closeOv('ovHist',event)">
-  <div class="modal" style="max-width:520px">
+  <div class="modal" style="max-width:500px">
     <div class="modal-hd">
-      <div><div class="modal-title" id="histTitle">Historial</div></div>
+      <div><div class="modal-name" id="histName">Historial</div></div>
       <button class="btn-x" onclick="closeOv('ovHist')">×</button>
     </div>
     <div class="modal-bd" id="histBody"></div>
   </div>
 </div>
 
-<!-- MODAL: SUGERENCIAS -->
-<div class="ov" id="ovSuggest" onclick="closeOv('ovSuggest',event)">
-  <div class="modal">
+<!-- MODAL: MATCH -->
+<div class="ov" id="ovMatch" onclick="closeOv('ovMatch',event)">
+  <div class="modal match-modal">
     <div class="modal-hd">
-      <div><div class="modal-title" id="sugTitle">Candidatos</div></div>
-      <button class="btn-x" onclick="closeOv('ovSuggest')">×</button>
+      <div><div class="modal-name" id="matchTitle">Buscar match</div><div class="modal-sub" id="matchSub"></div></div>
+      <button class="btn-x" onclick="closeOv('ovMatch')">×</button>
     </div>
-    <div class="modal-bd" id="sugBody"></div>
+    <div class="modal-bd">
+      <!-- Búsqueda directa por nombre -->
+      <div style="margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--gray-100)">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.6rem">Buscar directamente por nombre</div>
+        <div class="name-search">
+          <input type="text" id="directSearch" placeholder="Nombre de la persona..." oninput="renderDirectResults()">
+        </div>
+        <div id="directResults"></div>
+      </div>
+      <!-- Filtros + resultados automáticos -->
+      <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.8rem">Búsqueda por compatibilidad</div>
+      <div class="match-layout">
+        <div class="match-filters">
+          <div class="mf-title">Filtros</div>
+          <div id="filtersPanel"></div>
+          <button class="btn btn-navy btn-sm" style="width:100%;margin-top:1rem" onclick="runFilters()">Buscar</button>
+        </div>
+        <div class="match-results" id="matchResults">
+          <div class="empty">Ajustá los filtros y apretá Buscar.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
 const SCRIPT='https://script.google.com/macros/s/AKfycbz8h-oF2yFn9gDTZN9eld-KkC_Rav7zSpvXipcfBDJ3s4E6TylD-i8yOnfZNu4Mp_rc/exec';
 const USER='nikisel',PASS='Nikisel1';
-let allP=[],editIdx=null;
+let allP=[],currentMatchIdx=null;
 
 // ── STATE ─────────────────────────────────────────────────────
 function gs(){return JSON.parse(localStorage.getItem('shidujim_v2')||'{"approved":{},"rejected":{},"matches":[],"history":{}}');}
 function ss(s){localStorage.setItem('shidujim_v2',JSON.stringify(s));}
+function addHist(idx,ev){const s=gs();s.history=s.history||{};s.history[idx]=s.history[idx]||[];s.history[idx].push({...ev,fecha:new Date().toISOString()});ss(s);}
 
 // ── LOGIN ─────────────────────────────────────────────────────
 function doLogin(){
   if(document.getElementById('lu').value.trim()===USER&&document.getElementById('lp').value===PASS){
-    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('loginPage').style.display='none';
     document.getElementById('app').style.display='block';
     init();
   } else document.getElementById('loginErr').style.display='block';
 }
 document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-function logout(){document.getElementById('loginScreen').style.display='flex';document.getElementById('app').style.display='none';}
+function logout(){document.getElementById('loginPage').style.display='flex';document.getElementById('app').style.display='none';}
 
 // ── INIT ──────────────────────────────────────────────────────
 function init(){
   const d=new Date();
-  const h=d.getHours();
-  const greet=h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
-  document.getElementById('dashGreet').textContent=greet;
-  document.getElementById('dashDate').textContent=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('fechaHoy').textContent=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   loadProfiles();
 }
 
-// ── NAV ───────────────────────────────────────────────────────
 function showPage(n,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+n).classList.add('active');
   if(btn)btn.classList.add('active');
   if(n==='matches')renderMatches();
-  if(n==='pendientes')renderPend();
-  if(n==='perfiles')filterP();
+  if(n==='perfiles')renderProfiles();
+}
+
+function filterTab(t){
+  document.getElementById('fTab').value=t;
+  renderProfiles();
 }
 
 // ── LOAD ──────────────────────────────────────────────────────
@@ -412,122 +448,92 @@ async function loadProfiles(){
     const r=await fetch(SCRIPT+'?action=getProfiles');
     const d=await r.json();
     allP=(d.profiles||[]).map((p,i)=>({...p,_idx:i}));
-    updateAll();
+    updateStats();
+    renderProfiles();
+    renderRecent();
   }catch(e){
-    document.getElementById('profBody').innerHTML='<tr><td colspan="8" style="padding:1.5rem;text-align:center;color:#c0392b;font-size:12px">Error al conectar con el servidor. Verificá que el Script esté publicado correctamente.</td></tr>';
+    document.getElementById('profilesGrid').innerHTML='<div class="empty">Error al conectar. Verificá el Script.</div>';
   }
 }
 
-function updateAll(){
+function updateStats(){
   const st=gs();
   const approved=allP.filter(p=>st.approved[p._idx]);
   const pending=allP.filter(p=>!st.approved[p._idx]&&!st.rejected[p._idx]);
-  const matches=st.matches||[];
-  document.getElementById('sTotal').textContent=approved.length;
-  document.getElementById('sH').textContent=approved.filter(p=>p.sexo==='Masculino').length;
-  document.getElementById('sM').textContent=approved.filter(p=>p.sexo==='Femenino').length;
-  document.getElementById('sMat').textContent=matches.filter(m=>!['Casados','Rechazado','No funcionó'].includes(m.status)).length;
-  const bc=document.getElementById('bcPend');
-  bc.textContent=pending.length; bc.classList.toggle('show',pending.length>0);
-  renderRecent(approved);
-  filterP();
+  const matches=(st.matches||[]).filter(m=>!['Casados','Rechazado','No funcionó'].includes(m.status));
+  document.getElementById('nPend').textContent=pending.length;
+  document.getElementById('nMatchAct').textContent=matches.length;
+  document.getElementById('nTotal').textContent=approved.length;
+  document.getElementById('nH').textContent=approved.filter(p=>p.sexo==='Masculino').length;
+  document.getElementById('nM').textContent=approved.filter(p=>p.sexo==='Femenino').length;
+  const bp=document.getElementById('badgePend');
+  bp.textContent=pending.length; bp.classList.toggle('show',pending.length>0);
+  const bm=document.getElementById('badgeMatches');
+  bm.textContent=matches.length; bm.classList.toggle('show',matches.length>0);
 }
 
-// ── DASHBOARD ─────────────────────────────────────────────────
-function renderRecent(approved){
-  const rows=[...approved].slice(-5).reverse();
-  document.getElementById('recentBody').innerHTML=rows.length?rows.map(p=>`
-    <tr>
-      <td>${av(p)}</td>
-      <td><div class="tname">${p.nombre||'—'}</div></td>
-      <td>${p.edad||'—'}</td>
-      <td>${city(p)}</td>
-      <td>${p.orientacionReligiosa||'—'}</td>
-      <td><button class="btn b-ghost b-sm" onclick="openProfile(${p._idx})">Ver</button></td>
-    </tr>`).join('')
-    :'<tr><td colspan="6"><div class="empty-state"><div class="es-ico">◎</div><div class="es-txt">Sin perfiles aprobados todavía.</div></div></td></tr>';
+// ── CARDS ─────────────────────────────────────────────────────
+function av(p,size=80){
+  if(p.foto) return `<img class="pc-foto" src="${p.foto}" style="height:${size}px" onerror="this.outerHTML='<div class=\\'pc-foto-ph\\' style=\\'height:${size}px\\'></div>'">`;
+  return `<div class="pc-foto-ph" style="height:${size}px"></div>`;
 }
+function avSm(p){
+  if(p.foto) return `<img class="mc-av" src="${p.foto}" onerror="this.outerHTML='<div class=\\'mc-av-ph\\'></div>'">`;
+  return `<div class="mc-av-ph"></div>`;
+}
+function city(p){return p.barrioZona||p.regionProvincia||p.paisResidencia||'—';}
 
-// ── PENDIENTES ────────────────────────────────────────────────
-function renderPend(){
+function renderCard(p){
   const st=gs();
-  const pending=allP.filter(p=>!st.approved[p._idx]&&!st.rejected[p._idx]);
-  const el=document.getElementById('pendList');
-  if(!pending.length){el.innerHTML='<div class="empty-state"><div class="es-ico">✓</div><div class="es-txt">Todo al día. No hay perfiles pendientes.</div></div>';return;}
-  el.innerHTML=pending.map(p=>`
-    <div class="pend-card">
-      <div class="pend-hd">
-        ${av(p,44)}
-        <div class="pend-info">
-          <div class="pend-name">${p.nombre||'—'}</div>
-          <div class="pend-detail">${p.edad||'?'} años · ${p.sexo||'—'} · ${p.orientacionReligiosa||'—'} · ${city(p)}</div>
-        </div>
-        <span class="sch s-pendiente">Nuevo</span>
-      </div>
-      <div class="pend-contact">
-        Registrado por: <strong>${p.contactoNombre||'—'}</strong> · ${p.contactoWhatsapp||''}${p.relacion?' · '+p.relacion:''}
-      </div>
-      <div class="pend-acts">
-        <button class="btn b-ghost b-sm" onclick="openProfile(${p._idx})">Ver perfil completo</button>
-        <button class="btn b-ghost b-sm" onclick="openEdit(${p._idx})">✎ Editar</button>
-        <button class="btn b-black b-sm" onclick="approveP(${p._idx})">✓ Aprobar</button>
-        <button class="btn b-danger b-sm" onclick="rejectP(${p._idx})">✕ Rechazar</button>
-      </div>
-    </div>`).join('');
+  const isPend=!st.approved[p._idx]&&!st.rejected[p._idx];
+  const isRedFlag=p.abuelaMaterna==='No';
+  const chipClass=p.sexo==='Masculino'?'chip-m':'chip-f';
+  return `<div class="profile-card${isRedFlag?' red-flag':''}" onclick="openProfile(${p._idx})">
+    ${av(p)}
+    <div class="pc-body">
+      <div class="pc-name">${p.nombre||'—'}</div>
+      <div class="pc-detail">${p.edad||'?'} años · ${city(p)}</div>
+      <span class="pc-chip ${isPend?'chip-pend':chipClass}">${isPend?'Pendiente':p.sexo||'—'}</span>
+    </div>
+  </div>`;
 }
 
-function approveP(idx){
-  const st=gs(); st.approved=st.approved||{}; st.approved[idx]=true; ss(st);
-  addHist(idx,{tipo:'Aprobado',nota:'Perfil aprobado y agregado al sistema.'});
-  updateAll(); renderPend();
-}
-function rejectP(idx){
-  if(!confirm('¿Rechazar este perfil?')) return;
-  const st=gs(); st.rejected=st.rejected||{}; st.rejected[idx]=true; ss(st);
-  updateAll(); renderPend();
+function renderRecent(){
+  const st=gs();
+  const recent=allP.filter(p=>st.approved[p._idx]).slice(-8).reverse();
+  document.getElementById('recentGrid').innerHTML=recent.length?recent.map(renderCard).join(''):'<div class="empty">Sin perfiles aprobados todavía.</div>';
 }
 
-// ── PERFILES ──────────────────────────────────────────────────
-function filterP(){
+function renderProfiles(){
   const st=gs();
   const q=document.getElementById('searchQ').value.toLowerCase();
-  const sx=document.getElementById('fSexo').value;
-  const rl=document.getElementById('fRelig').value;
+  const sexo=document.getElementById('fSexo').value;
+  const tab=document.getElementById('fTab').value;
   const list=allP.filter(p=>{
-    if(!st.approved[p._idx]) return false;
-    return (!q||(p.nombre||'').toLowerCase().includes(q))&&
-           (!sx||p.sexo===sx)&&(!rl||p.orientacionReligiosa===rl);
+    const isPend=!st.approved[p._idx]&&!st.rejected[p._idx];
+    const isApp=st.approved[p._idx];
+    if(tab==='aprobado'&&!isApp) return false;
+    if(tab==='pendiente'&&!isPend) return false;
+    if(sexo&&p.sexo!==sexo) return false;
+    return !q||(p.nombre||'').toLowerCase().includes(q);
   });
-  const body=document.getElementById('profBody');
-  if(!list.length){body.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="es-ico">◎</div><div class="es-txt">Sin resultados.</div></div></td></tr>';return;}
-  body.innerHTML=list.map(p=>`
-    <tr>
-      <td>${av(p)}</td>
-      <td><div class="tname">${p.nombre||'—'}</div></td>
-      <td>${p.edad||'—'}</td>
-      <td><span class="chip ${p.sexo==='Masculino'?'chip-m':'chip-f'}">${p.sexo||'—'}</span></td>
-      <td>${city(p)}</td>
-      <td>${p.orientacionReligiosa||'—'}</td>
-      <td>${p.fecha?new Date(p.fecha).toLocaleDateString('es-AR'):'—'}</td>
-      <td style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="btn b-ghost b-sm" onclick="openProfile(${p._idx})">Ver</button>
-        <button class="btn b-ghost b-sm" onclick="openEdit(${p._idx})">✎</button>
-        <button class="btn b-ghost b-sm" onclick="openHist(${p._idx})">Historial</button>
-        <button class="btn b-gold b-sm" onclick="openSuggest(${p._idx})">Match ✦</button>
-      </td>
-    </tr>`).join('');
+  document.getElementById('profilesGrid').innerHTML=list.length?list.map(renderCard).join(''):'<div class="empty">Sin resultados.</div>';
 }
 
 // ── VER PERFIL ────────────────────────────────────────────────
 function openProfile(idx){
   const p=allP[idx];
-  const st=gs(); const isApp=st.approved[idx];
-  document.getElementById('pmTitle').textContent=p.nombre||'Perfil';
+  const st=gs();
+  const isPend=!st.approved[idx]&&!st.rejected[idx];
+  const isApp=st.approved[idx];
+  document.getElementById('pmName').textContent=p.nombre||'Perfil';
   document.getElementById('pmSub').textContent=`${p.edad||'?'} años · ${p.sexo||''} · ${p.orientacionReligiosa||''} · ${city(p)}`;
+  const ra=document.getElementById('redAlert');
+  ra.classList.toggle('show', p.abuelaMaterna==='No');
   const secs=[
     ['Información personal',[['Edad',p.edad],['Sexo',p.sexo],['Estado civil',p.estadoCivil],['Hijos',p.hijos],['Detalle hijos',p.hijosDetalle],['Nacionalidad',p.nacionalidad],['Residencia',[p.paisResidencia,p.regionProvincia,p.barrioZona].filter(Boolean).join(', ')],['Altura',p.altura]]],
     ['Contacto',[['Registrado por',p.contactoNombre],['WhatsApp',p.contactoWhatsapp],['Relación',p.relacion]]],
-    ['Observancia',[['Orientación',p.orientacionReligiosa],['Ascendencia',p.ascendencia],['Kashrut',p.kashrut],['Shabat',p.shabat],['Baal teshuvá',p.baalTeshuva],['Converso/a',p.converso],['Antecedentes familia',p.antecedentesFamilia],['Templo',p.templo],['Estudio de Torá',p.estudioDeTora],['Kipá',p.kipa],['Tseniut',p.tseniut],['Cubre pelo',p.cubrePelo]]],
+    ['Observancia',[['Abuela materna judía',p.abuelaMaterna],['Orientación',p.orientacionReligiosa],['Ascendencia',p.ascendencia],['Kashrut',p.kashrut],['Shabat',p.shabat],['Baal teshuvá',p.baalTeshuva],['Converso/a',p.converso],['Antecedentes familia',p.antecedentesFamilia],['Templo',p.templo],['Estudio de Torá',p.estudioDeTora],['Kipá',p.kipa],['Tseniut',p.tseniut],['Cubre pelo',p.cubrePelo]]],
     ['Educación',[['Profesión',p.profesion],['Primaria',p.primaria],['Secundaria',p.secundaria],['Universidad',p.universidad],['Carrera',p.carrera],['Idiomas',Array.isArray(p.idiomas)?p.idiomas.join(', '):p.idiomas],['Plan de aliá',p.planAlia]]],
     ['Qué busca',[['Rango de edad',p.edadDesde&&p.edadHasta?`${p.edadDesde}–${p.edadHasta} años`:''],['Abierto a hijos',p.abiertoHijos],['Orientación buscada',Array.isArray(p.orientacionBuscada)?p.orientacionBuscada.join(', '):p.orientacionBuscada],['Dealbreakers',p.dealbreakers],['Persona ideal',p.personaIdeal],['Notas',p.notasExtra]]],
   ];
@@ -535,296 +541,453 @@ function openProfile(idx){
     <div class="psec">${s}</div>
     <div class="pgrid">${fs.filter(([,v])=>v&&v!=='No sé').map(([k,v])=>`<div class="pf"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>`).join('');
   document.getElementById('pmActs').innerHTML=`
-    <button class="btn b-ghost b-sm" onclick="openEdit(${idx});closeOv('ovProfile')">✎ Editar</button>
-    <button class="btn b-ghost b-sm" onclick="openHist(${idx});closeOv('ovProfile')">Historial</button>
-    <button class="btn b-gold b-sm" onclick="openSuggest(${idx});closeOv('ovProfile')">Match ✦</button>
-    ${!isApp?`<button class="btn b-black b-sm" onclick="approveP(${idx});closeOv('ovProfile')">✓ Aprobar</button>`:''}
-    ${!isApp?`<button class="btn b-danger b-sm" onclick="rejectP(${idx});closeOv('ovProfile')">✕ Rechazar</button>`:''}
+    <button class="btn btn-ghost btn-sm" onclick="openEdit(${idx});closeOv('ovProfile')">Editar</button>
+    <button class="btn btn-ghost btn-sm" onclick="openHist(${idx});closeOv('ovProfile')">Historial</button>
+    <button class="btn btn-gold btn-sm" onclick="openMatch(${idx});closeOv('ovProfile')">Buscar match</button>
+    ${isPend?`<button class="btn btn-navy btn-sm" onclick="approveP(${idx});closeOv('ovProfile')">Aprobar</button>`:''}
+    ${isPend||isApp?`<button class="btn btn-danger btn-sm" onclick="rejectP(${idx});closeOv('ovProfile')">Rechazar</button>`:''}
   `;
   openOv('ovProfile');
 }
 
-// ── EDITAR PERFIL ─────────────────────────────────────────────
-const RELIG_OPTS=['Simplemente judío/a','Espiritual no religioso','Tradicionalista','Ortodoxo moderno','Ortodoxo','Jasídico','Jabad','Dati leumi','Jaredí'];
-function selOpts(opts,val){return'<option value="">—</option>'+opts.map(o=>`<option${o===val?' selected':''}>${o}</option>`).join('');}
+function approveP(idx){
+  const st=gs();st.approved=st.approved||{};st.approved[idx]=true;ss(st);
+  addHist(idx,{tipo:'Aprobado',nota:'Perfil aprobado.'});
+  updateStats();renderProfiles();renderRecent();
+}
+function rejectP(idx){
+  if(!confirm('¿Rechazar este perfil?'))return;
+  const st=gs();st.rejected=st.rejected||{};st.rejected[idx]=true;delete st.approved[idx];ss(st);
+  updateStats();renderProfiles();renderRecent();
+}
+
+// ── EDIT ──────────────────────────────────────────────────────
+let editIdx=null;
+const RELIG=['Simplemente judío/a','Espiritual no religioso','Tradicionalista','Ortodoxo moderno','Ortodoxo','Jasídico','Jabad','Dati leumi','Jaredí'];
+function selO(opts,val){return'<option value="">—</option>'+opts.map(o=>`<option${o===val?' selected':''}>${o}</option>`).join('');}
 
 function openEdit(idx){
-  editIdx=idx; const p=allP[idx];
-  document.getElementById('emTitle').textContent=`Editar — ${p.nombre||'Perfil'}`;
+  editIdx=idx;const p=allP[idx];
+  document.getElementById('emName').textContent=`Editar — ${p.nombre||''}`;
   document.getElementById('emForm').innerHTML=`
-    <div class="ef-sec">Información personal</div>
+    <div class="ef-sec">Datos personales</div>
     <div class="ef-field"><label>Nombre completo</label><input id="ef-nombre" value="${p.nombre||''}"></div>
     <div class="ef-field"><label>Edad</label><input id="ef-edad" type="number" value="${p.edad||''}"></div>
-    <div class="ef-field"><label>Sexo</label><select id="ef-sexo">${selOpts(['Femenino','Masculino'],p.sexo)}</select></div>
-    <div class="ef-field"><label>Estado civil</label><select id="ef-estado">${selOpts(['Soltero/a','Divorciado/a','Viudo/a'],p.estadoCivil)}</select></div>
-    <div class="ef-field"><label>Hijos</label><select id="ef-hijos">${selOpts(['No','Sí'],p.hijos)}</select></div>
+    <div class="ef-field"><label>Sexo</label><select id="ef-sexo">${selO(['Femenino','Masculino'],p.sexo)}</select></div>
+    <div class="ef-field"><label>Estado civil</label><select id="ef-estado">${selO(['Soltero/a','Divorciado/a','Viudo/a'],p.estadoCivil)}</select></div>
+    <div class="ef-field"><label>Hijos</label><select id="ef-hijos">${selO(['No','Sí'],p.hijos)}</select></div>
     <div class="ef-field"><label>Detalle hijos</label><input id="ef-hijosD" value="${p.hijosDetalle||''}"></div>
     <div class="ef-field"><label>Nacionalidad</label><input id="ef-nac" value="${p.nacionalidad||''}"></div>
     <div class="ef-field"><label>País residencia</label><input id="ef-pais" value="${p.paisResidencia||''}"></div>
-    <div class="ef-field"><label>Provincia / Ciudad</label><input id="ef-region" value="${p.regionProvincia||''}"></div>
+    <div class="ef-field"><label>Ciudad</label><input id="ef-region" value="${p.regionProvincia||''}"></div>
     <div class="ef-field"><label>Barrio</label><input id="ef-barrio" value="${p.barrioZona||''}"></div>
-    <div class="ef-field"><label>Altura</label><select id="ef-altura">${selOpts(['Bajo/a','Mediano/a','Alto/a'],p.altura)}</select></div>
-    <div class="ef-sec">Contacto</div>
-    <div class="ef-field"><label>Nombre del contacto</label><input id="ef-cNombre" value="${p.contactoNombre||''}"></div>
-    <div class="ef-field"><label>WhatsApp del contacto</label><input id="ef-cWA" value="${p.contactoWhatsapp||''}"></div>
+    <div class="ef-field"><label>Altura</label><select id="ef-altura">${selO(['Bajo/a','Mediano/a','Alto/a'],p.altura)}</select></div>
+    <div class="ef-field"><label>Contacto</label><input id="ef-cNombre" value="${p.contactoNombre||''}"></div>
+    <div class="ef-field"><label>WhatsApp</label><input id="ef-cWA" value="${p.contactoWhatsapp||''}"></div>
     <div class="ef-sec">Observancia</div>
-    <div class="ef-field"><label>Orientación religiosa</label><select id="ef-relig">${selOpts(RELIG_OPTS,p.orientacionReligiosa)}</select></div>
-    <div class="ef-field"><label>Ascendencia</label><select id="ef-asc">${selOpts(['Ashkenazí','Sefardí','Mezcla'],p.ascendencia)}</select></div>
-    <div class="ef-field"><label>Kashrut</label><select id="ef-kash">${selOpts(['Nunca','En casa','Siempre','Parcialmente'],p.kashrut)}</select></div>
-    <div class="ef-field"><label>Shabat</label><select id="ef-shab">${selOpts(['Nada','Kidush y algunos preceptos','Completo'],p.shabat)}</select></div>
-    <div class="ef-field"><label>Baal teshuvá</label><select id="ef-bt">${selOpts(['Sí','No'],p.baalTeshuva)}</select></div>
-    <div class="ef-field"><label>Converso/a</label><select id="ef-conv">${selOpts(['Sí','No'],p.converso)}</select></div>
-    <div class="ef-field ef-full"><label>Antecedentes religiosos de la familia</label><select id="ef-ant">${selOpts(RELIG_OPTS,p.antecedentesFamilia)}</select></div>
+    <div class="ef-field"><label>Abuela materna judía</label><select id="ef-abuela">${selO(['Sí','No','No sé'],p.abuelaMaterna)}</select></div>
+    <div class="ef-field"><label>Orientación religiosa</label><select id="ef-relig">${selO(RELIG,p.orientacionReligiosa)}</select></div>
+    <div class="ef-field"><label>Ascendencia</label><select id="ef-asc">${selO(['Ashkenazí','Sefardí','Mezcla'],p.ascendencia)}</select></div>
+    <div class="ef-field"><label>Kashrut</label><select id="ef-kash">${selO(['Nunca','En casa','Siempre','Parcialmente'],p.kashrut)}</select></div>
+    <div class="ef-field"><label>Shabat</label><select id="ef-shab">${selO(['Nada','Kidush y algunos preceptos','Completo'],p.shabat)}</select></div>
+    <div class="ef-field"><label>Baal teshuvá</label><select id="ef-bt">${selO(['Sí','No'],p.baalTeshuva)}</select></div>
+    <div class="ef-field"><label>Converso/a</label><select id="ef-conv">${selO(['Sí','No'],p.converso)}</select></div>
+    <div class="ef-field ef-full"><label>Antecedentes familia</label><select id="ef-ant">${selO(RELIG,p.antecedentesFamilia)}</select></div>
     <div class="ef-field ef-full"><label>Templo</label><input id="ef-templo" value="${p.templo||''}"></div>
-    <div class="ef-field"><label>Estudio de Torá</label><select id="ef-tora">${selOpts(['Nunca','A veces','Una vez a la semana','Varias veces a la semana'],p.estudioDeTora)}</select></div>
-    <div class="ef-field"><label>Kipá</label><select id="ef-kipa">${selOpts(['Sí, siempre','Solo en el templo / ocasiones especiales','No'],p.kipa)}</select></div>
-    <div class="ef-field"><label>Tseniut</label><select id="ef-tsen">${selOpts(['Sí','Parcial','No'],p.tseniut)}</select></div>
-    <div class="ef-field"><label>Cubre pelo</label><select id="ef-pelo">${selOpts(['Sí','No','Parcialmente','Posiblemente'],p.cubrePelo)}</select></div>
+    <div class="ef-field"><label>Estudio de Torá</label><select id="ef-tora">${selO(['Nunca','A veces','Una vez a la semana','Varias veces a la semana'],p.estudioDeTora)}</select></div>
+    <div class="ef-field"><label>Kipá</label><select id="ef-kipa">${selO(['Sí, siempre','Solo en el templo / ocasiones especiales','No'],p.kipa)}</select></div>
+    <div class="ef-field"><label>Tseniut</label><select id="ef-tsen">${selO(['Sí','Parcial','No'],p.tseniut)}</select></div>
+    <div class="ef-field"><label>Cubre pelo</label><select id="ef-pelo">${selO(['Sí','No','Parcialmente','Posiblemente'],p.cubrePelo)}</select></div>
     <div class="ef-sec">Educación</div>
     <div class="ef-field"><label>Profesión</label><input id="ef-prof" value="${p.profesion||''}"></div>
-    <div class="ef-field"><label>Primaria</label><input id="ef-pri" value="${p.primaria||''}"></div>
-    <div class="ef-field"><label>Secundaria</label><input id="ef-sec" value="${p.secundaria||''}"></div>
     <div class="ef-field"><label>Universidad</label><input id="ef-univ" value="${p.universidad||''}"></div>
-    <div class="ef-field"><label>Carrera</label><input id="ef-car" value="${p.carrera||''}"></div>
     <div class="ef-field ef-full"><label>Idiomas</label><input id="ef-idiomas" value="${Array.isArray(p.idiomas)?p.idiomas.join(', '):(p.idiomas||'')}"></div>
-    <div class="ef-field"><label>Plan de aliá</label><select id="ef-alia">${selOpts(['Sí','No','Quizás'],p.planAlia)}</select></div>
+    <div class="ef-field"><label>Plan de aliá</label><select id="ef-alia">${selO(['Sí','No','Quizás'],p.planAlia)}</select></div>
     <div class="ef-sec">Qué busca</div>
     <div class="ef-field"><label>Edad desde</label><input id="ef-eD" type="number" value="${p.edadDesde||''}"></div>
     <div class="ef-field"><label>Edad hasta</label><input id="ef-eH" type="number" value="${p.edadHasta||''}"></div>
-    <div class="ef-field"><label>Abierto a hijos</label><select id="ef-abhijos">${selOpts(['Sí','No','Depende'],p.abiertoHijos)}</select></div>
+    <div class="ef-field"><label>Abierto a hijos</label><select id="ef-abhijos">${selO(['Sí','No','Depende'],p.abiertoHijos)}</select></div>
     <div class="ef-field ef-full"><label>Orientación buscada</label><input id="ef-ob" value="${Array.isArray(p.orientacionBuscada)?p.orientacionBuscada.join(', '):(p.orientacionBuscada||'')}"></div>
     <div class="ef-field ef-full"><label>Dealbreakers</label><textarea id="ef-deal">${p.dealbreakers||''}</textarea></div>
     <div class="ef-field ef-full"><label>Persona ideal</label><textarea id="ef-ideal">${p.personaIdeal||''}</textarea></div>
-    <div class="ef-field ef-full"><label>Notas extra</label><textarea id="ef-notas">${p.notasExtra||''}</textarea></div>
+    <div class="ef-field ef-full"><label>Notas</label><textarea id="ef-notas">${p.notasExtra||''}</textarea></div>
   `;
   openOv('ovEdit');
 }
 
 function gv(id){const e=document.getElementById(id);return e?e.value.trim():'';}
-
 async function saveEdit(){
   const p=allP[editIdx];
   const updated={
-    nombre:gv('ef-nombre'),edad:gv('ef-edad'),sexo:gv('ef-sexo'),
-    estadoCivil:gv('ef-estado'),hijos:gv('ef-hijos'),hijosDetalle:gv('ef-hijosD'),
-    nacionalidad:gv('ef-nac'),paisResidencia:gv('ef-pais'),
-    regionProvincia:gv('ef-region'),barrioZona:gv('ef-barrio'),altura:gv('ef-altura'),
-    contactoNombre:gv('ef-cNombre'),contactoWhatsapp:gv('ef-cWA'),
-    orientacionReligiosa:gv('ef-relig'),ascendencia:gv('ef-asc'),
-    kashrut:gv('ef-kash'),shabat:gv('ef-shab'),baalTeshuva:gv('ef-bt'),
-    converso:gv('ef-conv'),antecedentesFamilia:gv('ef-ant'),
-    templo:gv('ef-templo'),estudioDeTora:gv('ef-tora'),
+    nombre:gv('ef-nombre'),edad:gv('ef-edad'),sexo:gv('ef-sexo'),estadoCivil:gv('ef-estado'),
+    hijos:gv('ef-hijos'),hijosDetalle:gv('ef-hijosD'),nacionalidad:gv('ef-nac'),
+    paisResidencia:gv('ef-pais'),regionProvincia:gv('ef-region'),barrioZona:gv('ef-barrio'),
+    altura:gv('ef-altura'),contactoNombre:gv('ef-cNombre'),contactoWhatsapp:gv('ef-cWA'),
+    abuelaMaterna:gv('ef-abuela'),orientacionReligiosa:gv('ef-relig'),ascendencia:gv('ef-asc'),
+    kashrut:gv('ef-kash'),shabat:gv('ef-shab'),baalTeshuva:gv('ef-bt'),converso:gv('ef-conv'),
+    antecedentesFamilia:gv('ef-ant'),templo:gv('ef-templo'),estudioDeTora:gv('ef-tora'),
     kipa:gv('ef-kipa'),tseniut:gv('ef-tsen'),cubrePelo:gv('ef-pelo'),
-    profesion:gv('ef-prof'),primaria:gv('ef-pri'),secundaria:gv('ef-sec'),
-    universidad:gv('ef-univ'),carrera:gv('ef-car'),
+    profesion:gv('ef-prof'),universidad:gv('ef-univ'),
     idiomas:gv('ef-idiomas').split(',').map(s=>s.trim()).filter(Boolean),
-    planAlia:gv('ef-alia'),
-    edadDesde:gv('ef-eD'),edadHasta:gv('ef-eH'),abiertoHijos:gv('ef-abhijos'),
+    planAlia:gv('ef-alia'),edadDesde:gv('ef-eD'),edadHasta:gv('ef-eH'),
+    abiertoHijos:gv('ef-abhijos'),
     orientacionBuscada:gv('ef-ob').split(',').map(s=>s.trim()).filter(Boolean),
     dealbreakers:gv('ef-deal'),personaIdeal:gv('ef-ideal'),notasExtra:gv('ef-notas'),
   };
-  // Actualizar local
-  Object.assign(allP[editIdx], updated);
+  Object.assign(allP[editIdx],updated);
   addHist(editIdx,{tipo:'Editado',nota:'Perfil actualizado manualmente.'});
-  // Enviar al Sheet
-  try{
-    await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'updateProfile',rowNum:p._rowNum,profile:updated}),mode:'no-cors'});
-  }catch(e){}
-  closeOv('ovEdit');
-  updateAll();
+  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'updateProfile',rowNum:p._rowNum,profile:updated}),mode:'no-cors'});}catch(e){}
+  closeOv('ovEdit');updateStats();renderProfiles();renderRecent();
 }
 
 // ── HISTORIAL ─────────────────────────────────────────────────
-function addHist(idx,event){
-  const st=gs();
-  st.history=st.history||{};
-  st.history[idx]=st.history[idx]||[];
-  st.history[idx].push({...event,fecha:new Date().toISOString()});
-  ss(st);
-}
-
 function openHist(idx){
-  const p=allP[idx];
-  const st=gs();
+  const p=allP[idx];const st=gs();
   const hist=(st.history&&st.history[idx])||[];
-  const matchHist=(st.matches||[]).filter(m=>m.idxA===idx||m.idxB===idx);
-  document.getElementById('histTitle').textContent=`Historial — ${p.nombre||'Perfil'}`;
-  const allEvents=[
-    ...hist.map(h=>({...h,_type:'event'})),
-    ...matchHist.map(m=>({tipo:'Match',nota:`Match con ${m.idxA===idx?m.nameB:m.nameA} · Estado: ${m.status}`,fecha:m.fecha,_type:'match'}))
-  ].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-  document.getElementById('histBody').innerHTML=allEvents.length?allEvents.map(e=>`
+  const matchHist=(st.matches||[]).filter(m=>m.idxA===idx||m.idxB===idx).map(m=>({
+    tipo:'Match',nota:`Con ${m.idxA===idx?m.nameB:m.nameA} — ${m.status}`,fecha:m.fecha,isMatch:true
+  }));
+  const all=[...hist,...matchHist].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  document.getElementById('histName').textContent=`Historial — ${p.nombre||''}`;
+  document.getElementById('histBody').innerHTML=all.length?all.map(e=>`
     <div class="hist-item">
-      <div class="hist-dot ${e._type==='match'?'done':''}"></div>
+      <div class="hist-dot ${e.isMatch?'match':''}"></div>
       <div class="hist-body">
-        <div class="hist-title">${e.tipo}</div>
-        ${e.nota?`<div class="hist-note">${e.nota}</div>`:''}
-        <div class="hist-date">${new Date(e.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+        <div class="hist-t">${e.tipo}</div>
+        ${e.nota?`<div class="hist-n">${e.nota}</div>`:''}
+        <div class="hist-d">${new Date(e.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
       </div>
-    </div>`).join('')
-    :'<div class="empty-state"><div class="es-ico">○</div><div class="es-txt">Sin eventos registrados todavía.</div></div>';
+    </div>`).join(''):'<div class="empty">Sin eventos.</div>';
   openOv('ovHist');
 }
 
-// ── SCORING ───────────────────────────────────────────────────
-function calcScore(a,b){
-  if(a.sexo===b.sexo) return -1;
-  let s=0;
-  const ord=['Simplemente judío/a','Espiritual no religioso','Tradicionalista','Ortodoxo moderno','Ortodoxo','Jasídico','Jabad','Dati leumi','Jaredí'];
-  const ra=ord.indexOf(a.orientacionReligiosa),rb=ord.indexOf(b.orientacionReligiosa);
-  if(ra!==-1&&rb!==-1){const d=Math.abs(ra-rb);s+=d===0?30:d===1?18:d===2?8:0;}
-  const eA=+a.edad,eB=+b.edad,d1=+a.edadDesde,h1=+a.edadHasta,d2=+b.edadDesde,h2=+b.edadHasta;
-  if(eA&&d2&&h2&&eA>=d2&&eA<=h2) s+=15;
-  if(eB&&d1&&h1&&eB>=d1&&eB<=h1) s+=15;
-  const obA=Array.isArray(a.orientacionBuscada)?a.orientacionBuscada:(a.orientacionBuscada||'').split(',').map(x=>x.trim());
-  const obB=Array.isArray(b.orientacionBuscada)?b.orientacionBuscada:(b.orientacionBuscada||'').split(',').map(x=>x.trim());
-  if(obA.includes(b.orientacionReligiosa)) s+=20;
-  if(obB.includes(a.orientacionReligiosa)) s+=20;
-  if(city(a)&&city(b)&&city(a)===city(b)) s+=10;
-  if(a.hijos==='Sí'&&b.abiertoHijos==='No') s-=20;
-  if(b.hijos==='Sí'&&a.abiertoHijos==='No') s-=20;
-  if(a.planAlia&&b.planAlia&&a.planAlia===b.planAlia) s+=5;
-  return Math.max(0,Math.min(100,s));
+// ── MATCHING ──────────────────────────────────────────────────
+const RELIG_ORD=['Simplemente judío/a','Espiritual no religioso','Tradicionalista','Ortodoxo moderno','Ortodoxo','Jasídico','Jabad','Dati leumi','Jaredí'];
+
+// Filtros: {id, label, base, tipo: 'igual'|'spec', opciones?, applies: 'ambos'|'H'|'M'}
+const FILTER_DEFS=[
+  {id:'pais',label:'País de residencia',base:true,tipo:'igual',applies:'ambos'},
+  {id:'edad',label:'Rango de edad',base:true,tipo:'igual',applies:'ambos'},
+  {id:'relig',label:'Orientación religiosa',base:true,tipo:'spec',opciones:RELIG_ORD,applies:'ambos'},
+  {id:'kashrut',label:'Kashrut',base:true,tipo:'spec',opciones:['Nunca','En casa','Siempre','Parcialmente'],applies:'ambos'},
+  {id:'shabat',label:'Shabat',base:true,tipo:'spec',opciones:['Nada','Kidush y algunos preceptos','Completo'],applies:'ambos'},
+  {id:'alia',label:'Plan de aliá',base:true,tipo:'spec',opciones:['Sí','No','Quizás'],applies:'ambos'},
+  {id:'hijos',label:'Hijos / abierto a hijos',base:true,tipo:'igual',applies:'ambos'},
+  {id:'estado',label:'Estado civil',base:true,tipo:'spec',opciones:['Soltero/a','Divorciado/a','Viudo/a'],applies:'ambos'},
+  {id:'idiomas',label:'Idioma en común',base:true,tipo:'igual',applies:'ambos'},
+  {id:'asc',label:'Ascendencia',base:false,tipo:'spec',opciones:['Ashkenazí','Sefardí','Mezcla'],applies:'ambos'},
+  {id:'bt',label:'Baal teshuvá',base:false,tipo:'spec',opciones:['Sí','No'],applies:'ambos'},
+  {id:'conv',label:'Converso/a',base:false,tipo:'spec',opciones:['Sí','No'],applies:'ambos'},
+  {id:'tora',label:'Estudio de Torá',base:false,tipo:'spec',opciones:['Nunca','A veces','Una vez a la semana','Varias veces a la semana'],applies:'ambos'},
+  {id:'kipa',label:'Kipá',base:false,tipo:'spec',opciones:['Sí, siempre','Solo en el templo / ocasiones especiales','No'],applies:'H'},
+  {id:'tsen',label:'Tseniut',base:false,tipo:'spec',opciones:['Sí','Parcial','No'],applies:'M'},
+  {id:'pelo',label:'Cubre pelo',base:false,tipo:'spec',opciones:['Sí','No','Parcialmente','Posiblemente'],applies:'M'},
+  {id:'altura',label:'Altura',base:false,tipo:'spec',opciones:['Bajo/a','Mediano/a','Alto/a'],applies:'ambos'},
+];
+
+// Estado de filtros: {id: 'off'|'igual'|'spec', valores:[]}
+let filterState={};
+
+function initFilters(p){
+  // Reset: base activos en "igual", opcionales en "off"
+  filterState={};
+  FILTER_DEFS.forEach(f=>{
+    // Filtrar los que no aplican por sexo
+    if(f.applies==='H'&&p.sexo!=='Femenino') return; // para buscar H para F
+    if(f.applies==='M'&&p.sexo!=='Masculino') return; // para buscar M para H
+    filterState[f.id]={mode:f.base?'igual':'off',valores:[]};
+  });
 }
 
-// ── SUGGEST ───────────────────────────────────────────────────
-function openSuggest(idx){
-  const st=gs(); const p=allP[idx];
+function renderFilters(p){
+  const panel=document.getElementById('filtersPanel');
+  const opposite=p.sexo==='Masculino'?'F':'M';
+  panel.innerHTML=FILTER_DEFS.map(f=>{
+    // Ocultar filtros que no aplican
+    if(f.applies==='H'&&opposite!=='H') return '';
+    if(f.applies==='M'&&opposite!=='M') return '';
+    const st=filterState[f.id]||{mode:'off',valores:[]};
+    const specVisible=st.mode==='spec';
+    const specHtml=f.opciones?`
+      <div class="filter-spec${specVisible?' show':''}" id="spec-${f.id}">
+        <select multiple onchange="updateSpecVal('${f.id}',this)">
+          ${f.opciones.map(o=>`<option${(st.valores||[]).includes(o)?' selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>`:'';
+    return `<div class="filter-row" id="fr-${f.id}">
+      <div class="filter-name${f.base?'':''}">${f.label}</div>
+      <div class="filter-toggle">
+        <button class="ft-btn${st.mode==='off'?' active':''}" onclick="setFilter('${f.id}','off')">No</button>
+        <button class="ft-btn${st.mode==='igual'?' active igual':''}" onclick="setFilter('${f.id}','igual')">Igual</button>
+        ${f.opciones?`<button class="ft-btn${st.mode==='spec'?' active spec':''}" onclick="setFilter('${f.id}','spec')">Específico</button>`:''}
+      </div>
+      ${specHtml}
+    </div>`;
+  }).join('');
+}
+
+function setFilter(id,mode){
+  if(!filterState[id]) filterState[id]={mode:'off',valores:[]};
+  filterState[id].mode=mode;
+  // Mostrar/ocultar spec
+  const spec=document.getElementById('spec-'+id);
+  if(spec)spec.classList.toggle('show',mode==='spec');
+  // Actualizar botones
+  const row=document.getElementById('fr-'+id);
+  if(row){
+    row.querySelectorAll('.ft-btn').forEach((b,i)=>{
+      const modes=['off','igual','spec'];
+      b.classList.toggle('active',modes[i]===mode);
+      b.classList.toggle('igual',modes[i]==='igual'&&mode==='igual');
+      b.classList.toggle('spec',modes[i]==='spec'&&mode==='spec');
+    });
+  }
+}
+
+function updateSpecVal(id,sel){
+  if(!filterState[id]) filterState[id]={mode:'spec',valores:[]};
+  filterState[id].valores=Array.from(sel.selectedOptions).map(o=>o.value);
+}
+
+function openMatch(idx){
+  currentMatchIdx=idx;
+  const p=allP[idx];
+  document.getElementById('matchTitle').textContent=`Buscar match para ${p.nombre}`;
+  document.getElementById('matchSub').textContent=`${p.edad||'?'} años · ${p.sexo||''} · ${p.orientacionReligiosa||''} · ${city(p)}`;
+  document.getElementById('directSearch').value='';
+  document.getElementById('directResults').innerHTML='';
+  document.getElementById('matchResults').innerHTML='<div class="empty">Ajustá los filtros y apretá Buscar.</div>';
+  initFilters(p);
+  renderFilters(p);
+  openOv('ovMatch');
+}
+
+// Búsqueda directa por nombre
+function renderDirectResults(){
+  const q=document.getElementById('directSearch').value.toLowerCase().trim();
+  if(!q){document.getElementById('directResults').innerHTML='';return;}
+  const p=allP[currentMatchIdx];
+  const st=gs();
   const opposite=p.sexo==='Masculino'?'Femenino':'Masculino';
-  const cands=allP
-    .filter(c=>c.sexo===opposite&&c._idx!==idx&&st.approved[c._idx])
-    .map(c=>({c,s:calcScore(p,c)}))
-    .filter(x=>x.s>0)
-    .sort((a,b)=>b.s-a.s).slice(0,12);
-  document.getElementById('sugTitle').textContent=`Candidatos para ${p.nombre}`;
-  document.getElementById('sugBody').innerHTML=cands.length?cands.map(({c,s})=>`
-    <div class="sug-item">
-      ${av(c,40)}
-      <div class="sug-info">
-        <div class="sug-name">${c.nombre}</div>
-        <div class="sug-detail">${c.edad||'?'} años · ${c.orientacionReligiosa||'—'} · ${city(c)}</div>
+  const results=allP.filter(c=>{
+    if(c.sexo!==opposite||c._idx===currentMatchIdx) return false;
+    if(!st.approved[c._idx]) return false;
+    return (c.nombre||'').toLowerCase().includes(q);
+  });
+  document.getElementById('directResults').innerHTML=results.slice(0,5).map(c=>`
+    <div class="match-cand" onclick="createMatch(${currentMatchIdx},${c._idx})">
+      ${avSm(c)}
+      <div class="mc-info">
+        <div class="mc-name">${c.nombre}</div>
+        <div class="mc-det">${c.edad||'?'} años · ${c.orientacionReligiosa||'—'} · ${city(c)}</div>
       </div>
-      <div class="sug-score"><div class="sug-num">${s}</div><div class="sug-lbl">pts</div></div>
-      <div class="sug-btns">
-        <button class="btn b-ghost b-sm" onclick="openProfile(${c._idx})">Ver</button>
-        <button class="btn b-gold b-sm" onclick="createMatch(${idx},${c._idx})">Match ✦</button>
+      <button class="btn btn-gold btn-sm">Match</button>
+    </div>`).join('')||'<div class="empty">Sin resultados.</div>';
+}
+
+// Búsqueda por filtros
+function runFilters(){
+  const p=allP[currentMatchIdx];
+  const st=gs();
+  const opposite=p.sexo==='Masculino'?'Femenino':'Masculino';
+  const matchedBefore=new Set((st.matches||[]).filter(m=>m.idxA===currentMatchIdx||m.idxB===currentMatchIdx).map(m=>m.idxA===currentMatchIdx?m.idxB:m.idxA));
+  const activeMatches=new Set((st.matches||[]).filter(m=>!['Casados','Rechazado','No funcionó'].includes(m.status)).flatMap(m=>[m.idxA,m.idxB]));
+
+  const candidates=allP.filter(c=>{
+    if(c.sexo!==opposite||c._idx===currentMatchIdx) return false;
+    if(!st.approved[c._idx]) return false;
+    if(matchedBefore.has(c._idx)) return false;
+    if(activeMatches.has(c._idx)) return false;
+    if(c.abuelaMaterna==='No') return false;
+
+    // Aplicar filtros activos
+    const f=filterState;
+
+    // País
+    if(f.pais?.mode==='igual'&&p.paisResidencia&&c.paisResidencia&&p.paisResidencia!==c.paisResidencia) return false;
+
+    // Edad
+    if(f.edad?.mode==='igual'){
+      const eP=+p.edad,eC=+c.edad;
+      const dP=+p.edadDesde,hP=+p.edadHasta,dC=+c.edadDesde,hC=+c.edadHasta;
+      if(eC&&dP&&hP&&(eC<dP||eC>hP)) return false;
+      if(eP&&dC&&hC&&(eP<dC||eP>hC)) return false;
+    }
+
+    // Orientación religiosa
+    if(f.relig?.mode==='igual'){const rP=RELIG_ORD.indexOf(p.orientacionReligiosa),rC=RELIG_ORD.indexOf(c.orientacionReligiosa);if(rP!==-1&&rC!==-1&&Math.abs(rP-rC)>2) return false;}
+    if(f.relig?.mode==='spec'&&f.relig.valores.length>0&&!f.relig.valores.includes(c.orientacionReligiosa)) return false;
+
+    // Kashrut
+    if(f.kashrut?.mode==='igual'&&p.kashrut&&c.kashrut&&p.kashrut!==c.kashrut) return false;
+    if(f.kashrut?.mode==='spec'&&f.kashrut.valores.length>0&&!f.kashrut.valores.includes(c.kashrut)) return false;
+
+    // Shabat
+    if(f.shabat?.mode==='igual'&&p.shabat&&c.shabat&&p.shabat!==c.shabat) return false;
+    if(f.shabat?.mode==='spec'&&f.shabat.valores.length>0&&!f.shabat.valores.includes(c.shabat)) return false;
+
+    // Plan de aliá
+    if(f.alia?.mode==='igual'&&p.planAlia&&c.planAlia&&p.planAlia!==c.planAlia) return false;
+    if(f.alia?.mode==='spec'&&f.alia.valores.length>0&&!f.alia.valores.includes(c.planAlia)) return false;
+
+    // Hijos
+    if(f.hijos?.mode==='igual'){
+      if(p.hijos==='Sí'&&c.abiertoHijos==='No') return false;
+      if(c.hijos==='Sí'&&p.abiertoHijos==='No') return false;
+    }
+
+    // Estado civil
+    if(f.estado?.mode==='spec'&&f.estado.valores.length>0&&!f.estado.valores.includes(c.estadoCivil)) return false;
+
+    // Idiomas
+    if(f.idiomas?.mode==='igual'){
+      const iP=Array.isArray(p.idiomas)?p.idiomas:(p.idiomas||'').split(',').map(s=>s.trim());
+      const iC=Array.isArray(c.idiomas)?c.idiomas:(c.idiomas||'').split(',').map(s=>s.trim());
+      if(!iP.some(i=>iC.includes(i))) return false;
+    }
+
+    // Opcionales
+    if(f.asc?.mode==='igual'&&p.ascendencia&&c.ascendencia&&p.ascendencia!==c.ascendencia) return false;
+    if(f.asc?.mode==='spec'&&f.asc.valores.length>0&&!f.asc.valores.includes(c.ascendencia)) return false;
+    if(f.bt?.mode==='spec'&&f.bt.valores.length>0&&!f.bt.valores.includes(c.baalTeshuva)) return false;
+    if(f.conv?.mode==='spec'&&f.conv.valores.length>0&&!f.conv.valores.includes(c.converso)) return false;
+    if(f.tora?.mode==='spec'&&f.tora.valores.length>0&&!f.tora.valores.includes(c.estudioDeTora)) return false;
+    if(f.kipa?.mode==='spec'&&f.kipa.valores.length>0&&!f.kipa.valores.includes(c.kipa)) return false;
+    if(f.tsen?.mode==='spec'&&f.tsen.valores.length>0&&!f.tsen.valores.includes(c.tseniut)) return false;
+    if(f.pelo?.mode==='spec'&&f.pelo.valores.length>0&&!f.pelo.valores.includes(c.cubrePelo)) return false;
+    if(f.altura?.mode==='igual'&&p.altura&&c.altura&&p.altura!==c.altura) return false;
+    if(f.altura?.mode==='spec'&&f.altura.valores.length>0&&!f.altura.valores.includes(c.altura)) return false;
+
+    return true;
+  });
+
+  // Scoring
+  const scored=candidates.map(c=>{
+    let s=0;
+    const rP=RELIG_ORD.indexOf(p.orientacionReligiosa),rC=RELIG_ORD.indexOf(c.orientacionReligiosa);
+    if(rP!==-1&&rC!==-1){const d=Math.abs(rP-rC);s+=d===0?30:d===1?18:d===2?8:0;}
+    const eP=+p.edad,eC=+c.edad,dP=+p.edadDesde,hP=+p.edadHasta,dC=+c.edadDesde,hC=+c.edadHasta;
+    if(eC&&dP&&hP&&eC>=dP&&eC<=hP) s+=15;
+    if(eP&&dC&&hC&&eP>=dC&&eP<=hC) s+=15;
+    const obP=Array.isArray(p.orientacionBuscada)?p.orientacionBuscada:(p.orientacionBuscada||'').split(',').map(x=>x.trim());
+    const obC=Array.isArray(c.orientacionBuscada)?c.orientacionBuscada:(c.orientacionBuscada||'').split(',').map(x=>x.trim());
+    if(obP.includes(c.orientacionReligiosa)) s+=20;
+    if(obC.includes(p.orientacionReligiosa)) s+=20;
+    if(city(p)&&city(c)&&city(p)===city(c)) s+=10;
+    if(p.planAlia&&c.planAlia&&p.planAlia===c.planAlia) s+=5;
+    return {c,s:Math.min(100,s)};
+  }).sort((a,b)=>b.s-a.s);
+
+  const el=document.getElementById('matchResults');
+  if(!scored.length){el.innerHTML='<div class="empty">Sin candidatos con estos filtros.</div>';return;}
+  el.innerHTML=`<div class="mr-header"><div class="mr-count">${scored.length} candidato${scored.length!==1?'s':''}</div></div>`+
+  scored.map(({c,s})=>`
+    <div class="match-cand" onclick="createMatch(${currentMatchIdx},${c._idx})">
+      ${avSm(c)}
+      <div class="mc-info">
+        <div class="mc-name">${c.nombre}</div>
+        <div class="mc-det">${c.edad||'?'} años · ${city(c)}</div>
+        <div class="mc-tags">
+          <span class="mc-tag">${c.orientacionReligiosa||'—'}</span>
+          ${c.kashrut?`<span class="mc-tag">${c.kashrut}</span>`:''}
+          ${c.planAlia?`<span class="mc-tag">Aliá: ${c.planAlia}</span>`:''}
+        </div>
       </div>
-    </div>`).join('')
-    :'<div class="empty-state"><div class="es-ico">◎</div><div class="es-txt">Sin candidatos compatibles aprobados.</div></div>';
-  openOv('ovSuggest');
+      <div class="mc-score"><div class="mc-score-num">${s}</div><div class="mc-score-lbl">pts</div></div>
+      <button class="btn btn-gold btn-sm" onclick="event.stopPropagation();createMatch(${currentMatchIdx},${c._idx})">Match</button>
+    </div>`).join('');
 }
 
 // ── CREAR MATCH ───────────────────────────────────────────────
 function createMatch(idxA,idxB){
-  const st=gs();
-  st.matches=st.matches||[];
+  const st=gs();st.matches=st.matches||[];
   const exists=st.matches.find(m=>(m.idxA===idxA&&m.idxB===idxB)||(m.idxA===idxB&&m.idxB===idxA));
   if(exists){alert('Ya existe un match entre estas personas.');return;}
   const a=allP[idxA],b=allP[idxB];
-  // hombre siempre idxA en el flujo de contacto
   const hombre=a.sexo==='Masculino'?a:b;
   const mujer=a.sexo==='Femenino'?a:b;
   const hIdx=a.sexo==='Masculino'?idxA:idxB;
   const mIdx=a.sexo==='Femenino'?idxA:idxB;
-  st.matches.push({
-    idxA:hIdx,idxB:mIdx,
-    nameA:hombre.nombre,nameB:mujer.nombre,
-    status:'Propuesto',notes:'',
-    fecha:new Date().toISOString(),
-    contactoH:{resp:'',fecha:'',nota:''},  // hombre primero
-    contactoM:{resp:'',fecha:'',nota:''},
-  });
+  st.matches.push({idxA:hIdx,idxB:mIdx,nameA:hombre.nombre,nameB:mujer.nombre,status:'Propuesto',notes:'',fecha:new Date().toISOString(),contactoH:{resp:''},contactoM:{resp:''}});
   ss(st);
-  addHist(hIdx,{tipo:'Match propuesto',nota:`Match propuesto con ${mujer.nombre}.`});
-  addHist(mIdx,{tipo:'Match propuesto',nota:`Match propuesto con ${hombre.nombre}.`});
-  closeOv('ovSuggest'); closeOv('ovProfile');
-  updateAll();
-  alert(`✦ Match creado: ${hombre.nombre} & ${mujer.nombre}\nPróximo paso: contactar al contacto de ${hombre.nombre}.`);
+  addHist(hIdx,{tipo:'Match propuesto',nota:`Con ${mujer.nombre}.`});
+  addHist(mIdx,{tipo:'Match propuesto',nota:`Con ${hombre.nombre}.`});
+  closeOv('ovMatch');updateStats();
+  alert(`Match creado: ${hombre.nombre} & ${mujer.nombre}`);
 }
 
-// ── MATCHES ───────────────────────────────────────────────────
+// ── MATCHES PAGE ──────────────────────────────────────────────
 const SCLS={Propuesto:'s-propuesto',Contactado:'s-contactado',Aceptaron:'s-aceptaron','En salidas':'s-salidas',Comprometidos:'s-comprometidos',Casados:'s-casados',Rechazado:'s-rechazado','No funcionó':'s-nofunciono'};
 const STATS=['Propuesto','Contactado','Aceptaron','En salidas','Comprometidos','Casados','Rechazado','No funcionó'];
-const RESP_OPTS=['Sin respuesta','Sí, interesado/a','No, rechazó','Pendiente de contactar'];
+const RESP=['Sin respuesta','Sí, interesado/a','No, rechazó','Pendiente de contactar'];
 
 function renderMatches(){
-  const st=gs(); const matches=st.matches||[];
-  const filter=document.getElementById('fMS').value;
+  const st=gs();const matches=st.matches||[];
+  const filter=document.getElementById('fMatchStatus').value;
   const list=filter?matches.filter(m=>m.status===filter):matches;
-  const el=document.getElementById('matchList');
-  if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-ico">✦</div><div class="es-txt">No hay matches todavía. Empezá matcheando desde los perfiles.</div></div>';return;}
-  el.innerHTML=[...list].map((m,ri)=>{
-    const i=matches.indexOf(m);
+  const el=document.getElementById('matchesList');
+  if(!list.length){el.innerHTML='<div class="empty">Sin matches todavía.</div>';return;}
+  el.innerHTML=[...list].reverse().map((m,ri)=>{
+    const i=matches.length-1-ri;
     const pH=allP[m.idxA],pM=allP[m.idxB];
     const detH=pH?`${pH.edad||'?'} años · ${pH.orientacionReligiosa||''}`:m.nameA;
     const detM=pM?`${pM.edad||'?'} años · ${pM.orientacionReligiosa||''}`:m.nameB;
-    const contH=m.contactoH||{resp:'',nota:''};
-    const contM=m.contactoM||{resp:'',nota:''};
-    return `<div class="mc">
+    const cH=m.contactoH||{resp:''};const cM=m.contactoM||{resp:''};
+    return `<div class="match-card">
       <div class="mc-hd">
-        <div class="mc-names">${m.nameA}<span class="amp">✦</span>${m.nameB}</div>
+        <div class="mc-names">${m.nameA}<span class="amp">·</span>${m.nameB}</div>
         <span class="sch ${SCLS[m.status]||'s-propuesto'}">${m.status}</span>
       </div>
       <div class="mc-pair">
-        <div class="mc-person"><div class="mc-pname">♂ ${m.nameA}</div><div class="mc-pdet">${detH}</div></div>
-        <div class="mc-heart">♥</div>
-        <div class="mc-person"><div class="mc-pname">♀ ${m.nameB}</div><div class="mc-pdet">${detM}</div></div>
+        <div class="mc-person"><div class="mc-pname">${m.nameA}</div><div class="mc-pdet">${detH}</div></div>
+        <div class="mc-heart">·</div>
+        <div class="mc-person"><div class="mc-pname">${m.nameB}</div><div class="mc-pdet">${detM}</div></div>
       </div>
       <div class="contact-flow">
         <div class="cf-title">Flujo de contacto</div>
         <div class="cf-step">
-          <div class="cf-dot ${contH.resp&&contH.resp!=='Pendiente de contactar'?'done':contH.resp?'pending':''}"></div>
-          <div class="cf-label">1. Contactar a <strong>${m.nameA}</strong> (hombre primero)</div>
+          <div class="cf-dot ${cH.resp&&cH.resp!=='Sin respuesta'&&cH.resp!=='Pendiente de contactar'?'done':cH.resp?'pending':''}"></div>
+          <div class="cf-label">1. Contactar a ${m.nameA} (hombre primero)</div>
           <select class="cf-sel" onchange="updContacto(${i},'H',this.value)">
-            ${RESP_OPTS.map(o=>`<option${(contH.resp||'')=== o?' selected':''}>${o}</option>`).join('')}
+            ${RESP.map(o=>`<option${cH.resp===o?' selected':''}>${o}</option>`).join('')}
           </select>
         </div>
         <div class="cf-step">
-          <div class="cf-dot ${contM.resp&&contM.resp!=='Pendiente de contactar'?'done':contM.resp?'pending':''}"></div>
-          <div class="cf-label">2. Contactar a <strong>${m.nameB}</strong> (mujer)</div>
+          <div class="cf-dot ${cM.resp&&cM.resp!=='Sin respuesta'&&cM.resp!=='Pendiente de contactar'?'done':cM.resp?'pending':''}"></div>
+          <div class="cf-label">2. Contactar a ${m.nameB} (mujer)</div>
           <select class="cf-sel" onchange="updContacto(${i},'M',this.value)">
-            ${RESP_OPTS.map(o=>`<option${(contM.resp||'')=== o?' selected':''}>${o}</option>`).join('')}
+            ${RESP.map(o=>`<option${cM.resp===o?' selected':''}>${o}</option>`).join('')}
           </select>
         </div>
       </div>
-      ${m.notes?`<div class="mc-note">📝 ${m.notes}</div>`:''}
+      ${m.notes?`<div class="mc-note">${m.notes}</div>`:''}
       <div class="mc-foot">
         <select class="status-sel" onchange="updStatus(${i},this.value)">
           ${STATS.map(s=>`<option${m.status===s?' selected':''}>${s}</option>`).join('')}
         </select>
-        <input class="notes-inp" placeholder="Agregar nota..." value="${m.notes||''}" onchange="updNote(${i},this.value)">
-        <button class="btn b-danger b-sm" onclick="delMatch(${i})">✕</button>
+        <input class="notes-inp" placeholder="Nota..." value="${m.notes||''}" onchange="updNote(${i},this.value)">
+        <button class="btn btn-danger btn-sm" onclick="delMatch(${i})">Eliminar</button>
       </div>
     </div>`;}).join('');
 }
 
 function updContacto(i,who,resp){
-  const st=gs();
-  const key='contacto'+who;
-  st.matches[i][key]=st.matches[i][key]||{};
-  st.matches[i][key].resp=resp;
-  st.matches[i][key].fecha=new Date().toISOString();
-  // Auto-actualizar estado si ambos dijeron sí
-  const cH=st.matches[i].contactoH||{};
-  const cM=st.matches[i].contactoM||{};
+  const st=gs();const k='contacto'+who;
+  st.matches[i][k]=st.matches[i][k]||{};st.matches[i][k].resp=resp;
+  const cH=st.matches[i].contactoH||{};const cM=st.matches[i].contactoM||{};
   if(cH.resp==='Sí, interesado/a'&&cM.resp==='Sí, interesado/a') st.matches[i].status='Aceptaron';
   else if(cH.resp==='No, rechazó'||cM.resp==='No, rechazó') st.matches[i].status='Rechazado';
   else if(cH.resp||cM.resp) st.matches[i].status='Contactado';
   const idxP=who==='H'?st.matches[i].idxA:st.matches[i].idxB;
-  const otroNombre=who==='H'?st.matches[i].nameB:st.matches[i].nameA;
-  addHist(idxP,{tipo:'Respuesta a match',nota:`Respondió "${resp}" al match con ${otroNombre}.`});
-  ss(st); updateAll(); renderMatches();
+  const otro=who==='H'?st.matches[i].nameB:st.matches[i].nameA;
+  addHist(idxP,{tipo:'Respuesta',nota:`"${resp}" — match con ${otro}.`});
+  ss(st);updateStats();renderMatches();
 }
-function updStatus(i,v){const st=gs();st.matches[i].status=v;ss(st);updateAll();renderMatches();}
+function updStatus(i,v){const st=gs();st.matches[i].status=v;ss(st);updateStats();renderMatches();}
 function updNote(i,v){const st=gs();st.matches[i].notes=v;ss(st);}
-function delMatch(i){if(!confirm('¿Eliminar este match?'))return;const st=gs();st.matches.splice(i,1);ss(st);updateAll();renderMatches();}
+function delMatch(i){if(!confirm('¿Eliminar este match?'))return;const st=gs();st.matches.splice(i,1);ss(st);updateStats();renderMatches();}
 
 // ── UTILS ─────────────────────────────────────────────────────
-function city(p){return p.barrioZona||p.regionProvincia||p.paisResidencia||'—';}
-function av(p,size=32){
-  const s=`width:${size}px;height:${size}px;font-size:${Math.round(size*0.44)}px`;
-  return p.foto?`<img class="av" src="${p.foto}" style="${s}" onerror="this.outerHTML='<div class=\\'av-ph\\' style=\\'${s}\\'>👤</div>'">`:`<div class="av-ph" style="${s}">👤</div>`;
-}
 function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id,e){if(e&&e.target!==document.getElementById(id))return;document.getElementById(id).classList.remove('open');}
 </script>
