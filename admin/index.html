@@ -416,12 +416,32 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
 </div>
 
 <script>
-const SCRIPT='https://script.google.com/macros/s/AKfycby9IorgFwuCUA-tn5jZA-ZdJ2EidgnLgRLub1DUZUqjf3oavsIjJJ7fMzPHaTpmtJiu/exec';
+const SCRIPT='https://script.google.com/macros/s/AKfycbwGulWmbqoJfIrLOSPbXvEtfu7AGef1p0l19k--Oh9wliIQX2u_F-i_PxHFoEjQwhmA/exec';
 let allP=[],currentMatchIdx=null,SESSION_TOKEN=null;
 
-function gs(){return JSON.parse(localStorage.getItem('shidujim_v2')||'{"approved":{},"rejected":{},"matches":[],"history":{}}');}
-function ss(s){localStorage.setItem('shidujim_v2',JSON.stringify(s));}
-function addHist(idx,ev){const s=gs();s.history=s.history||{};s.history[idx]=s.history[idx]||[];s.history[idx].push({...ev,fecha:new Date().toISOString()});ss(s);}
+// Estado en memoria
+let STATE={matches:[]};
+
+async function syncMatches(){
+  try{
+    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getMatches',token:SESSION_TOKEN})});
+    const d=await r.json();
+    if(d.ok)STATE.matches=d.matches||[];
+  }catch(e){}
+}
+async function setEstado(id,estado){
+  // Actualiza en memoria el perfil correspondiente
+  const p=allP.find(x=>(x.id||String(x._idx))===id);
+  if(p)p.estado=estado;
+  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'setEstado',token:SESSION_TOKEN,id,estado})});}catch(e){}
+}
+async function saveMatchRemoto(m){
+  try{
+    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'saveMatch',token:SESSION_TOKEN,match:m})});
+    const d=await r.json();
+    if(d.ok&&d.id)m.id=d.id;
+  }catch(e){}
+}
 
 const CAMPOS=[
   {k:'nombre',l:'Nombre'},{k:'edad',l:'Edad'},{k:'sexo',l:'Sexo'},{k:'estadoCivil',l:'Estado civil'},
@@ -501,13 +521,14 @@ async function loadProfiles(){
     const d=await r.json();
     if(d.error==='Sesion invalida'){logout();return;}
     allP=(d.profiles||[]).map((p,i)=>({...p,_idx:i}));
+    await syncMatches();
     updateStats();renderProfiles();renderRecent();renderPend();
   }catch(e){document.getElementById('profilesGrid').innerHTML='<div class="empty">Error al conectar.</div>';}
 }
 function updateStats(){
-  const st=gs();
-  const appr=allP.filter(p=>st.approved[p._idx]&&!st.rejected[p._idx]);
-  const pend=allP.filter(p=>!st.approved[p._idx]&&!st.rejected[p._idx]);
+  
+  const appr=allP.filter(p=>p.estado==='aprobado');
+  const pend=allP.filter(p=>!p.estado==='aprobado');
   const mact=(st.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status));
   document.getElementById('nPend').textContent=pend.length;
   document.getElementById('nMatchAct').textContent=mact.length;
@@ -549,13 +570,13 @@ function renderCard(p){
 }
 
 function renderRecent(){
-  const st=gs();
-  const r=allP.filter(p=>st.approved[p._idx]&&!st.rejected[p._idx]).slice(-8).reverse();
+  
+  const r=allP.filter(p=>p.estado==='aprobado').slice(-8).reverse();
   document.getElementById('recentGrid').innerHTML=r.length?r.map(renderCard).join(''):'<div class="empty">Sin perfiles aprobados todavia.</div>';
 }
 function renderPend(){
-  const st=gs();
-  const pend=allP.filter(p=>!st.approved[p._idx]&&!st.rejected[p._idx]);
+  
+  const pend=allP.filter(p=>!p.estado==='aprobado');
   const sec=document.getElementById('pendSection');
   if(!pend.length){sec.style.display='none';return;}
   sec.style.display='block';
@@ -578,11 +599,11 @@ function renderPend(){
   }).join('');
 }
 function renderProfiles(){
-  const st=gs();
+  
   const q=document.getElementById('searchQ').value.toLowerCase();
   const sx=document.getElementById('fSexo').value;
   const list=allP.filter(p=>{
-    if(!st.approved[p._idx]||st.rejected[p._idx])return false;
+    if(!(p.estado==='aprobado'||p.estado==='rechazado'))return false;
     if(sx&&p.sexo!==sx)return false;
     return!q||(p.nombre||'').toLowerCase().includes(q);
   });
@@ -590,9 +611,9 @@ function renderProfiles(){
 }
 
 function openProfile(idx){
-  const p=allP[idx];const st=gs();
-  const isPend=!st.approved[idx]&&!st.rejected[idx];
-  const isApp=st.approved[idx]&&!st.rejected[idx];
+  const p=allP[idx];
+  const isPend=(!p.estado||p.estado==='pendiente');
+  const isApp=p.estado==='aprobado';
   const flag=abuelaFlag(p);
   document.getElementById('pmName').textContent=p.nombre||'Perfil';
   document.getElementById('pmSub').textContent=`${p.edad||'?'} anos · ${p.sexo||''} · ${p.orientacionReligiosa||''} · ${city(p)}`;
@@ -618,14 +639,15 @@ function openProfile(idx){
   openOv('ovProfile');
 }
 
-function approveP(idx){
-  const st=gs();st.approved[idx]=true;if(st.rejected)delete st.rejected[idx];ss(st);
-  addHist(idx,{tipo:'Aprobado',nota:'Perfil aprobado.'});
+async function approveP(idx){
+  const p=allP[idx];
+  await setEstado(p.id||String(idx),'aprobado');
   updateStats();renderProfiles();renderRecent();renderPend();
 }
-function rejectP(idx){
+async function rejectP(idx){
   if(!confirm('Rechazar este perfil?'))return;
-  const st=gs();if(!st.rejected)st.rejected={};st.rejected[idx]=true;if(st.approved)delete st.approved[idx];ss(st);
+  const p=allP[idx];
+  await setEstado(p.id||String(idx),'rechazado');
   updateStats();renderProfiles();renderRecent();renderPend();
 }
 
@@ -693,7 +715,7 @@ async function saveEdit(){
 }
 
 function openHist(idx){
-  const p=allP[idx];const st=gs();
+  const p=allP[idx];
   const h=(st.history&&st.history[idx])||[];
   const mh=(st.matches||[]).filter(m=>m.idxA===idx||m.idxB===idx).map(m=>({tipo:'Match',nota:`Con ${m.idxA===idx?m.nameB:m.nameA} - ${m.status}`,fecha:m.fecha,isMatch:true}));
   const all=[...h,...mh].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
@@ -871,23 +893,23 @@ function openMatch(idx){
 function renderDirectResults(){
   const q=document.getElementById('directSearch').value.toLowerCase().trim();
   if(!q){document.getElementById('directResults').innerHTML='';return;}
-  const p=allP[currentMatchIdx];const st=gs();
+  const p=allP[currentMatchIdx];
   const opp=p.sexo==='Masculino'?'Femenino':'Masculino';
-  const res=allP.filter(c=>c.sexo===opp&&c._idx!==currentMatchIdx&&st.approved[c._idx]&&!st.rejected[c._idx]&&(c.nombre||'').toLowerCase().includes(q));
+  const res=allP.filter(c=>c.sexo===opp&&c._idx!==currentMatchIdx&&c.estado==='aprobado'&&(c.nombre||'').toLowerCase().includes(q));
   document.getElementById('directResults').innerHTML=res.slice(0,5).map(c=>`<div class="match-cand">${avSm(c)}<div class="mc-info"><div class="mc-name">${c.nombre}</div><div class="mc-det">${c.edad||'?'} anos · ${c.orientacionReligiosa||'—'} · ${city(c)}</div></div><button class="btn btn-gold btn-sm" onclick="createMatch(${currentMatchIdx},${c._idx})">Match</button></div>`).join('')||'<div class="empty" style="padding:.8rem">Sin resultados.</div>';
 }
 
 function runFilters(){
-  const p=allP[currentMatchIdx];const st=gs();
+  const p=allP[currentMatchIdx];
   const opp=p.sexo==='Masculino'?'Femenino':'Masculino';
-  const mbef=new Set((st.matches||[]).filter(m=>m.idxA===currentMatchIdx||m.idxB===currentMatchIdx).map(m=>m.idxA===currentMatchIdx?m.idxB:m.idxA));
-  const mact=new Set((st.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status)).flatMap(m=>[m.idxA,m.idxB]));
+  const mbef=new Set((STATE.matches||[]).filter(m=>m.idxA===currentMatchIdx||m.idxB===currentMatchIdx).map(m=>m.idH===(allP[currentMatchIdx]?.id||String(currentMatchIdx))?m.idM:m.idH));
+  const mact2=new Set((STATE.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status)).flatMap(m=>[m.idH,m.idM]));
   const f=filterState;
   const cands=allP.filter(c=>{
     if(c.sexo!==opp||c._idx===currentMatchIdx)return false;
-    if(!st.approved[c._idx]||st.rejected[c._idx])return false;
+    if(c.estado!=='aprobado')return false;
     if(mbef.has(c._idx))return false;
-    if(mact.has(c._idx))return false;
+    if(mact2.has(c.id||String(c._idx)))return false;
     if(c.abuelaMaterna==='No'||!c.abuelaMaterna||c.abuelaMaterna==='No se')return false;
     if(f.pais?.mode==='igual'){if(!p.paisResidencia||!c.paisResidencia||p.paisResidencia!==c.paisResidencia)return false;}
     if(f.edad?.mode==='igual'){const eP=+p.edad,eC=+c.edad,dP=+p.edadDesde,hP=+p.edadHasta,dC=+c.edadDesde,hC=+c.edadHasta;if(eC&&dP&&hP&&(eC<dP||eC>hP))return false;if(eP&&dC&&hC&&(eP<dC||eP>hC))return false;}
@@ -938,14 +960,14 @@ function runFilters(){
   scored.map(({c,s,mut})=>`<div class="match-cand">${avSm(c)}<div class="mc-info"><div class="mc-name">${c.nombre}</div><div class="mc-det">${c.edad||'?'} anos · ${city(c)}</div><div class="mc-tags"><span class="mc-tag">${c.orientacionReligiosa||'—'}</span>${c.kashrut?`<span class="mc-tag">${c.kashrut}</span>`:''}${c.planAlia?`<span class="mc-tag">Alia: ${c.planAlia}</span>`:''}</div></div><div class="mc-score"><div class="mc-score-num">${s}</div><div class="mc-score-lbl">pts</div>${mut>0?`<div class="mc-score-mut">+${mut} mutuo</div>`:''}</div><button class="btn btn-gold btn-sm" onclick="createMatch(${currentMatchIdx},${c._idx})">Match</button></div>`).join('');
 }
 
-function createMatch(idxA,idxB){
-  const st=gs();st.matches=st.matches||[];
-  if(st.matches.find(m=>(m.idxA===idxA&&m.idxB===idxB)||(m.idxA===idxB&&m.idxB===idxA))){alert('Ya existe un match entre estas personas.');return;}
+async function createMatch(idxA,idxB){
   const a=allP[idxA],b=allP[idxB];
   const h=a.sexo==='Masculino'?a:b,muj=a.sexo==='Femenino'?a:b;
-  const hI=a.sexo==='Masculino'?idxA:idxB,mI=a.sexo==='Femenino'?idxA:idxB;
-  st.matches.push({idxA:hI,idxB:mI,nameA:h.nombre,nameB:muj.nombre,status:'Propuesto',notes:'',fecha:new Date().toISOString(),contactoH:{resp:''},contactoM:{resp:''}});
-  ss(st);addHist(hI,{tipo:'Match propuesto',nota:`Con ${muj.nombre}.`});addHist(mI,{tipo:'Match propuesto',nota:`Con ${h.nombre}.`});
+  const idH=h.id||String(h._idx),idM=muj.id||String(muj._idx);
+  if(STATE.matches.find(m=>(m.idH===idH&&m.idM===idM)||(m.idH===idM&&m.idM===idH))){alert('Ya existe un match entre estas personas.');return;}
+  const match={idH,nameH:h.nombre,idM,nameM:muj.nombre,status:'Propuesto',notes:'',fecha:new Date().toISOString(),contactoH:'',contactoM:''};
+  STATE.matches.push(match);
+  await saveMatchRemoto(match);
   closeOv('ovMatch');updateStats();alert(`Match creado: ${h.nombre} & ${muj.nombre}`);
 }
 
@@ -954,35 +976,34 @@ const STATS=['Propuesto','Contactado','Aceptaron','En salidas','Comprometidos','
 const RESP=['Sin respuesta','Si, interesado/a','No, rechazo','Pendiente de contactar'];
 
 function renderMatches(){
-  const st=gs();const matches=st.matches||[];
+  const matches=STATE.matches||[];
   const filter=document.getElementById('fMatchStatus').value;
   const list=filter?matches.filter(m=>m.status===filter):matches;
   const el=document.getElementById('matchesList');
   if(!list.length){el.innerHTML='<div class="empty">Sin matches todavia.</div>';return;}
   el.innerHTML=[...list].reverse().map((m,ri)=>{
     const i=matches.length-1-ri;
-    const pH=allP[m.idxA],pM=allP[m.idxB];
-    const dH=pH?`${pH.edad||'?'} anos · ${pH.orientacionReligiosa||''}`:m.nameA;
-    const dM=pM?`${pM.edad||'?'} anos · ${pM.orientacionReligiosa||''}`:m.nameB;
-    const cH=m.contactoH||{resp:''};const cM=m.contactoM||{resp:''};
-    return`<div class="match-card"><div class="mc-hd"><div class="mc-names">${m.nameA}<span class="amp">·</span>${m.nameB}</div><span class="sch ${SCLS[m.status]||'s-propuesto'}">${m.status}</span></div><div class="mc-pair"><div class="mc-person"><div class="mc-pname">${m.nameA}</div><div class="mc-pdet">${dH}</div></div><div class="mc-heart">·</div><div class="mc-person"><div class="mc-pname">${m.nameB}</div><div class="mc-pdet">${dM}</div></div></div><div class="contact-flow"><div class="cf-title">Flujo de contacto</div><div class="cf-step"><div class="cf-dot ${cH.resp&&cH.resp!=='Sin respuesta'&&cH.resp!=='Pendiente de contactar'?'done':cH.resp?'pending':''}"></div><div class="cf-label">1. Contactar a ${m.nameA} (hombre primero)</div><select class="cf-sel" onchange="updContacto(${i},'H',this.value)">${RESP.map(o=>`<option${cH.resp===o?' selected':''}>${o}</option>`).join('')}</select></div><div class="cf-step"><div class="cf-dot ${cM.resp&&cM.resp!=='Sin respuesta'&&cM.resp!=='Pendiente de contactar'?'done':cM.resp?'pending':''}"></div><div class="cf-label">2. Contactar a ${m.nameB} (mujer)</div><select class="cf-sel" onchange="updContacto(${i},'M',this.value)">${RESP.map(o=>`<option${cM.resp===o?' selected':''}>${o}</option>`).join('')}</select></div></div>${m.notes?`<div class="mc-note">${m.notes}</div>`:''}<div class="mc-foot"><select class="status-sel" onchange="updStatus(${i},this.value)">${STATS.map(s=>`<option${m.status===s?' selected':''}>${s}</option>`).join('')}</select><input class="notes-inp" placeholder="Nota..." value="${m.notes||''}" onchange="updNote(${i},this.value)"><button class="btn btn-danger btn-sm" onclick="delMatch(${i})">Eliminar</button></div></div>`;
+    const pH=allP.find(p=>(p.id||String(p._idx))===m.idH);
+    const pM=allP.find(p=>(p.id||String(p._idx))===m.idM);
+    const dH=pH?`${pH.edad||'?'} anos · ${pH.orientacionReligiosa||''}`:m.nameH;
+    const dM=pM?`${pM.edad||'?'} anos · ${pM.orientacionReligiosa||''}`:m.nameM;
+    const cH=m.contactoH||'';const cM=m.contactoM||'';
+    return`<div class="match-card"><div class="mc-hd"><div class="mc-names">${m.nameH}<span class="amp">·</span>${m.nameM}</div><span class="sch ${SCLS[m.status]||'s-propuesto'}">${m.status}</span></div><div class="mc-pair"><div class="mc-person"><div class="mc-pname">${m.nameH}</div><div class="mc-pdet">${dH}</div></div><div class="mc-heart">·</div><div class="mc-person"><div class="mc-pname">${m.nameM}</div><div class="mc-pdet">${dM}</div></div></div><div class="contact-flow"><div class="cf-title">Flujo de contacto</div><div class="cf-step"><div class="cf-dot ${cH&&cH!=='Sin respuesta'&&cH!=='Pendiente de contactar'?'done':cH?'pending':''}"></div><div class="cf-label">1. Contactar a ${m.nameH} (hombre primero)</div><select class="cf-sel" onchange="updContacto(${i},'H',this.value)">${RESP.map(o=>`<option${cH===o?' selected':''}>${o}</option>`).join('')}</select></div><div class="cf-step"><div class="cf-dot ${cM&&cM!=='Sin respuesta'&&cM!=='Pendiente de contactar'?'done':cM?'pending':''}"></div><div class="cf-label">2. Contactar a ${m.nameM} (mujer)</div><select class="cf-sel" onchange="updContacto(${i},'M',this.value)">${RESP.map(o=>`<option${cM===o?' selected':''}>${o}</option>`).join('')}</select></div></div>${m.notes?`<div class="mc-note">${m.notes}</div>`:''}<div class="mc-foot"><select class="status-sel" onchange="updStatus(${i},this.value)">${STATS.map(s=>`<option${m.status===s?' selected':''}>${s}</option>`).join('')}</select><input class="notes-inp" placeholder="Nota..." value="${m.notes||''}" onchange="updNote(${i},this.value)"><button class="btn btn-danger btn-sm" onclick="delMatch(${i})">Eliminar</button></div></div>`;
   }).join('');
 }
-function updContacto(i,who,resp){
-  const st=gs();const k='contacto'+who;
-  st.matches[i][k]=st.matches[i][k]||{};st.matches[i][k].resp=resp;
-  const cH=st.matches[i].contactoH||{};const cM=st.matches[i].contactoM||{};
-  if(cH.resp==='Si, interesado/a'&&cM.resp==='Si, interesado/a')st.matches[i].status='Aceptaron';
-  else if(cH.resp==='No, rechazo'||cM.resp==='No, rechazo')st.matches[i].status='Rechazado';
-  else if(cH.resp||cM.resp)st.matches[i].status='Contactado';
-  const idxP=who==='H'?st.matches[i].idxA:st.matches[i].idxB;
-  const otro=who==='H'?st.matches[i].nameB:st.matches[i].nameA;
-  addHist(idxP,{tipo:'Respuesta',nota:`"${resp}" - match con ${otro}.`});
-  ss(st);updateStats();renderMatches();
+async function updContacto(i,who,resp){
+  const m=STATE.matches[i];
+  if(who==='H')m.contactoH=resp;else m.contactoM=resp;
+  const cH=m.contactoH||'';const cM=m.contactoM||'';
+  if(cH==='Si, interesado/a'&&cM==='Si, interesado/a')m.status='Aceptaron';
+  else if(cH==='No, rechazo'||cM==='No, rechazo')m.status='Rechazado';
+  else if(cH||cM)m.status='Contactado';
+  await saveMatchRemoto(m);
+  updateStats();renderMatches();
 }
-function updStatus(i,v){const st=gs();st.matches[i].status=v;ss(st);updateStats();renderMatches();}
-function updNote(i,v){const st=gs();st.matches[i].notes=v;ss(st);}
-function delMatch(i){if(!confirm('Eliminar este match?'))return;const st=gs();st.matches.splice(i,1);ss(st);updateStats();renderMatches();}
+async function updStatus(i,v){STATE.matches[i].status=v;await saveMatchRemoto(STATE.matches[i]);updateStats();renderMatches();}
+async function updNote(i,v){STATE.matches[i].notes=v;await saveMatchRemoto(STATE.matches[i]);}
+async function delMatch(i){if(!confirm('Eliminar este match?'))return;STATE.matches.splice(i,1);updateStats();renderMatches();}
 
 function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id,e){if(e&&e.target!==document.getElementById(id))return;document.getElementById(id).classList.remove('open');}
