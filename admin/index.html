@@ -515,7 +515,7 @@ function showPage(n,btn){
   if(n==='perfiles')renderProfiles();
 }
 
-async function loadProfiles(){
+async async function loadProfiles(){
   try{
     const r=await fetch(SCRIPT+'?action=getProfiles&token='+SESSION_TOKEN,{redirect:'follow'});
     const d=await r.json();
@@ -529,7 +529,7 @@ function updateStats(){
   
   const appr=allP.filter(p=>p.estado==='aprobado');
   const pend=allP.filter(p=>!p.estado||p.estado==='pendiente');
-  const mact=(st.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status));
+  const mact=(STATE.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status));
   document.getElementById('nPend').textContent=pend.length;
   document.getElementById('nMatchAct').textContent=mact.length;
   document.getElementById('nTotal').textContent=appr.length;
