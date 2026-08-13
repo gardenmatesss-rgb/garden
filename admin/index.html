@@ -433,7 +433,7 @@ async function setEstado(id,estado){
   // Actualiza en memoria el perfil correspondiente
   const p=allP.find(x=>(x.id||String(x._idx))===id);
   if(p)p.estado=estado;
-  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'setEstado',token:SESSION_TOKEN,id,estado}),redirect:'follow'});}catch(e){}
+  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'setEstado',token:SESSION_TOKEN,id,estado})});}catch(e){}
 }
 async function saveMatchRemoto(m){
   try{
@@ -472,7 +472,7 @@ async function doLogin(){
   const btn=document.querySelector('.login-submit');
   btn.textContent='Entrando...';btn.disabled=true;
   try{
-    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'login',user,pass}),redirect:'follow'});
+    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'login',user,pass})});
     const d=await r.json();
     if(d.ok&&d.token){
       SESSION_TOKEN=d.token;
@@ -515,9 +515,9 @@ function showPage(n,btn){
   if(n==='perfiles')renderProfiles();
 }
 
-async async function loadProfiles(){
+async function loadProfiles(){
   try{
-    const r=await fetch(SCRIPT+'?action=getProfiles&token='+SESSION_TOKEN,{redirect:'follow'});
+    const r=await fetch(SCRIPT+'?action=getProfiles&token='+SESSION_TOKEN);
     const d=await r.json();
     if(d.error==='Sesion invalida'){logout();return;}
     allP=(d.profiles||[]).map((p,i)=>({...p,_idx:i}));
@@ -528,8 +528,8 @@ async async function loadProfiles(){
 function updateStats(){
   
   const appr=allP.filter(p=>p.estado==='aprobado');
-  const pend=allP.filter(p=>!p.estado||p.estado==='pendiente');
-  const mact=(STATE.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status));
+  const pend=allP.filter(p=>!p.estado==='aprobado');
+  const mact=(st.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status));
   document.getElementById('nPend').textContent=pend.length;
   document.getElementById('nMatchAct').textContent=mact.length;
   document.getElementById('nTotal').textContent=appr.length;
@@ -576,7 +576,7 @@ function renderRecent(){
 }
 function renderPend(){
   
-  const pend=allP.filter(p=>!p.estado||p.estado==='pendiente');
+  const pend=allP.filter(p=>!p.estado==='aprobado');
   const sec=document.getElementById('pendSection');
   if(!pend.length){sec.style.display='none';return;}
   sec.style.display='block';
@@ -584,17 +584,18 @@ function renderPend(){
     const flag=abuelaFlag(p);
     const alertClass=flag==='red'?'alert-abuela':'';
     const alertMsg=flag==='red'?'Abuela materna NO judia':flag==='duda'?'Abuela materna: no se':'';
-    const fotoHtml=p.foto?'<img class="pend-av" src="'+p.foto+'">'+'<div class="pend-av-ph" style="display:none">👤</div>':'<div class="pend-av-ph">👤</div>';
-    return '<div class="pend-card '+alertClass+'" onclick="openProfile('+p._idx+')">'
-      +fotoHtml
-      +'<div class="pend-info">'
-      +'<div class="pend-name">'+(p.nombre||'—')+'</div>'
-      +'<div class="pend-det">'+(p.edad||'?')+' anos · '+(p.sexo||'')+' · '+city(p)+'</div>'
-      +(alertMsg?'<div class="pend-alerta">⚠️ '+alertMsg+'</div>':'')
-      +'<div class="pend-acts">'
-      +'<button class="btn btn-navy btn-sm" onclick="event.stopPropagation();approveP('+p._idx+')">Aprobar</button>'
-      +'<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();rejectP('+p._idx+')">Rechazar</button>'
-      +'</div></div></div>';
+    return`<div class="pend-card ${alertClass}" onclick="openProfile(${p._idx})">
+      ${p.foto?`<img class="pend-av" src="${p.foto}" onerror="this.outerHTML='<div class=\\'pend-av-ph\\'>&#128100;</div>'">`:`<div class="pend-av-ph">&#128100;</div>`}
+      <div class="pend-info">
+        <div class="pend-name">${p.nombre||'—'}</div>
+        <div class="pend-det">${p.edad||'?'} anos · ${p.sexo||''} · ${city(p)}</div>
+        ${alertMsg?`<div class="pend-alerta">&#9888; ${alertMsg}</div>`:''}
+        <div class="pend-acts">
+          <button class="btn btn-navy btn-sm" onclick="event.stopPropagation();approveP(${p._idx})">Aprobar</button>
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();rejectP(${p._idx})">Rechazar</button>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 function renderProfiles(){
@@ -709,15 +710,14 @@ async function saveEdit(){
   const u={nombre:gv('ef-nombre'),edad:gv('ef-edad'),sexo:gv('ef-sexo'),estadoCivil:gv('ef-estado'),hijos:gv('ef-hijos'),hijosDetalle:gv('ef-hijosD'),nacionalidad:gv('ef-nac'),paisResidencia:gv('ef-pais'),regionProvincia:gv('ef-region'),barrioZona:gv('ef-barrio'),altura:gv('ef-altura'),contactoNombre:gv('ef-cNombre'),contactoWhatsapp:gv('ef-cWA'),abuelaMaterna:gv('ef-abuela'),orientacionReligiosa:gv('ef-relig'),ascendencia:gv('ef-asc'),kashrut:gv('ef-kash'),shabat:gv('ef-shab'),baalTeshuva:gv('ef-bt'),converso:gv('ef-conv'),antecedentesFamilia:gv('ef-ant'),templo:gv('ef-templo'),estudioDeTora:gv('ef-tora'),kipa:gv('ef-kipa'),tseniut:gv('ef-tsen'),cubrePelo:gv('ef-pelo'),profesion:gv('ef-prof'),universidad:gv('ef-univ'),idiomas:gv('ef-idiomas').split(',').map(s=>s.trim()).filter(Boolean),planAlia:gv('ef-alia'),edadDesde:gv('ef-eD'),edadHasta:gv('ef-eH'),abiertoHijos:gv('ef-abhijos'),orientacionBuscada:gv('ef-ob').split(',').map(s=>s.trim()).filter(Boolean),dealbreakers:gv('ef-deal'),personaIdeal:gv('ef-ideal'),notasExtra:gv('ef-notas')};
   Object.assign(allP[editIdx],u);
   addHist(editIdx,{tipo:'Editado',nota:'Perfil actualizado.'});
-  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'updateProfile',token:SESSION_TOKEN,rowNum:p._rowNum,profile:u}),redirect:'follow'});}catch(e){}
+  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'updateProfile',token:SESSION_TOKEN,rowNum:p._rowNum,profile:u}),mode:'no-cors'});}catch(e){}
   closeOv('ovEdit');updateStats();renderProfiles();renderRecent();
 }
 
 function openHist(idx){
   const p=allP[idx];
-  const h=[];
-  const pid=allP[idx]?.id||String(idx);
-  const mh=(STATE.matches||[]).filter(m=>m.idH===pid||m.idM===pid).map(m=>({tipo:'Match',nota:`Con ${m.idH===pid?m.nameM:m.nameH} - ${m.status}`,fecha:m.fecha,isMatch:true}));
+  const h=(st.history&&st.history[idx])||[];
+  const mh=(st.matches||[]).filter(m=>m.idxA===idx||m.idxB===idx).map(m=>({tipo:'Match',nota:`Con ${m.idxA===idx?m.nameB:m.nameA} - ${m.status}`,fecha:m.fecha,isMatch:true}));
   const all=[...h,...mh].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
   document.getElementById('histName').textContent=`Historial - ${p.nombre||''}`;
   document.getElementById('histBody').innerHTML=all.length?all.map(e=>`<div class="hist-item"><div class="hist-dot ${e.isMatch?'match':''}"></div><div class="hist-body"><div class="hist-t">${e.tipo}</div>${e.nota?`<div class="hist-n">${e.nota}</div>`:''}<div class="hist-d">${new Date(e.fecha).toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div></div></div>`).join(''):'<div class="empty">Sin eventos.</div>';
@@ -778,7 +778,7 @@ async function saveNuevoPerfil(){
   if(!npFotoData){document.getElementById('npFotoErr').textContent='La foto es obligatoria.';return;}
   const btn=document.getElementById('btnGuardarNuevo');btn.disabled=true;btn.textContent='Guardando...';
   const datos={modo:'admin',token:SESSION_TOKEN,contactoNombre:'nikisel',contactoWhatsapp:gv('np-wa'),relacion:'',nombre:gv('np-nombre'),edad:gv('np-edad'),sexo:gv('np-sexo'),estadoCivil:gv('np-estado'),hijos:gv('np-hijos'),hijosDetalle:'',nacionalidad:gv('np-nac'),paisResidencia:gv('np-pais'),regionProvincia:gv('np-region'),barrioZona:gv('np-barrio'),altura:gv('np-altura'),foto:npFotoData,abuelaMaterna:gv('np-abuela'),orientacionReligiosa:gv('np-relig'),ascendencia:gv('np-asc'),kashrut:gv('np-kash'),shabat:gv('np-shab'),baalTeshuva:'',converso:'',antecedentesFamilia:'',templo:gv('np-templo'),estudioDeTora:'',kipa:'',tseniut:'',cubrePelo:'',profesion:gv('np-prof'),primaria:'',secundaria:'',universidad:'',carrera:'',idiomas:gv('np-idiomas').split(',').map(s=>s.trim()).filter(Boolean),planAlia:gv('np-alia'),edadDesde:gv('np-eD'),edadHasta:gv('np-eH'),abiertoHijos:gv('np-abhijos'),orientacionBuscada:[],dealbreakers:gv('np-deal'),personaIdeal:gv('np-ideal'),notasExtra:''};
-  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify(datos),redirect:'follow'});closeOv('ovNuevo');setTimeout(()=>loadProfiles(),1500);}catch(e){}
+  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify(datos),mode:'no-cors'});closeOv('ovNuevo');setTimeout(()=>loadProfiles(),1500);}catch(e){}
   btn.disabled=false;btn.textContent='Guardar perfil';
 }
 
