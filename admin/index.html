@@ -528,7 +528,7 @@ async function loadProfiles(){
 function updateStats(){
   
   const appr=allP.filter(p=>p.estado==='aprobado');
-  const pend=allP.filter(p=>!p.estado==='aprobado');
+  const pend=allP.filter(p=>!p.estado||p.estado==='pendiente');
   const mact=(st.matches||[]).filter(m=>!['Casados','Rechazado','No funciono'].includes(m.status));
   document.getElementById('nPend').textContent=pend.length;
   document.getElementById('nMatchAct').textContent=mact.length;
@@ -576,7 +576,7 @@ function renderRecent(){
 }
 function renderPend(){
   
-  const pend=allP.filter(p=>!p.estado==='aprobado');
+  const pend=allP.filter(p=>!p.estado||p.estado==='pendiente');
   const sec=document.getElementById('pendSection');
   if(!pend.length){sec.style.display='none';return;}
   sec.style.display='block';
