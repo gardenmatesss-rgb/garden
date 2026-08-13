@@ -517,7 +517,7 @@ function showPage(n,btn){
 
 async function loadProfiles(){
   try{
-    const r=await fetch(SCRIPT+'?action=getProfiles&token='+SESSION_TOKEN);
+    const r=await fetch(SCRIPT+'?action=getProfiles&token='+SESSION_TOKEN,{redirect:'follow'});
     const d=await r.json();
     if(d.error==='Sesion invalida'){logout();return;}
     allP=(d.profiles||[]).map((p,i)=>({...p,_idx:i}));
