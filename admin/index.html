@@ -1339,7 +1339,7 @@ let STATE={matches:[],pendientes:[],historial:{}};
 
 async function syncMatches(){
   try{
-    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getMatches',token:SESSION_TOKEN})});
+    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getMatches',token:SESSION_TOKEN}),redirect:'follow'});
     const d=await r.json();
     if(d.ok){
       // Separar pendientes de matches confirmados — normalizar IDs y status
@@ -1364,7 +1364,7 @@ async function syncMatches(){
 }
 async function syncDescartes(){
   try{
-    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getDescartes',token:SESSION_TOKEN})});
+    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getDescartes',token:SESSION_TOKEN}),redirect:'follow'});
     const d=await r.json();
     if(d.ok) _sugDescartados=d.descartes||[];
   }catch(e){}
