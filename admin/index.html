@@ -330,13 +330,13 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
 .cmp-val-b{font-size:11px;color:#6a1a9f;background:#f0e6ff;padding:1px 7px;border-radius:10px}
 
 /* PENDIENTES DE MATCH */
-.pm-card{background:var(--white);border-radius:14px;border:1px solid var(--gray-200);margin-bottom:14px;overflow:hidden;transition:border-color .15s}
+.pm-card{background:#edf0f7;border-radius:14px;border:1px solid #d0d5e8;margin-bottom:14px;overflow:hidden;transition:border-color .15s}
 .pm-card:hover{border-color:var(--navy)}
-.pm-card-header{padding:1rem 1.4rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pm-card-header{padding:1rem 1.4rem;border-bottom:1px solid #d0d5e8;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#e2e6f0}
 .pm-card-id{font-size:10px;color:var(--gray-400);letter-spacing:.06em}
 .pm-card-body{display:grid;grid-template-columns:1fr 120px 1fr;gap:0}
-.pm-person{padding:1.2rem 1.4rem}
-.pm-person-center{padding:1.2rem;background:var(--gray-50);border-left:1px solid var(--gray-100);border-right:1px solid var(--gray-100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.pm-person{padding:1.2rem 1.4rem;background:#fff}
+.pm-person-center{padding:1.2rem;background:#dce1ef;border-left:1px solid #d0d5e8;border-right:1px solid #d0d5e8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .pm-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gray-200);flex-shrink:0}
 .pm-foto-ph{width:64px;height:64px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
 .pm-pair{display:flex;align-items:center;gap:10px;margin-bottom:.8rem}
@@ -358,13 +358,13 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
 .hist-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;background:#fff3e0;color:#8a5c00;border:1px solid #ffd599;margin-top:3px}
 .taken-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;background:#f5f0ff;color:#6b3fa0;border:1px solid #d4b8f5;margin-top:3px}
 
-.pm-card{background:var(--white);border-radius:14px;border:1px solid var(--gray-200);margin-bottom:14px;overflow:hidden;transition:border-color .15s}
+.pm-card{background:#edf0f7;border-radius:14px;border:1px solid #d0d5e8;margin-bottom:14px;overflow:hidden;transition:border-color .15s}
 .pm-card:hover{border-color:var(--navy)}
-.pm-card-header{padding:1rem 1.4rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pm-card-header{padding:1rem 1.4rem;border-bottom:1px solid #d0d5e8;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#e2e6f0}
 .pm-card-id{font-size:10px;color:var(--gray-400);letter-spacing:.06em}
 .pm-card-body{display:grid;grid-template-columns:1fr 120px 1fr;gap:0}
-.pm-person{padding:1.2rem 1.4rem}
-.pm-person-center{padding:1.2rem;background:var(--gray-50);border-left:1px solid var(--gray-100);border-right:1px solid var(--gray-100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.pm-person{padding:1.2rem 1.4rem;background:#fff}
+.pm-person-center{padding:1.2rem;background:#dce1ef;border-left:1px solid #d0d5e8;border-right:1px solid #d0d5e8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .pm-foto{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gray-200);flex-shrink:0}
 .pm-foto-ph{width:56px;height:56px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .pm-pair{display:flex;align-items:center;gap:10px;margin-bottom:.8rem}
@@ -704,7 +704,43 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
   .sug-toolbar{padding:10px 12px}
   .sug-grid{padding:0 10px 16px;gap:8px}
   .sug-personas-chips{padding:0 10px 4px}
+  #notasGrid{grid-template-columns:1fr!important}
+  #gcalFrame{height:500px!important}
 }
+
+/* NOTAS */
+.nota-card{background:var(--white);border-radius:12px;border:1px solid var(--gray-200);padding:1rem 1.1rem;display:flex;flex-direction:column;gap:8px;transition:border-color .15s;position:relative}
+.nota-card:hover{border-color:var(--navy)}
+.nota-card.tag-urgente{border-left:3px solid var(--red)}
+.nota-card.tag-seguimiento{border-left:3px solid var(--gold)}
+.nota-card.tag-familia{border-left:3px solid #6b3fa0}
+.nota-card.tag-general{border-left:3px solid var(--navy)}
+.nota-tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.nota-tag.urgente{background:#fff0ee;color:var(--red)}
+.nota-tag.seguimiento{background:#fffdf0;color:#8a6000}
+.nota-tag.familia{background:#f5f0ff;color:#6b3fa0}
+.nota-tag.general{background:#f0f3ff;color:var(--navy)}
+.nota-texto{font-size:13px;line-height:1.55;color:var(--navy-dark);white-space:pre-wrap;word-break:break-word}
+.nota-fecha{font-size:10.5px;color:var(--gray-400)}
+.nota-ref{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:10px;font-size:10.5px;font-weight:500;background:#f0f3ff;color:var(--navy);border:1px solid #d0d9f0;cursor:pointer;width:fit-content}
+.nota-ref:hover{background:#e0e8ff}
+.nota-acciones{display:flex;gap:6px;margin-top:4px}
+.nota-btn{padding:4px 10px;border-radius:7px;font-size:11px;border:1px solid var(--gray-200);background:none;cursor:pointer;font-family:'Inter',sans-serif;color:var(--gray-600);transition:all .12s}
+.nota-btn:hover{border-color:var(--navy);color:var(--navy)}
+.nota-btn.del:hover{border-color:var(--red);color:var(--red)}
+/* form */
+.nota-form-card{background:var(--white);border-radius:12px;border:2px solid var(--navy);padding:1.2rem;display:flex;flex-direction:column;gap:10px}
+.nota-form-card textarea{width:100%;border:1px solid var(--gray-200);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:90px;outline:none;line-height:1.5}
+.nota-form-card textarea:focus{border-color:var(--navy)}
+.nota-form-select{border:1px solid var(--gray-200);border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:'Inter',sans-serif;outline:none;color:var(--navy-dark)}
+.nota-form-select:focus{border-color:var(--navy)}
+/* menú contextual */
+.ctx-menu{position:fixed;z-index:9999;background:var(--white);border:1px solid var(--gray-200);border-radius:10px;box-shadow:0 8px 28px rgba(10,20,60,.18);padding:6px 0;min-width:200px;display:none}
+.ctx-menu.open{display:block}
+.ctx-menu-header{padding:6px 14px 4px;font-size:10px;color:var(--gray-400);font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--gray-100);margin-bottom:4px}
+.ctx-item{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:12.5px;color:var(--navy-dark);cursor:pointer;transition:background .1s;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif}
+.ctx-item:hover{background:var(--gray-50)}
+.ctx-item .ctx-ico{font-size:14px;width:18px;text-align:center}
 </style>
 </head>
 <body>
@@ -738,6 +774,9 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
       <button class="sb-item" onclick="showPage('pendientes',this)"><span class="sb-ico">◐</span>Pendientes<span class="sb-badge" id="badgePendMatch">0</span></button>
       <div class="sb-section">Matches</div>
       <button class="sb-item" onclick="showPage('matches',this)"><span class="sb-ico">◎</span>Matches<span class="sb-badge" id="badgeMatches">0</span></button>
+      <div class="sb-section">Herramientas</div>
+      <button class="sb-item" onclick="showPage('notas',this)"><span class="sb-ico">📝</span>Notas</button>
+      <button class="sb-item" onclick="showPage('calendario',this)"><span class="sb-ico">📅</span>Calendario</button>
     </nav>
     <div class="sb-foot">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">
@@ -1049,7 +1088,69 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
       </div>
       <div id="matchesList"></div>
     </div>
+
+    <!-- NOTAS -->
+    <div class="page" id="page-notas">
+      <div class="page-title">Notas</div>
+      <div class="page-sub">Recordatorios y anotaciones del proceso.</div>
+      <div style="display:flex;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-navy" onclick="notaAbrirForm()">+ Nueva nota</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="notaFiltroChips">
+          <button class="mchip active" data-tag="" onclick="notaFiltrar('',this)">Todas</button>
+          <button class="mchip" data-tag="seguimiento" onclick="notaFiltrar('seguimiento',this)">Seguimiento</button>
+          <button class="mchip" data-tag="urgente" onclick="notaFiltrar('urgente',this)">Urgente</button>
+          <button class="mchip" data-tag="familia" onclick="notaFiltrar('familia',this)">Familia</button>
+          <button class="mchip" data-tag="general" onclick="notaFiltrar('general',this)">General</button>
+        </div>
+      </div>
+      <div id="notasGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
+    </div>
+
+    <!-- CALENDARIO -->
+    <div class="page" id="page-calendario">
+      <div class="page-title">Calendario</div>
+      <div class="page-sub">Agenda de gardenmatesss@gmail.com</div>
+      <div style="background:var(--white);border-radius:14px;border:1px solid var(--gray-200);overflow:hidden;margin-top:.5rem">
+        <iframe id="gcalFrame"
+          src="https://calendar.google.com/calendar/embed?src=gardenmatesss%40gmail.com&ctz=America%2FBuenos_Aires&mode=WEEK&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0&showTz=0&bgcolor=%23ffffff&color=%231a2d6b"
+          style="width:100%;height:680px;border:none;display:block"
+          frameborder="0" scrolling="no"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <p style="font-size:11px;color:var(--gray-400);margin-top:.6rem;text-align:center">Si el calendario pide iniciar sesión, abrilo en <a href="https://calendar.google.com" target="_blank" style="color:var(--navy)">calendar.google.com</a> con gardenmatesss@gmail.com</p>
+    </div>
   </main>
+</div>
+
+<!-- MENU CONTEXTUAL -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-menu-header" id="ctxMenuHeader">Opciones</div>
+  <button class="ctx-item" onclick="ctxAbrirNota()"><span class="ctx-ico">📝</span>Agregar nota</button>
+  <button class="ctx-item" onclick="ctxVerNotas()"><span class="ctx-ico">🗂</span>Ver notas de este</button>
+</div>
+
+<!-- MODAL NOTA RAPIDA -->
+<div class="ov" id="ovNota" onclick="closeOv('ovNota',event)">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hd">
+      <div><div class="modal-name">📝 Nueva nota</div><div class="modal-sub" id="notaModalSub"></div></div>
+      <button class="btn-x" onclick="closeOv('ovNota')">x</button>
+    </div>
+    <div class="modal-bd" style="flex-direction:column;gap:12px;padding:1.2rem 1.4rem">
+      <textarea id="notaModalTexto" placeholder="Escribí tu nota acá..." style="width:100%;border:1px solid var(--gray-200);border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:100px;outline:none;line-height:1.55"></textarea>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select class="nota-form-select" id="notaModalTag" style="flex:1">
+          <option value="general">🔵 General</option>
+          <option value="seguimiento">🌟 Seguimiento</option>
+          <option value="urgente">🔴 Urgente</option>
+          <option value="familia">🟣 Familia</option>
+        </select>
+        <button class="btn btn-navy" onclick="notaModalGuardar()">Guardar nota</button>
+        <button class="btn btn-ghost" onclick="closeOv('ovNota')">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL VER PERFIL -->
@@ -1400,6 +1501,7 @@ function showPage(n,btn){
   }
   if(n==='perfiles')renderProfiles();
   if(n==='pendientes')renderPendientes();
+  if(n==='notas')notasRender();
   if(n==='sugerencias'){
     if(_sugNeedsRefresh&&_sugBloques.length>0){
       // Hubo un match propuesto → regenerar automáticamente con los mismos filtros
@@ -1469,7 +1571,7 @@ function renderCard(p){
   const pEst=p.estado||'pendiente';
   const estBadge=pEst==='pendiente'?'<span style="position:absolute;top:7px;left:7px;background:#f59e0b;color:#fff;font-size:9px;font-weight:600;padding:2px 7px;border-radius:8px">Pendiente</span>'
     :pEst==='rechazado'?'<span style="position:absolute;top:7px;left:7px;background:#ef4444;color:#fff;font-size:9px;font-weight:600;padding:2px 7px;border-radius:8px">Rechazado</span>':'';
-  return`<div class="profile-card${cls?' '+cls:''}" style="position:relative" onclick="openProfile(${p._idx})">
+  return`<div class="profile-card${cls?' '+cls:''}" style="position:relative" onclick="openProfile(${p._idx})" oncontextmenu="ctxOpen(event,'perfil','${(p.id||String(p._idx)).replace(/'/g,'\\\'')}',${'\''}${(p.nombre||'').replace(/'/g,'\\\'').replace(/"/g,'&quot;')}${'\''})" data-ctx-tipo="perfil" data-ctx-id="${p.id||p._idx}" data-ctx-nombre="${(p.nombre||'').replace(/"/g,'&quot;')}">
     ${badge?`<span class="pc-badge-rf">${badge}</span>`:''}
     ${estBadge}
     ${av(p)}
@@ -1664,9 +1766,13 @@ function openProfile(idx){
     :'';
   document.getElementById('pmGrid').innerHTML+=histHtml;
 
+  const pActual=allP[idx];
+  const pIdActual=pActual?String(pActual.id||pActual._idx):'';
+  const pNombreActual=pActual?(pActual.nombre||''):'';
   document.getElementById('pmFotoActs').innerHTML=`
     <button class="btn btn-ghost btn-sm" onclick="openEdit(${idx});closeOv('ovProfile')">Editar</button>
     <button class="btn btn-ghost btn-sm" onclick="openHist(${idx});closeOv('ovProfile')">Historial</button>
+    <button class="btn btn-ghost btn-sm" onclick="ctxAbrirNotaDirecta('perfil','${pIdActual}','${pNombreActual.replace(/'/g,"\\'")}')">📝 Nota</button>
     ${isApp?`<button class="btn btn-gold btn-sm" onclick="openMatch(${idx});closeOv('ovProfile')">Buscar match</button>`:''}
     ${isPend?`<button class="btn btn-navy btn-sm" onclick="approveP(${idx});closeOv('ovProfile')">Aprobar</button>`:''}
     ${isPend||isApp?`<button class="btn btn-danger btn-sm" onclick="rejectP(${idx});closeOv('ovProfile')">Rechazar</button>`:''}
@@ -2678,7 +2784,8 @@ function renderPendientes(){
     }
     var waHBtn=waH?'<button class="pm-wa-btn" data-tel="'+waH+'" data-pid="'+p.id+'" data-who="H" onclick="var pr=STATE.pendientes.find(function(x){return x.id===this.dataset.pid},this);openWA(this.dataset.tel,buildWAMsg(allP[pr.idxM]||{nombre:pr.nameM}))">&#128142; Enviar a '+p.nameH+'</button>':'';
     var waMBtn=waM?'<button class="pm-wa-btn" data-tel="'+waM+'" data-pid="'+p.id+'" data-who="M" onclick="var pr=STATE.pendientes.find(function(x){return x.id===this.dataset.pid},this);openWA(this.dataset.tel,buildWAMsg(allP[pr.idxH]||{nombre:pr.nameH}))">&#128142; Enviar a '+p.nameM+'</button>':'';
-    return '<div class="pm-card">'
+    var pendNombre=p.nameH+' & '+p.nameM;
+    return '<div class="pm-card" oncontextmenu="ctxOpen(event,\'pendiente\',\''+p.id+'\',\''+pendNombre.replace(/'/g,'\\\'')+'\',true)">'
       +'<div class="pm-card-header">'
       +'<span class="pm-card-id">'+p.id+'</span>'
       +'<span style="font-family:Cormorant Garamond,serif;font-size:16px;font-weight:500">'+p.nameH+' &amp; '+p.nameM+'</span>'
@@ -3093,7 +3200,8 @@ function renderMatches(){
     var dias=m.fecha?Math.floor((Date.now()-new Date(m.fecha).getTime())/(1000*60*60*24)):0;
     var diasStr=dias===0?'Hoy':dias===1?'Hace 1 día':'Hace '+dias+' días';
     var noFunciono=m.status==='No funciono'||m.status==='Rechazado';
-    return '<div class="mc-couple"'+(noFunciono?' style="opacity:.7"':'')+'>'
+    var matchNombre=m.nameH+' & '+m.nameM;
+    return '<div class="mc-couple" oncontextmenu="ctxOpen(event,\'match\',\''+m.id+'\',\''+matchNombre.replace(/'/g,'\\\'')+'\',true)"'+(noFunciono?' style="opacity:.7"':'')+'>'
       +'<div class="mc-couple-top">'
       +'<div class="mc-person-side left">'
       +fotoH
@@ -3141,6 +3249,223 @@ async function updNote(i,v){STATE.matches[i].notes=v;await saveMatchRemoto(STATE
 
 function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id,e){if(e&&e.target!==document.getElementById(id))return;document.getElementById(id).classList.remove('open');}
+
+/* ===== NOTAS (Sheet) ===== */
+var _notaFiltroActual='';
+var _notaEditId=null;
+var _notasCache=[];
+var _notasLoaded=false;
+
+// --- contexto actual para el modal rápido ---
+var _ctxTipo='';var _ctxId='';var _ctxNombre='';
+
+/* ---- CONTEXTMENU ---- */
+var _ctxEl=null;
+document.addEventListener('click',function(){ctxClose();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')ctxClose();});
+
+function ctxOpen(e,tipo,id,nombre,isPair){
+  e.preventDefault();
+  e.stopPropagation();
+  ctxClose();
+  _ctxTipo=tipo;_ctxId=id;_ctxNombre=nombre;
+  var menu=document.getElementById('ctxMenu');
+  var header=document.getElementById('ctxMenuHeader');
+  if(header)header.textContent=nombre;
+  menu.classList.add('open');
+  // Posicionar
+  var x=e.clientX,y=e.clientY;
+  var mw=menu.offsetWidth||220,mh=menu.offsetHeight||100;
+  if(x+mw>window.innerWidth)x=window.innerWidth-mw-8;
+  if(y+mh>window.innerHeight)y=window.innerHeight-mh-8;
+  menu.style.left=x+'px';menu.style.top=y+'px';
+}
+function ctxClose(){
+  var menu=document.getElementById('ctxMenu');
+  if(menu)menu.classList.remove('open');
+}
+function ctxAbrirNota(){
+  ctxClose();
+  ctxAbrirNotaDirecta(_ctxTipo,_ctxId,_ctxNombre);
+}
+function ctxAbrirNotaDirecta(tipo,id,nombre){
+  _ctxTipo=tipo;_ctxId=id;_ctxNombre=nombre;
+  _notaEditId=null;
+  var sub=document.getElementById('notaModalSub');
+  if(sub)sub.textContent='Para: '+nombre;
+  var txt=document.getElementById('notaModalTexto');
+  if(txt)txt.value='';
+  var tag=document.getElementById('notaModalTag');
+  if(tag)tag.value='general';
+  openOv('ovNota');
+  setTimeout(function(){if(txt)txt.focus();},80);
+}
+function ctxVerNotas(){
+  ctxClose();
+  var tipo=_ctxTipo,id=_ctxId;
+  showPage('notas',null);
+  // esperar render y luego filtrar por ref
+  setTimeout(function(){notasFiltrarRef(tipo,id);},100);
+}
+
+/* ---- CARGA / RENDER ---- */
+async function notasSync(){
+  try{
+    var r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getNotas',token:SESSION_TOKEN}),redirect:'follow'});
+    var d=await r.json();
+    if(d.ok){_notasCache=(d.notas||[]);_notasLoaded=true;}
+  }catch(e){console.warn('Error cargando notas',e);}
+}
+
+function notaFiltrar(tag,btn){
+  _notaFiltroActual=tag;
+  _notaFiltroRef=null;
+  document.querySelectorAll('#notaFiltroChips .mchip').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  notasRender();
+}
+var _notaFiltroRef=null;
+function notasFiltrarRef(tipo,id){
+  _notaFiltroRef={tipo:tipo,id:id};
+  _notaFiltroActual='';
+  document.querySelectorAll('#notaFiltroChips .mchip').forEach(function(b){b.classList.remove('active');});
+  notasRender();
+}
+
+async function notasRender(){
+  var el=document.getElementById('notasGrid');
+  if(!el)return;
+  if(!_notasLoaded){
+    el.innerHTML='<div class="empty" style="grid-column:1/-1">Cargando notas...</div>';
+    await notasSync();
+  }
+  var arr=_notasCache.slice();
+  if(_notaFiltroRef){
+    arr=arr.filter(function(n){return n.ref_tipo===_notaFiltroRef.tipo&&String(n.ref_id)===String(_notaFiltroRef.id);});
+  }else if(_notaFiltroActual){
+    arr=arr.filter(function(n){return n.tag===_notaFiltroActual;});
+  }
+  if(!arr.length){
+    el.innerHTML='<div class="empty" style="grid-column:1/-1">Sin notas'+(_notaFiltroActual?' con esta etiqueta':_notaFiltroRef?' para esta persona/pareja':'')+'.</div>';
+    return;
+  }
+  arr=arr.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+  var tagLabel={'urgente':'🔴 Urgente','seguimiento':'🌟 Seguimiento','familia':'🟣 Familia','general':'🔵 General'};
+  el.innerHTML=arr.map(function(n){
+    var tl=tagLabel[n.tag]||'🔵 General';
+    var fecha=n.ts?new Date(Number(n.ts)).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+    var refHtml=n.ref_nombre?('<div class="nota-ref" onclick="ctxVerNotas_ref(\''+n.ref_tipo+'\',\''+n.ref_id+'\')" title="Ver más notas de este">'+
+      (n.ref_tipo==='perfil'?'👤':n.ref_tipo==='pendiente'?'◐':'◎')+' '+n.ref_nombre+'</div>'):'';
+    return '<div class="nota-card tag-'+(n.tag||'general')+'">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">'
+      +'<span class="nota-tag '+(n.tag||'general')+'">'+tl+'</span>'
+      +'<span class="nota-fecha">'+fecha+'</span>'
+      +'</div>'
+      +refHtml
+      +'<div class="nota-texto">'+n.texto.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>'
+      +'<div class="nota-acciones">'
+      +'<button class="nota-btn" data-nid="'+n.id+'" onclick="notaEditar(this.dataset.nid)">✏ Editar</button>'
+      +'<button class="nota-btn del" data-nid="'+n.id+'" onclick="notaEliminar(this.dataset.nid)">✕ Eliminar</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function ctxVerNotas_ref(tipo,id){
+  showPage('notas',document.querySelector('.sb-item[onclick*="notas"]'));
+  setTimeout(function(){notasFiltrarRef(tipo,id);},100);
+}
+
+/* ---- CREAR / EDITAR (modal rápido) ---- */
+async function notaModalGuardar(){
+  var texto=(document.getElementById('notaModalTexto').value||'').trim();
+  if(!texto){alert('Escribí algo antes de guardar.');return;}
+  var tag=document.getElementById('notaModalTag').value||'general';
+  var nota={
+    id:'n'+Date.now(),
+    texto:texto,
+    tag:tag,
+    ref_tipo:_ctxTipo||'',
+    ref_id:_ctxId||'',
+    ref_nombre:_ctxNombre||'',
+    ts:Date.now()
+  };
+  try{
+    var r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'saveNota',token:SESSION_TOKEN,nota:nota}),redirect:'follow'});
+    var d=await r.json();
+    if(!d.ok){alert('Error al guardar: '+(d.error||'desconocido'));return;}
+  }catch(e){alert('Error de red al guardar la nota.');return;}
+  _notasCache.unshift(nota);
+  closeOv('ovNota');
+  // Si el panel de notas está visible, re-renderizar
+  if(document.getElementById('page-notas').classList.contains('active'))notasRender();
+}
+
+/* ---- EDITAR DESDE PANEL ---- */
+function notaEditar(id){
+  var n=_notasCache.find(function(x){return x.id===id;});
+  if(!n)return;
+  _notaEditId=id;
+  _ctxTipo=n.ref_tipo||'';_ctxId=n.ref_id||'';_ctxNombre=n.ref_nombre||'';
+  var sub=document.getElementById('notaModalSub');
+  if(sub)sub.textContent=n.ref_nombre?('Editando nota de: '+n.ref_nombre):'Editar nota';
+  var txt=document.getElementById('notaModalTexto');
+  if(txt)txt.value=n.texto;
+  var tag=document.getElementById('notaModalTag');
+  if(tag)tag.value=n.tag||'general';
+  // Cambiar acción del botón a editar
+  var btn=document.querySelector('#ovNota .btn-navy');
+  if(btn){btn.textContent='Actualizar nota';btn.onclick=notaModalActualizar;}
+  openOv('ovNota');
+  setTimeout(function(){if(txt)txt.focus();},80);
+}
+async function notaModalActualizar(){
+  var texto=(document.getElementById('notaModalTexto').value||'').trim();
+  if(!texto){alert('Escribí algo.');return;}
+  var tag=document.getElementById('notaModalTag').value||'general';
+  var n=_notasCache.find(function(x){return x.id===_notaEditId;});
+  if(!n)return;
+  n.texto=texto;n.tag=tag;n.ts=Date.now();
+  try{
+    var r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'saveNota',token:SESSION_TOKEN,nota:n,editar:true}),redirect:'follow'});
+    var d=await r.json();
+    if(!d.ok){alert('Error al actualizar: '+(d.error||'?'));return;}
+  }catch(e){alert('Error de red.');return;}
+  // Restaurar botón
+  var btn=document.querySelector('#ovNota .btn-navy');
+  if(btn){btn.textContent='Guardar nota';btn.onclick=notaModalGuardar;}
+  _notaEditId=null;
+  closeOv('ovNota');
+  notasRender();
+}
+
+/* ---- ELIMINAR ---- */
+async function notaEliminar(id){
+  if(!confirm('¿Eliminar esta nota?'))return;
+  try{
+    var r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'deleteNota',token:SESSION_TOKEN,notaId:id}),redirect:'follow'});
+    var d=await r.json();
+    if(!d.ok){alert('Error al eliminar.');return;}
+  }catch(e){alert('Error de red.');return;}
+  _notasCache=_notasCache.filter(function(n){return n.id!==id;});
+  notasRender();
+}
+
+/* ---- NUEVA NOTA LIBRE (desde el panel sin contexto) ---- */
+function notaAbrirForm(){
+  _ctxTipo='';_ctxId='';_ctxNombre='';
+  _notaEditId=null;
+  var sub=document.getElementById('notaModalSub');
+  if(sub)sub.textContent='Nota general';
+  var txt=document.getElementById('notaModalTexto');
+  if(txt)txt.value='';
+  var tag=document.getElementById('notaModalTag');
+  if(tag)tag.value='general';
+  var btn=document.querySelector('#ovNota .btn-navy');
+  if(btn){btn.textContent='Guardar nota';btn.onclick=notaModalGuardar;}
+  openOv('ovNota');
+  setTimeout(function(){if(txt)txt.focus();},80);
+}
 </script>
 </body>
 </html>
