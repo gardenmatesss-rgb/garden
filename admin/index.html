@@ -152,6 +152,17 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
 .campos-faltantes{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .campo-falt{padding:2px 8px;border-radius:10px;font-size:10px;background:#fff3e0;color:#b85c00;border:1px solid #ffd599}
 .empty{padding:3rem;text-align:center;color:var(--gray-400);font-size:13px}
+/* TOAST CALENDARIO */
+#calToast{position:fixed;bottom:1.4rem;right:1.4rem;z-index:900;display:flex;flex-direction:column;gap:7px;pointer-events:none;}
+.cal-toast-item{background:var(--navy);color:#fff;border-radius:12px;padding:.7rem 1rem;font-size:12.5px;display:flex;align-items:flex-start;gap:.6rem;box-shadow:0 4px 20px rgba(0,0,0,.25);opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;pointer-events:auto;max-width:280px;}
+.cal-toast-item.show{opacity:1;transform:translateY(0);}
+.cal-toast-item.today{border-left:3px solid #7ec8a4;}
+.cal-toast-item.tomorrow{border-left:3px solid #f0c97a;}
+.cal-toast-ico{font-size:15px;margin-top:1px;flex-shrink:0;}
+.cal-toast-body{display:flex;flex-direction:column;gap:2px;}
+.cal-toast-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.7;}
+.cal-toast-title{font-weight:500;line-height:1.3;}
+.cal-toast-hora{font-size:11px;opacity:.65;}
 /* OVERLAYS */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .ov.open{display:flex}
@@ -1409,6 +1420,7 @@ async function doLogin(){
       document.getElementById('loginPage').style.display='none';
       document.getElementById('app').style.display='block';
       init();
+      setTimeout(mostrarToastEventos,1200);
     }else{
       document.getElementById('loginErr').style.display='block';
     }
@@ -1437,7 +1449,7 @@ function init(){
   // Recuperar token de sesion si existe
   if(!SESSION_TOKEN){
     const saved=sessionStorage.getItem('gm_token');
-    if(saved)SESSION_TOKEN=saved;
+    if(saved){SESSION_TOKEN=saved;setTimeout(mostrarToastEventos,1200);}
   }
   const d=new Date();
   document.getElementById('fechaHoy').textContent=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -3501,6 +3513,61 @@ function notaAbrirForm(){
   setTimeout(function(){if(txt)txt.focus();},80);
 }
 
+/* ===== TOAST EVENTOS DEL DÍA ===== */
+async function mostrarToastEventos(){
+  try{
+    var hoy=new Date();
+    var ymd=hoy.getFullYear()+'-'+(hoy.getMonth()+1).toString().padStart(2,'0')+'-'+hoy.getDate().toString().padStart(2,'0');
+    var manana=new Date(hoy); manana.setDate(hoy.getDate()+1);
+    var ymdM=manana.getFullYear()+'-'+(manana.getMonth()+1).toString().padStart(2,'0')+'-'+manana.getDate().toString().padStart(2,'0');
+
+    var [rH,rM]=await Promise.all([
+      fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getEventos',token:SESSION_TOKEN,vista:'day',fecha:ymd}),redirect:'follow'}).then(r=>r.json()),
+      fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getEventos',token:SESSION_TOKEN,vista:'day',fecha:ymdM}),redirect:'follow'}).then(r=>r.json())
+    ]);
+
+    var evHoy=(rH.ok?rH.eventos:[]).slice(0,3);
+    var evMan=(rM.ok?rM.eventos:[]).slice(0,2);
+    if(!evHoy.length&&!evMan.length)return;
+
+    var container=document.getElementById('calToast');
+    if(!container)return;
+    container.innerHTML='';
+
+    function fmtHora(ev){
+      if(ev.allDay||ev.start.date)return'Todo el día';
+      var d=new Date(ev.start.dateTime||ev.start);
+      return d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    }
+
+    var items=[];
+    evHoy.forEach(function(ev){
+      var el=document.createElement('div');
+      el.className='cal-toast-item today';
+      el.innerHTML='<span class="cal-toast-ico">📅</span><div class="cal-toast-body"><div class="cal-toast-label">Hoy</div><div class="cal-toast-title">'+(ev.summary||ev.title||'Evento')+'</div><div class="cal-toast-hora">'+fmtHora(ev)+'</div></div>';
+      container.appendChild(el);
+      items.push(el);
+    });
+    evMan.forEach(function(ev){
+      var el=document.createElement('div');
+      el.className='cal-toast-item tomorrow';
+      el.innerHTML='<span class="cal-toast-ico">🗓</span><div class="cal-toast-body"><div class="cal-toast-label">Mañana</div><div class="cal-toast-title">'+(ev.summary||ev.title||'Evento')+'</div><div class="cal-toast-hora">'+fmtHora(ev)+'</div></div>';
+      container.appendChild(el);
+      items.push(el);
+    });
+
+    // Animar entrada escalonada
+    items.forEach(function(el,i){
+      setTimeout(function(){el.classList.add('show');},100+i*120);
+    });
+    // Ocultar después de 7s
+    setTimeout(function(){
+      items.forEach(function(el){el.style.opacity='0';el.style.transform='translateY(12px)';});
+      setTimeout(function(){container.innerHTML='';},400);
+    },7000);
+  }catch(e){console.warn('Toast eventos:',e);}
+}
+
 /* ===== GOOGLE CALENDAR (vía Apps Script — sin OAuth) ===== */
 var _calVista='week';
 var _calFecha=new Date();
@@ -3808,6 +3875,9 @@ showPage=function(n,btn){
   }
 };
 </script>
+
+<!-- Toast Calendario -->
+<div id="calToast"></div>
 
 <!-- Modal Nuevo Evento Calendario -->
 <div class="ov" id="ovNuevoEvento" onclick="closeOv('ovNuevoEvento',event)">
