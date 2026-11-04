@@ -1108,17 +1108,57 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
 
     <!-- CALENDARIO -->
     <div class="page" id="page-calendario">
-      <div class="page-title">Calendario</div>
-      <div class="page-sub">Agenda de gardenmatesss@gmail.com</div>
-      <div style="background:var(--white);border-radius:14px;border:1px solid var(--gray-200);overflow:hidden;margin-top:.5rem">
-        <iframe id="gcalFrame"
-          src="https://calendar.google.com/calendar/embed?src=gardenmatesss%40gmail.com&ctz=America%2FBuenos_Aires&mode=WEEK&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0&showTz=0&bgcolor=%23ffffff&color=%231a2d6b"
-          style="width:100%;height:680px;border:none;display:block"
-          frameborder="0" scrolling="no"
-          allowfullscreen>
-        </iframe>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:.4rem">
+        <div>
+          <div class="page-title" style="margin-bottom:.1rem">Calendario</div>
+          <div class="page-sub" style="margin-bottom:0">gardenmatesss@gmail.com</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center" id="calToolbar">
+          <div id="calAuthStatus" style="font-size:12px;color:var(--gray-400)"></div>
+          <button class="btn btn-ghost btn-sm" id="calBtnAuth" onclick="calSignIn()" style="display:none">🔑 Conectar con Google</button>
+          <button class="btn btn-ghost btn-sm" id="calBtnSignOut" onclick="calSignOut()" style="display:none;font-size:11px">Desconectar</button>
+          <button class="btn btn-navy btn-sm" id="calBtnNew" onclick="calAbrirNuevoEvento()" style="display:none">+ Nuevo evento</button>
+          <div id="calNavBtns" style="display:none;gap:6px;display:none">
+            <button class="btn btn-ghost btn-sm" onclick="calNav(-1)">‹ Anterior</button>
+            <button class="btn btn-ghost btn-sm" onclick="calNavHoy()">Hoy</button>
+            <button class="btn btn-ghost btn-sm" onclick="calNav(1)">Siguiente ›</button>
+            <select id="calVista" class="nota-form-select" onchange="calCambiarVista(this.value)" style="padding:5px 8px;font-size:12px">
+              <option value="month">Mes</option>
+              <option value="week" selected>Semana</option>
+              <option value="day">Día</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <p style="font-size:11px;color:var(--gray-400);margin-top:.6rem;text-align:center">Si el calendario pide iniciar sesión, abrilo en <a href="https://calendar.google.com" target="_blank" style="color:var(--navy)">calendar.google.com</a> con gardenmatesss@gmail.com</p>
+
+      <!-- Estado: no conectado -->
+      <div id="calNoAuth" style="background:var(--white);border-radius:14px;border:1px solid var(--gray-200);padding:3rem 2rem;text-align:center;margin-top:.5rem">
+        <div style="font-size:40px;margin-bottom:1rem">📅</div>
+        <div style="font-size:15px;font-weight:500;color:var(--navy-dark);margin-bottom:.5rem">Conectá tu Google Calendar</div>
+        <div style="font-size:12.5px;color:var(--gray-600);margin-bottom:1.5rem">Hacé login con gardenmatesss@gmail.com para ver y crear eventos directamente desde acá.</div>
+        <button class="btn btn-navy" onclick="calSignIn()">🔑 Conectar con Google</button>
+      </div>
+
+      <!-- Cargando -->
+      <div id="calLoading" style="display:none;padding:2rem;text-align:center;color:var(--gray-400);font-size:13px">Cargando eventos...</div>
+
+      <!-- Calendario renderizado -->
+      <div id="calWrap" style="display:none">
+        <div id="calHeader" style="background:var(--white);border-radius:14px 14px 0 0;border:1px solid var(--gray-200);border-bottom:none;padding:.75rem 1.2rem;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="calNav(-1)">‹</button>
+            <button class="btn btn-ghost btn-sm" onclick="calNavHoy()" style="font-size:11px">Hoy</button>
+            <button class="btn btn-ghost btn-sm" onclick="calNav(1)">›</button>
+          </div>
+          <div id="calTitulo" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--navy-dark)"></div>
+          <select id="calVista2" class="nota-form-select" onchange="calCambiarVista(this.value)" style="padding:5px 8px;font-size:12px">
+            <option value="month">Mes</option>
+            <option value="week" selected>Semana</option>
+            <option value="day">Día</option>
+          </select>
+        </div>
+        <div id="calGrid" style="background:var(--white);border-radius:0 0 14px 14px;border:1px solid var(--gray-200);min-height:500px;overflow:auto"></div>
+      </div>
     </div>
   </main>
 </div>
@@ -3466,6 +3506,429 @@ function notaAbrirForm(){
   openOv('ovNota');
   setTimeout(function(){if(txt)txt.focus();},80);
 }
+
+/* ===== GOOGLE CALENDAR (OAuth GIS) ===== */
+var CAL_CLIENT_ID='385013007511-hm3e24prbks3g2s9uhifl0ssg75d0r1n.apps.googleusercontent.com';
+var CAL_SCOPES='https://www.googleapis.com/auth/calendar.events';
+var CAL_API_KEY='AIzaSyDgheqMIt450N9T5ebLlQqqcc4ukRbU5SA';
+var _calTokenClient=null;
+var _calAccessToken=null;
+var _calVista='week'; // month | week | day
+var _calFecha=new Date(); // fecha de referencia actual
+var _calEventos=[];
+var _calGapiReady=false;
+var _calGisReady=false;
+var _calLoadAttempted=false;
+
+// Cargar GAPI y GIS cuando se entra al calendario
+function calInit(){
+  if(_calLoadAttempted)return;
+  _calLoadAttempted=true;
+  // Cargar GAPI
+  var s1=document.createElement('script');
+  s1.src='https://apis.google.com/js/api.js';
+  s1.onload=function(){
+    gapi.load('client',function(){
+      gapi.client.init({apiKey:CAL_API_KEY,discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']})
+        .then(function(){_calGapiReady=true;calCheckReady();})
+        .catch(function(e){console.warn('gapi init error',e);});
+    });
+  };
+  document.head.appendChild(s1);
+  // Cargar GIS
+  var s2=document.createElement('script');
+  s2.src='https://accounts.google.com/gsi/client';
+  s2.onload=function(){
+    _calTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:CAL_CLIENT_ID,
+      scope:CAL_SCOPES,
+      callback:function(resp){
+        if(resp.error){console.warn('OAuth error',resp);calSetAuthUI(false);return;}
+        _calAccessToken=resp.access_token;
+        gapi.client.setToken({access_token:_calAccessToken});
+        calSetAuthUI(true);
+        calCargarEventos();
+      }
+    });
+    _calGisReady=true;
+    calCheckReady();
+  };
+  document.head.appendChild(s2);
+}
+
+function calCheckReady(){
+  if(_calGapiReady&&_calGisReady){
+    // Intentar silencioso (si ya tiene token)
+    calSetAuthUI(false);
+  }
+}
+
+function calSignIn(){
+  if(!_calGisReady||!_calTokenClient){
+    calInit();
+    setTimeout(calSignIn,1500);
+    return;
+  }
+  _calTokenClient.requestAccessToken({prompt:''});
+}
+
+function calSignOut(){
+  if(_calAccessToken){
+    google.accounts.oauth2.revoke(_calAccessToken,function(){});
+    _calAccessToken=null;
+    gapi.client.setToken(null);
+  }
+  calSetAuthUI(false);
+  _calEventos=[];
+  document.getElementById('calGrid').innerHTML='';
+}
+
+function calSetAuthUI(authed){
+  var noAuth=document.getElementById('calNoAuth');
+  var wrap=document.getElementById('calWrap');
+  var btnAuth=document.getElementById('calBtnAuth');
+  var btnSignOut=document.getElementById('calBtnSignOut');
+  var btnNew=document.getElementById('calBtnNew');
+  if(authed){
+    if(noAuth)noAuth.style.display='none';
+    if(wrap)wrap.style.display='';
+    if(btnAuth)btnAuth.style.display='none';
+    if(btnSignOut)btnSignOut.style.display='';
+    if(btnNew)btnNew.style.display='';
+  }else{
+    if(noAuth)noAuth.style.display='';
+    if(wrap)wrap.style.display='none';
+    if(btnAuth)btnAuth.style.display='';
+    if(btnSignOut)btnSignOut.style.display='none';
+    if(btnNew)btnNew.style.display='none';
+  }
+}
+
+async function calCargarEventos(){
+  var loading=document.getElementById('calLoading');
+  if(loading)loading.style.display='';
+  try{
+    // Calcular rango según vista
+    var rango=calRango();
+    var resp=await gapi.client.calendar.events.list({
+      calendarId:'primary',
+      timeMin:rango.start.toISOString(),
+      timeMax:rango.end.toISOString(),
+      singleEvents:true,
+      orderBy:'startTime',
+      maxResults:250
+    });
+    _calEventos=resp.result.items||[];
+  }catch(e){
+    console.warn('Error cargando eventos',e);
+    if(e.status===401){calSetAuthUI(false);return;}
+  }
+  if(loading)loading.style.display='none';
+  calRenderGrid();
+}
+
+function calRango(){
+  var d=new Date(_calFecha);
+  var start,end;
+  if(_calVista==='month'){
+    start=new Date(d.getFullYear(),d.getMonth(),1);
+    end=new Date(d.getFullYear(),d.getMonth()+1,1);
+  }else if(_calVista==='week'){
+    var dow=d.getDay(); // 0=dom
+    start=new Date(d);start.setDate(d.getDate()-dow);start.setHours(0,0,0,0);
+    end=new Date(start);end.setDate(start.getDate()+7);
+  }else{// day
+    start=new Date(d);start.setHours(0,0,0,0);
+    end=new Date(d);end.setHours(23,59,59,999);
+  }
+  return{start:start,end:end};
+}
+
+var _MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+var _DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+function calActualizarTitulo(){
+  var el=document.getElementById('calTitulo');
+  if(!el)return;
+  var d=_calFecha;
+  if(_calVista==='month'){el.textContent=_MESES[d.getMonth()]+' '+d.getFullYear();}
+  else if(_calVista==='week'){
+    var rng=calRango();
+    el.textContent=_DIAS[rng.start.getDay()]+' '+rng.start.getDate()+' – '+_DIAS[new Date(rng.end-86400000).getDay()]+' '+new Date(rng.end-86400000).getDate()+' '+_MESES[d.getMonth()];
+  }else{
+    el.textContent=_DIAS[d.getDay()]+' '+d.getDate()+' de '+_MESES[d.getMonth()]+' '+d.getFullYear();
+  }
+}
+
+function calNav(dir){
+  var d=_calFecha;
+  if(_calVista==='month'){_calFecha=new Date(d.getFullYear(),d.getMonth()+dir,1);}
+  else if(_calVista==='week'){_calFecha=new Date(d.getTime()+dir*7*86400000);}
+  else{_calFecha=new Date(d.getTime()+dir*86400000);}
+  calCargarEventos();
+}
+
+function calNavHoy(){_calFecha=new Date();calCargarEventos();}
+
+function calCambiarVista(v){
+  _calVista=v;
+  // Sincronizar ambos selects
+  var s1=document.getElementById('calVista');var s2=document.getElementById('calVista2');
+  if(s1)s1.value=v;if(s2)s2.value=v;
+  calCargarEventos();
+}
+
+function calRenderGrid(){
+  calActualizarTitulo();
+  var el=document.getElementById('calGrid');
+  if(!el)return;
+  if(_calVista==='month')el.innerHTML=calHtmlMes();
+  else if(_calVista==='week')el.innerHTML=calHtmlSemana();
+  else el.innerHTML=calHtmlDia();
+}
+
+function calColorEvento(ev){
+  var colores={'1':'#a4bdfc','2':'#7ae7bf','3':'#dbadff','4':'#ff887c','5':'#fbd75b','6':'#ffb878','7':'#46d6db','8':'#e1e1e1','9':'#5484ed','10':'#51b749','11':'#dc2127'};
+  if(ev.colorId)return colores[ev.colorId]||'#5484ed';
+  return'#5484ed';
+}
+
+function calFmtHora(dateStr){
+  if(!dateStr)return'';
+  var d=new Date(dateStr);
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+
+function calEsAllDay(ev){return !!ev.start.date;}
+
+function calHtmlEvento(ev,compact){
+  var titulo=ev.summary||'(sin título)';
+  var color=calColorEvento(ev);
+  var hora=calEsAllDay(ev)?'Todo el día':calFmtHora(ev.start.dateTime);
+  if(compact){
+    return '<div onclick="calVerEvento(\''+ev.id+'\')" style="background:'+color+';color:#fff;border-radius:4px;padding:1px 5px;font-size:10.5px;margin-bottom:2px;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" title="'+titulo.replace(/"/g,'&quot;')+'">'+titulo+'</div>';
+  }
+  return '<div onclick="calVerEvento(\''+ev.id+'\')" style="background:'+color+';color:#fff;border-radius:6px;padding:4px 8px;font-size:11px;margin-bottom:4px;cursor:pointer;display:flex;gap:6px;align-items:center">'
+    +'<span style="opacity:.85;font-size:10px;min-width:55px">'+hora+'</span>'
+    +'<span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+titulo+'</span>'
+    +'</div>';
+}
+
+function calHtmlMes(){
+  var hoy=new Date();hoy.setHours(0,0,0,0);
+  var year=_calFecha.getFullYear(),month=_calFecha.getMonth();
+  var primerDia=new Date(year,month,1).getDay();
+  var diasMes=new Date(year,month+1,0).getDate();
+  var html='<div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid #e8ecf4">';
+  ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].forEach(function(d){
+    html+='<div style="padding:6px 4px;text-align:center;font-size:10.5px;font-weight:600;color:#888;letter-spacing:.04em">'+d+'</div>';
+  });
+  html+='</div><div style="display:grid;grid-template-columns:repeat(7,1fr)">';
+  for(var i=0;i<primerDia;i++)html+='<div style="min-height:90px;border-right:1px solid #f0f3ff;border-bottom:1px solid #f0f3ff;background:#fafbff"></div>';
+  for(var d=1;d<=diasMes;d++){
+    var thisD=new Date(year,month,d);thisD.setHours(0,0,0,0);
+    var isHoy=thisD.getTime()===hoy.getTime();
+    var evsDia=_calEventos.filter(function(ev){
+      var start=ev.start.date?new Date(ev.start.date+'T00:00:00'):new Date(ev.start.dateTime);
+      var sd=new Date(start);sd.setHours(0,0,0,0);
+      return sd.getTime()===thisD.getTime();
+    });
+    html+='<div style="min-height:90px;border-right:1px solid #f0f3ff;border-bottom:1px solid #f0f3ff;padding:4px 4px 4px 4px;vertical-align:top;cursor:pointer" onclick="calClickDia('+d+')">'
+      +'<div style="font-size:11px;font-weight:'+(isHoy?'700':'400')+';color:'+(isHoy?'#fff':'#444')+';background:'+(isHoy?'var(--navy)':'transparent')+';width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:3px">'+d+'</div>';
+    evsDia.forEach(function(ev){html+=calHtmlEvento(ev,true);});
+    html+='</div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function calHtmlSemana(){
+  var hoy=new Date();hoy.setHours(0,0,0,0);
+  var rng=calRango();
+  var html='<div style="display:grid;grid-template-columns:50px repeat(7,1fr)">';
+  // Cabecera días
+  html+='<div style="border-bottom:1px solid #e8ecf4"></div>';
+  for(var i=0;i<7;i++){
+    var dia=new Date(rng.start.getTime()+i*86400000);
+    var isHoy=dia.getTime()===hoy.getTime();
+    html+='<div style="padding:6px 2px;text-align:center;border-bottom:1px solid #e8ecf4;border-left:1px solid #f0f3ff">'
+      +'<div style="font-size:9.5px;color:#888;text-transform:uppercase;letter-spacing:.04em">'+_DIAS[dia.getDay()]+'</div>'
+      +'<div style="font-size:'+(isHoy?'14':'13')+'px;font-weight:'+(isHoy?'700':'400')+';color:'+(isHoy?'#fff':'#333')+';background:'+(isHoy?'var(--navy)':'transparent')+';width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px auto 0">'+dia.getDate()+'</div>'
+      +'</div>';
+  }
+  // Filas horarias (6am–22pm)
+  for(var h=6;h<=22;h++){
+    html+='<div style="font-size:9.5px;color:#aaa;padding:2px 4px;border-right:1px solid #f0f3ff;border-bottom:1px solid #f8f9ff;text-align:right;line-height:1">'+h+':00</div>';
+    for(var di=0;di<7;di++){
+      var diaD=new Date(rng.start.getTime()+di*86400000);
+      var evsHora=_calEventos.filter(function(ev){
+        if(calEsAllDay(ev))return false;
+        var st=new Date(ev.start.dateTime);
+        var sd=new Date(st);sd.setHours(0,0,0,0);
+        return sd.getTime()===diaD.getTime()&&st.getHours()===h;
+      });
+      html+='<div style="min-height:36px;border-left:1px solid #f0f3ff;border-bottom:1px solid #f8f9ff;padding:2px 2px;position:relative">';
+      evsHora.forEach(function(ev){html+=calHtmlEvento(ev,true);});
+      html+='</div>';
+    }
+  }
+  // All-day events al inicio
+  // (incluidos en cabecera como chip)
+  html+='</div>';
+  // All-day row
+  var alldayEvs=_calEventos.filter(calEsAllDay);
+  if(alldayEvs.length){
+    var adHtml='<div style="display:grid;grid-template-columns:50px repeat(7,1fr);border-bottom:1px solid #e8ecf4;background:#fafbff">';
+    adHtml+='<div style="font-size:9.5px;color:#aaa;padding:4px 4px;text-align:right">Todo el día</div>';
+    for(var di2=0;di2<7;di2++){
+      var diaAD=new Date(rng.start.getTime()+di2*86400000);
+      var evAD=alldayEvs.filter(function(ev){
+        var st=new Date(ev.start.date+'T00:00:00');
+        var sd=new Date(st);sd.setHours(0,0,0,0);
+        return sd.getTime()===diaAD.getTime();
+      });
+      adHtml+='<div style="padding:2px 2px;border-left:1px solid #f0f3ff">';
+      evAD.forEach(function(ev){adHtml+=calHtmlEvento(ev,true);});
+      adHtml+='</div>';
+    }
+    adHtml+='</div>';
+    html=adHtml+html;
+  }
+  return html;
+}
+
+function calHtmlDia(){
+  var hoy=new Date();hoy.setHours(0,0,0,0);
+  var diaRef=new Date(_calFecha);diaRef.setHours(0,0,0,0);
+  var evsDelDia=_calEventos.filter(function(ev){
+    var start=ev.start.date?new Date(ev.start.date+'T00:00:00'):new Date(ev.start.dateTime);
+    var sd=new Date(start);sd.setHours(0,0,0,0);
+    return sd.getTime()===diaRef.getTime();
+  });
+  if(!evsDelDia.length){
+    return '<div style="padding:2rem;text-align:center;color:#aaa;font-size:13px">No hay eventos este día.<br><button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="calAbrirNuevoEvento()">+ Crear evento</button></div>';
+  }
+  var html='<div style="padding:12px 16px">';
+  // All-day first
+  evsDelDia.filter(calEsAllDay).forEach(function(ev){html+=calHtmlEvento(ev,false);});
+  // Timed events sorted
+  evsDelDia.filter(function(ev){return !calEsAllDay(ev);}).sort(function(a,b){return new Date(a.start.dateTime)-new Date(b.start.dateTime);}).forEach(function(ev){html+=calHtmlEvento(ev,false);});
+  html+='</div>';
+  return html;
+}
+
+function calClickDia(d){
+  _calFecha=new Date(_calFecha.getFullYear(),_calFecha.getMonth(),d);
+  calCambiarVista('day');
+}
+
+function calVerEvento(id){
+  var ev=_calEventos.find(function(e){return e.id===id;});
+  if(!ev)return;
+  var titulo=ev.summary||'(sin título)';
+  var inicio=calEsAllDay(ev)?ev.start.date:(new Date(ev.start.dateTime).toLocaleString('es-AR'));
+  var fin=calEsAllDay(ev)?ev.end.date:(new Date(ev.end.dateTime).toLocaleString('es-AR'));
+  var desc=ev.description?'\n\n'+ev.description:'';
+  var loc=ev.location?'\n📍 '+ev.location:'';
+  alert(titulo+'\n⏰ '+inicio+' → '+fin+loc+desc);
+}
+
+/* ---- Nuevo Evento ---- */
+function calAbrirNuevoEvento(){
+  openOv('ovNuevoEvento');
+  // Prellenar fecha con la fecha actual del calendario
+  var d=_calFecha;
+  var ymd=d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');
+  var elFecha=document.getElementById('calNuevoFecha');
+  if(elFecha)elFecha.value=ymd;
+  // Hora por defecto: próxima hora redonda
+  var now=new Date();
+  var hh=(now.getHours()+1).toString().padStart(2,'0');
+  var elHoraI=document.getElementById('calNuevoHoraI');
+  var elHoraF=document.getElementById('calNuevoHoraF');
+  if(elHoraI)elHoraI.value=hh+':00';
+  if(elHoraF)elHoraF.value=((now.getHours()+2)).toString().padStart(2,'0')+':00';
+}
+
+async function calGuardarEvento(){
+  var titulo=(document.getElementById('calNuevoTitulo').value||'').trim();
+  if(!titulo){alert('Poné un título al evento.');return;}
+  var fecha=document.getElementById('calNuevoFecha').value;
+  var horaI=document.getElementById('calNuevoHoraI').value;
+  var horaF=document.getElementById('calNuevoHoraF').value;
+  var desc=(document.getElementById('calNuevoDesc').value||'').trim();
+  var allday=document.getElementById('calNuevoAllDay').checked;
+  var ev;
+  if(allday){
+    ev={summary:titulo,description:desc,start:{date:fecha},end:{date:fecha}};
+  }else{
+    ev={summary:titulo,description:desc,
+      start:{dateTime:fecha+'T'+horaI+':00',timeZone:'America/Buenos_Aires'},
+      end:{dateTime:fecha+'T'+horaF+':00',timeZone:'America/Buenos_Aires'}
+    };
+  }
+  var btnSave=document.getElementById('calBtnSaveEvento');
+  if(btnSave){btnSave.disabled=true;btnSave.textContent='Guardando...';}
+  try{
+    await gapi.client.calendar.events.insert({calendarId:'primary',resource:ev});
+    closeOv('ovNuevoEvento');
+    document.getElementById('calNuevoTitulo').value='';
+    document.getElementById('calNuevoDesc').value='';
+    calCargarEventos();
+  }catch(e){
+    console.warn('Error al crear evento',e);
+    if(e.status===401){calSetAuthUI(false);alert('Sesión expirada. Volvé a conectar con Google.');}
+    else{alert('No se pudo crear el evento: '+(e.result&&e.result.error&&e.result.error.message)||'error desconocido');}
+  }finally{
+    if(btnSave){btnSave.disabled=false;btnSave.textContent='Crear evento';}
+  }
+}
+
+function calToggleAllDay(){
+  var allday=document.getElementById('calNuevoAllDay').checked;
+  var horasRow=document.getElementById('calHorasRow');
+  if(horasRow)horasRow.style.display=allday?'none':'';
+}
+
+// Hook en showPage para inicializar el calendario
+var _calPageShown=false;
+var _origShowPage=showPage;
+showPage=function(n,btn){
+  _origShowPage(n,btn);
+  if(n==='calendario'&&!_calPageShown){
+    _calPageShown=true;
+    calInit();
+  }
+};
 </script>
+
+<!-- Modal Nuevo Evento Calendario -->
+<div class="ov" id="ovNuevoEvento" onclick="closeOv('ovNuevoEvento',event)">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hd">
+      <div><div class="modal-name">📅 Nuevo evento</div></div>
+      <button class="btn-x" onclick="closeOv('ovNuevoEvento')">x</button>
+    </div>
+    <div class="modal-bd" style="flex-direction:column;gap:11px;padding:1.2rem 1.4rem">
+      <input id="calNuevoTitulo" class="nota-form-select" style="width:100%;padding:8px 10px;font-size:13px" placeholder="Título del evento" />
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="calNuevoFecha" type="date" class="nota-form-select" style="flex:1;padding:6px 8px;font-size:12px" />
+        <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--navy-dark);cursor:pointer;white-space:nowrap">
+          <input type="checkbox" id="calNuevoAllDay" onchange="calToggleAllDay()" style="margin:0"> Todo el día
+        </label>
+      </div>
+      <div id="calHorasRow" style="display:flex;gap:8px;align-items:center">
+        <input id="calNuevoHoraI" type="time" class="nota-form-select" style="flex:1;padding:6px 8px;font-size:12px" />
+        <span style="font-size:12px;color:#888">a</span>
+        <input id="calNuevoHoraF" type="time" class="nota-form-select" style="flex:1;padding:6px 8px;font-size:12px" />
+      </div>
+      <textarea id="calNuevoDesc" class="nota-form-select" style="width:100%;min-height:70px;padding:8px 10px;font-size:12px;resize:vertical" placeholder="Descripción (opcional)"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px">
+        <button class="btn btn-ghost" onclick="closeOv('ovNuevoEvento')">Cancelar</button>
+        <button class="btn btn-navy" id="calBtnSaveEvento" onclick="calGuardarEvento()">Crear evento</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
