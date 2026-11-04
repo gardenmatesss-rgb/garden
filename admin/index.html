@@ -1114,9 +1114,6 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
           <div class="page-sub" style="margin-bottom:0">gardenmatesss@gmail.com</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center" id="calToolbar">
-          <div id="calAuthStatus" style="font-size:12px;color:var(--gray-400)"></div>
-          <button class="btn btn-ghost btn-sm" id="calBtnAuth" onclick="calSignIn()" style="display:none">🔑 Conectar con Google</button>
-          <button class="btn btn-ghost btn-sm" id="calBtnSignOut" onclick="calSignOut()" style="display:none;font-size:11px">Desconectar</button>
           <button class="btn btn-navy btn-sm" id="calBtnNew" onclick="calAbrirNuevoEvento()" style="display:none">+ Nuevo evento</button>
           <div id="calNavBtns" style="display:none;gap:6px;display:none">
             <button class="btn btn-ghost btn-sm" onclick="calNav(-1)">‹ Anterior</button>
@@ -1131,12 +1128,9 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
         </div>
       </div>
 
-      <!-- Estado: no conectado -->
+      <!-- Cargando inicial -->
       <div id="calNoAuth" style="background:var(--white);border-radius:14px;border:1px solid var(--gray-200);padding:3rem 2rem;text-align:center;margin-top:.5rem">
-        <div style="font-size:40px;margin-bottom:1rem">📅</div>
-        <div style="font-size:15px;font-weight:500;color:var(--navy-dark);margin-bottom:.5rem">Conectá tu Google Calendar</div>
-        <div style="font-size:12.5px;color:var(--gray-600);margin-bottom:1.5rem">Hacé login con gardenmatesss@gmail.com para ver y crear eventos directamente desde acá.</div>
-        <button class="btn btn-navy" onclick="calSignIn()">🔑 Conectar con Google</button>
+        <div style="font-size:13px;color:var(--gray-400)">Cargando calendario...</div>
       </div>
 
       <!-- Cargando -->
@@ -3507,123 +3501,34 @@ function notaAbrirForm(){
   setTimeout(function(){if(txt)txt.focus();},80);
 }
 
-/* ===== GOOGLE CALENDAR (OAuth GIS) ===== */
-var CAL_CLIENT_ID='385013007511-hm3e24prbks3g2s9uhifl0ssg75d0r1n.apps.googleusercontent.com';
-var CAL_SCOPES='https://www.googleapis.com/auth/calendar.events';
-var CAL_API_KEY='AIzaSyDgheqMIt450N9T5ebLlQqqcc4ukRbU5SA';
-var _calTokenClient=null;
-var _calAccessToken=null;
-var _calVista='week'; // month | week | day
-var _calFecha=new Date(); // fecha de referencia actual
+/* ===== GOOGLE CALENDAR (vía Apps Script — sin OAuth) ===== */
+var _calVista='week';
+var _calFecha=new Date();
 var _calEventos=[];
-var _calGapiReady=false;
-var _calGisReady=false;
-var _calLoadAttempted=false;
-
-// Cargar GAPI y GIS cuando se entra al calendario
-function calInit(){
-  if(_calLoadAttempted)return;
-  _calLoadAttempted=true;
-  // Cargar GAPI
-  var s1=document.createElement('script');
-  s1.src='https://apis.google.com/js/api.js';
-  s1.onload=function(){
-    gapi.load('client',function(){
-      gapi.client.init({apiKey:CAL_API_KEY,discoveryDocs:['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']})
-        .then(function(){_calGapiReady=true;calCheckReady();})
-        .catch(function(e){console.warn('gapi init error',e);});
-    });
-  };
-  document.head.appendChild(s1);
-  // Cargar GIS
-  var s2=document.createElement('script');
-  s2.src='https://accounts.google.com/gsi/client';
-  s2.onload=function(){
-    _calTokenClient=google.accounts.oauth2.initTokenClient({
-      client_id:CAL_CLIENT_ID,
-      scope:CAL_SCOPES,
-      callback:function(resp){
-        if(resp.error){console.warn('OAuth error',resp);calSetAuthUI(false);return;}
-        _calAccessToken=resp.access_token;
-        gapi.client.setToken({access_token:_calAccessToken});
-        calSetAuthUI(true);
-        calCargarEventos();
-      }
-    });
-    _calGisReady=true;
-    calCheckReady();
-  };
-  document.head.appendChild(s2);
-}
-
-function calCheckReady(){
-  if(_calGapiReady&&_calGisReady){
-    // Intentar silencioso (si ya tiene token)
-    calSetAuthUI(false);
-  }
-}
-
-function calSignIn(){
-  if(!_calGisReady||!_calTokenClient){
-    calInit();
-    setTimeout(calSignIn,1500);
-    return;
-  }
-  _calTokenClient.requestAccessToken({prompt:''});
-}
-
-function calSignOut(){
-  if(_calAccessToken){
-    google.accounts.oauth2.revoke(_calAccessToken,function(){});
-    _calAccessToken=null;
-    gapi.client.setToken(null);
-  }
-  calSetAuthUI(false);
-  _calEventos=[];
-  document.getElementById('calGrid').innerHTML='';
-}
-
-function calSetAuthUI(authed){
-  var noAuth=document.getElementById('calNoAuth');
-  var wrap=document.getElementById('calWrap');
-  var btnAuth=document.getElementById('calBtnAuth');
-  var btnSignOut=document.getElementById('calBtnSignOut');
-  var btnNew=document.getElementById('calBtnNew');
-  if(authed){
-    if(noAuth)noAuth.style.display='none';
-    if(wrap)wrap.style.display='';
-    if(btnAuth)btnAuth.style.display='none';
-    if(btnSignOut)btnSignOut.style.display='';
-    if(btnNew)btnNew.style.display='';
-  }else{
-    if(noAuth)noAuth.style.display='';
-    if(wrap)wrap.style.display='none';
-    if(btnAuth)btnAuth.style.display='';
-    if(btnSignOut)btnSignOut.style.display='none';
-    if(btnNew)btnNew.style.display='none';
-  }
-}
 
 async function calCargarEventos(){
   var loading=document.getElementById('calLoading');
+  var wrap=document.getElementById('calWrap');
+  var noAuth=document.getElementById('calNoAuth');
   if(loading)loading.style.display='';
+  if(wrap)wrap.style.display='none';
+  if(noAuth)noAuth.style.display='none';
   try{
-    // Calcular rango según vista
-    var rango=calRango();
-    var resp=await gapi.client.calendar.events.list({
-      calendarId:'primary',
-      timeMin:rango.start.toISOString(),
-      timeMax:rango.end.toISOString(),
-      singleEvents:true,
-      orderBy:'startTime',
-      maxResults:250
-    });
-    _calEventos=resp.result.items||[];
-  }catch(e){
-    console.warn('Error cargando eventos',e);
-    if(e.status===401){calSetAuthUI(false);return;}
-  }
+    var ymd=_calFecha.getFullYear()+'-'+(_calFecha.getMonth()+1).toString().padStart(2,'0')+'-'+_calFecha.getDate().toString().padStart(2,'0');
+    var r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({action:'getEventos',token:SESSION_TOKEN,vista:_calVista,fecha:ymd}),redirect:'follow'});
+    var d=await r.json();
+    if(d.ok){
+      // Normalizar formato para ser compatible con el renderer
+      _calEventos=(d.eventos||[]).map(function(ev){
+        var out={id:ev.id,summary:ev.title,description:ev.description,location:ev.location,colorId:ev.color};
+        if(ev.allDay){out.start={date:ev.start};out.end={date:ev.end};}
+        else{out.start={dateTime:ev.start};out.end={dateTime:ev.end};}
+        return out;
+      });
+    }
+  }catch(e){console.warn('Error cargando eventos',e);}
   if(loading)loading.style.display='none';
+  if(wrap)wrap.style.display='';
   calRenderGrid();
 }
 
@@ -3858,27 +3763,22 @@ async function calGuardarEvento(){
   var horaF=document.getElementById('calNuevoHoraF').value;
   var desc=(document.getElementById('calNuevoDesc').value||'').trim();
   var allday=document.getElementById('calNuevoAllDay').checked;
-  var ev;
-  if(allday){
-    ev={summary:titulo,description:desc,start:{date:fecha},end:{date:fecha}};
-  }else{
-    ev={summary:titulo,description:desc,
-      start:{dateTime:fecha+'T'+horaI+':00',timeZone:'America/Buenos_Aires'},
-      end:{dateTime:fecha+'T'+horaF+':00',timeZone:'America/Buenos_Aires'}
-    };
-  }
   var btnSave=document.getElementById('calBtnSaveEvento');
   if(btnSave){btnSave.disabled=true;btnSave.textContent='Guardando...';}
   try{
-    await gapi.client.calendar.events.insert({calendarId:'primary',resource:ev});
+    var r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify({
+      action:'crearEvento',token:SESSION_TOKEN,
+      evento:{title:titulo,description:desc,date:fecha,horaI:horaI,horaF:horaF,allDay:allday}
+    }),redirect:'follow'});
+    var d=await r.json();
+    if(!d.ok){alert('Error: '+(d.error||'desconocido'));return;}
     closeOv('ovNuevoEvento');
     document.getElementById('calNuevoTitulo').value='';
     document.getElementById('calNuevoDesc').value='';
     calCargarEventos();
   }catch(e){
     console.warn('Error al crear evento',e);
-    if(e.status===401){calSetAuthUI(false);alert('Sesión expirada. Volvé a conectar con Google.');}
-    else{alert('No se pudo crear el evento: '+(e.result&&e.result.error&&e.result.error.message)||'error desconocido');}
+    alert('Error de red al crear el evento.');
   }finally{
     if(btnSave){btnSave.disabled=false;btnSave.textContent='Crear evento';}
   }
@@ -3890,14 +3790,21 @@ function calToggleAllDay(){
   if(horasRow)horasRow.style.display=allday?'none':'';
 }
 
-// Hook en showPage para inicializar el calendario
+// Hook en showPage: carga el calendario directo sin OAuth
 var _calPageShown=false;
 var _origShowPage=showPage;
 showPage=function(n,btn){
   _origShowPage(n,btn);
   if(n==='calendario'&&!_calPageShown){
     _calPageShown=true;
-    calInit();
+    // Mostrar el wrap directo y ocultar pantalla de no-auth
+    var noAuth=document.getElementById('calNoAuth');
+    var btnNew=document.getElementById('calBtnNew');
+    var btnAuth=document.getElementById('calBtnAuth');
+    if(noAuth)noAuth.style.display='none';
+    if(btnNew)btnNew.style.display='';
+    if(btnAuth)btnAuth.style.display='none';
+    calCargarEventos();
   }
 };
 </script>
