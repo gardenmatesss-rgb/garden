@@ -289,6 +289,14 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
 .np-foto-ph{width:110px;height:110px;border-radius:12px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--gray-400);cursor:pointer;border:2px dashed var(--gray-200);transition:border-color .15s;flex-shrink:0}
 .np-foto-ph:hover{border-color:var(--navy)}
 .np-foto-preview{width:110px;height:110px;border-radius:12px;object-fit:cover;border:2px solid var(--gray-200);display:none;flex-shrink:0}
+/* CARGA RÁPIDA TOGGLE */
+.np-mas-btn{display:flex;align-items:center;gap:6px;background:none;border:1.5px dashed var(--gray-200);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--gray-400);cursor:pointer;width:100%;margin:12px 0 0;grid-column:1/-1;transition:all .18s}
+.np-mas-btn:hover{border-color:var(--navy);color:var(--navy)}
+.np-mas-btn .np-mas-arrow{transition:transform .22s;font-style:normal;font-size:11px}
+.np-mas-btn.open .np-mas-arrow{transform:rotate(90deg)}
+.np-extra-panel{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .25s ease;opacity:0;pointer-events:none}
+.np-extra-panel.open{max-height:2000px;opacity:1;pointer-events:auto}
+.np-warn{font-size:11px;color:#b85c00;background:#fff8f0;border:1px solid #ffd599;border-radius:7px;padding:7px 12px;grid-column:1/-1;margin-top:4px}
 
 /* MATCH REDISEÑADO */
 .match-result-section{margin-bottom:1.2rem}
@@ -588,6 +596,10 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--navy-d
   .modal-edit{max-width:100%;border-radius:20px 20px 0 0}
   .ef-grid{grid-template-columns:1fr}
   .ef-full{grid-column:1}
+  .np-extra-panel{grid-template-columns:1fr}
+  /* Nuevo perfil — foto encima en mobile */
+  #ovNuevo .modal-bd>div:first-child{flex-direction:column;align-items:center}
+  #ovNuevo .np-foto-ph,#ovNuevo .np-foto-preview{width:90px;height:90px}
 
   /* MATCH MODAL — tabs en mobile */
   .match-modal{max-width:100%;width:100%;border-radius:20px 20px 0 0;max-height:96vh}
@@ -1973,36 +1985,58 @@ function openNuevoPerfil(){
   document.getElementById('npFotoErr').textContent='';
   document.getElementById('npFotoInput').value='';
   document.getElementById('npForm').innerHTML=`
-    <div class="ef-sec">Datos personales</div>
-    <div class="ef-field"><label>Nombre completo</label><input id="np-nombre" placeholder="Nombre y apellido"></div>
-    <div class="ef-field"><label>Edad</label><input id="np-edad" type="number" placeholder="28"></div>
-    <div class="ef-field"><label>Sexo</label><select id="np-sexo">${selO(['Femenino','Masculino'],'')}</select></div>
-    <div class="ef-field"><label>Estado civil</label><select id="np-estado">${selO(['Soltero/a','Divorciado/a','Viudo/a'],'')}</select></div>
-    <div class="ef-field"><label>Hijos</label><select id="np-hijos">${selO(['No','Si'],'')}</select></div>
-    <div class="ef-field"><label>Nacionalidad</label><input id="np-nac" placeholder="Argentina"></div>
-    <div class="ef-field"><label>Pais residencia</label><input id="np-pais" placeholder="Argentina"></div>
-    <div class="ef-field"><label>Ciudad</label><input id="np-region" placeholder="CABA"></div>
-    <div class="ef-field"><label>Barrio</label><input id="np-barrio" placeholder="Palermo"></div>
-    <div class="ef-field"><label>Altura</label><select id="np-altura">${selO(['Bajo/a','Mediano/a','Alto/a'],'')}</select></div>
-    <div class="ef-field"><label>WhatsApp contacto</label><input id="np-wa" placeholder="+54 11..."></div>
-    <div class="ef-sec">Observancia</div>
-    <div class="ef-field"><label>Abuela materna judia</label><select id="np-abuela">${selO(['Si','No','No se'],'')}</select></div>
-    <div class="ef-field"><label>Orientacion religiosa</label><select id="np-relig">${selO(RELIG,'')}</select></div>
-    <div class="ef-field"><label>Ascendencia</label><select id="np-asc">${selO(['Ashkenazi','Sefardi','Mezcla'],'')}</select></div>
-    <div class="ef-field"><label>Kashrut</label><select id="np-kash">${selO(['Nunca','En casa','Siempre','Parcialmente'],'')}</select></div>
-    <div class="ef-field"><label>Shabat</label><select id="np-shab">${selO(['Nada','Kidush y algunos preceptos','Completo'],'')}</select></div>
-    <div class="ef-field"><label>Templo</label><input id="np-templo" placeholder="Nombre del templo"></div>
-    <div class="ef-field"><label>Plan de alia</label><select id="np-alia">${selO(['Si','No','Quizas'],'')}</select></div>
-    <div class="ef-sec">Educacion</div>
-    <div class="ef-field"><label>Profesion</label><input id="np-prof" placeholder="ej. Medico, contadora..."></div>
-    <div class="ef-field"><label>Idiomas (por coma)</label><input id="np-idiomas" placeholder="Espanol, Hebreo"></div>
-    <div class="ef-sec">Que busca</div>
-    <div class="ef-field"><label>Edad desde</label><input id="np-eD" type="number" placeholder="22"></div>
-    <div class="ef-field"><label>Edad hasta</label><input id="np-eH" type="number" placeholder="35"></div>
-    <div class="ef-field"><label>Abierto a hijos</label><select id="np-abhijos">${selO(['Si','No','Depende'],'')}</select></div>
-    <div class="ef-field ef-full"><label>Dealbreakers</label><textarea id="np-deal" placeholder="ej. No fumador/a..."></textarea></div>
-    <div class="ef-field ef-full"><label>Persona ideal</label><textarea id="np-ideal" placeholder="Descripcion..."></textarea></div>`;
+    <div class="ef-sec" style="margin-top:0">⚡ Carga rápida</div>
+    <div class="ef-field"><label>Nombre completo ✦</label><input id="np-nombre" placeholder="Nombre y apellido"></div>
+    <div class="ef-field"><label>Edad ✦</label><input id="np-edad" type="number" placeholder="28"></div>
+    <div class="ef-field"><label>Sexo ✦</label><select id="np-sexo">${selO(['Femenino','Masculino'],'')}</select></div>
+    <div class="ef-field"><label>País residencia ✦</label><input id="np-pais" placeholder="Argentina"></div>
+    <div class="ef-field"><label>Orientación religiosa ✦</label><select id="np-relig">${selO(RELIG,'')}</select></div>
+    <div class="ef-field"><label>Kashrut ✦</label><select id="np-kash">${selO(['Nunca','En casa','Siempre','Parcialmente'],'')}</select></div>
+    <div class="ef-field"><label>Shabat ✦</label><select id="np-shab">${selO(['Nada','Kidush y algunos preceptos','Completo'],'')}</select></div>
+    <div class="ef-field"><label>Idiomas ✦ <span style="font-weight:400;text-transform:none">(separados por coma)</span></label><input id="np-idiomas" placeholder="Español, Hebreo"></div>
+    <div class="ef-sec" style="margin-top:.6rem">Qué busca</div>
+    <div class="ef-field"><label>Edad desde ✦</label><input id="np-eD" type="number" placeholder="22"></div>
+    <div class="ef-field"><label>Edad hasta ✦</label><input id="np-eH" type="number" placeholder="35"></div>
+    <div class="ef-field"><label>Orientación buscada ✦</label><select id="np-obuscada">${selO(RELIG,'')}</select></div>
+    <button type="button" class="np-mas-btn" id="npMasBtn" onclick="toggleNpExtra()">
+      <i class="np-mas-arrow">▶</i> Agregar más datos
+    </button>
+    <div class="np-extra-panel" id="npExtraPanel">
+      <div class="ef-sec">Más datos personales</div>
+      <div class="ef-field"><label>Estado civil</label><select id="np-estado">${selO(['Soltero/a','Divorciado/a','Viudo/a'],'')}</select></div>
+      <div class="ef-field"><label>Hijos</label><select id="np-hijos">${selO(['No','Si'],'')}</select></div>
+      <div class="ef-field"><label>Nacionalidad</label><input id="np-nac" placeholder="Argentina"></div>
+      <div class="ef-field"><label>Ciudad / Provincia</label><input id="np-region" placeholder="CABA"></div>
+      <div class="ef-field"><label>Barrio</label><input id="np-barrio" placeholder="Palermo"></div>
+      <div class="ef-field"><label>Altura</label><select id="np-altura">${selO(['Bajo/a','Mediano/a','Alto/a'],'')}</select></div>
+      <div class="ef-field"><label>WhatsApp contacto</label><input id="np-wa" placeholder="+54 11..."></div>
+      <div class="ef-sec">Observancia</div>
+      <div class="ef-field"><label>Abuela materna judía</label><select id="np-abuela">${selO(['Si','No','No se'],'')}</select></div>
+      <div class="ef-field"><label>Ascendencia</label><select id="np-asc">${selO(['Ashkenazi','Sefardi','Mezcla'],'')}</select></div>
+      <div class="ef-field"><label>Baal teshuvá</label><select id="np-bt">${selO(['Si','No'],'')}</select></div>
+      <div class="ef-field"><label>Converso/a</label><select id="np-conv">${selO(['Si','No'],'')}</select></div>
+      <div class="ef-field"><label>Templo</label><input id="np-templo" placeholder="Nombre del templo"></div>
+      <div class="ef-field"><label>Plan de Aliyá</label><select id="np-alia">${selO(['Si','No','Quizas'],'')}</select></div>
+      <div class="ef-sec">Educación y profesión</div>
+      <div class="ef-field"><label>Profesión</label><input id="np-prof" placeholder="ej. Médico, contadora..."></div>
+      <div class="ef-field"><label>Universidad</label><select id="np-univ">${selO(['Si estudió','No estudió'],'')}</select></div>
+      <div class="ef-field"><label>Carrera</label><input id="np-carrera" placeholder="ej. Medicina"></div>
+      <div class="ef-sec">Más sobre lo que busca</div>
+      <div class="ef-field"><label>Abierto/a a hijos</label><select id="np-abhijos">${selO(['Si','No','Depende'],'')}</select></div>
+      <div class="ef-field ef-full"><label>Dealbreakers</label><textarea id="np-deal" placeholder="ej. No fumador/a..."></textarea></div>
+      <div class="ef-field ef-full"><label>Persona ideal</label><textarea id="np-ideal" placeholder="Descripción..."></textarea></div>
+      <div class="ef-field ef-full"><label>Notas extra</label><textarea id="np-notas" placeholder="Notas internas..."></textarea></div>
+    </div>`;
   openOv('ovNuevo');
+}
+function toggleNpExtra(){
+  const btn=document.getElementById('npMasBtn');
+  const panel=document.getElementById('npExtraPanel');
+  const isOpen=panel.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  btn.innerHTML=isOpen
+    ?'<i class="np-mas-arrow" style="transition:none">▼</i> Menos datos'
+    :'<i class="np-mas-arrow" style="transition:none">▶</i> Agregar más datos';
 }
 function previewNpFoto(input){
   const file=input.files[0];if(!file)return;
@@ -2017,9 +2051,86 @@ function previewNpFoto(input){
 }
 async function saveNuevoPerfil(){
   if(!npFotoData){document.getElementById('npFotoErr').textContent='La foto es obligatoria.';return;}
+  // Validar campos esenciales
+  const esenciales=[
+    {id:'np-nombre',label:'Nombre'},
+    {id:'np-edad',label:'Edad'},
+    {id:'np-sexo',label:'Sexo'},
+    {id:'np-pais',label:'País residencia'},
+    {id:'np-relig',label:'Orientación religiosa'},
+    {id:'np-kash',label:'Kashrut'},
+    {id:'np-shab',label:'Shabat'},
+    {id:'np-idiomas',label:'Idiomas'},
+    {id:'np-eD',label:'Edad desde'},
+    {id:'np-eH',label:'Edad hasta'},
+    {id:'np-obuscada',label:'Orientación buscada'},
+  ];
+  const faltantes=[];
+  esenciales.forEach(f=>{
+    const el=document.getElementById(f.id);
+    if(!el)return;
+    const v=el.value.trim();
+    const wrap=el.closest('.ef-field');
+    if(!v){faltantes.push(f.label);if(wrap)wrap.classList.add('missing');}
+    else{if(wrap)wrap.classList.remove('missing');}
+  });
+  let warnEl=document.getElementById('npWarn');
+  if(faltantes.length>0){
+    if(!warnEl){warnEl=document.createElement('div');warnEl.id='npWarn';warnEl.className='np-warn';document.getElementById('npForm').appendChild(warnEl);}
+    warnEl.textContent='Faltan: '+faltantes.join(', ')+'. Completalos para que el algoritmo funcione bien.';
+    warnEl.style.display='block';
+    return;
+  }
+  if(warnEl)warnEl.style.display='none';
   const btn=document.getElementById('btnGuardarNuevo');btn.disabled=true;btn.textContent='Guardando...';
-  const datos={modo:'admin',token:SESSION_TOKEN,contactoNombre:'nikisel',contactoWhatsapp:gv('np-wa'),relacion:'',nombre:gv('np-nombre'),edad:gv('np-edad'),sexo:gv('np-sexo'),estadoCivil:gv('np-estado'),hijos:gv('np-hijos'),hijosDetalle:'',nacionalidad:gv('np-nac'),paisResidencia:gv('np-pais'),regionProvincia:gv('np-region'),barrioZona:gv('np-barrio'),altura:gv('np-altura'),foto:npFotoData,abuelaMaterna:gv('np-abuela'),orientacionReligiosa:gv('np-relig'),ascendencia:gv('np-asc'),kashrut:gv('np-kash'),shabat:gv('np-shab'),baalTeshuva:'',converso:'',antecedentesFamilia:'',templo:gv('np-templo'),estudioDeTora:'',kipa:'',tseniut:'',cubrePelo:'',profesion:gv('np-prof'),primaria:'',secundaria:'',universidad:'',carrera:'',idiomas:gv('np-idiomas').split(',').map(s=>s.trim()).filter(Boolean),planAlia:gv('np-alia'),edadDesde:gv('np-eD'),edadHasta:gv('np-eH'),abiertoHijos:gv('np-abhijos'),orientacionBuscada:[],dealbreakers:gv('np-deal'),personaIdeal:gv('np-ideal'),notasExtra:''};
-  try{await fetch(SCRIPT,{method:'POST',body:JSON.stringify(datos),redirect:'follow'});closeOv('ovNuevo');setTimeout(()=>loadProfiles(),1500);}catch(e){}
+  const ob=gv('np-obuscada');
+  const datos={
+    action:'nuevoRegistro',
+    modo:'admin',token:SESSION_TOKEN,
+    contactoNombre:'nikisel',
+    contactoWhatsapp:gv('np-wa')||'',
+    relacion:'',
+    nombre:gv('np-nombre'),
+    edad:gv('np-edad'),
+    sexo:gv('np-sexo'),
+    estadoCivil:gv('np-estado')||'',
+    hijos:gv('np-hijos')||'',
+    hijosDetalle:'',
+    nacionalidad:gv('np-nac')||'',
+    paisResidencia:gv('np-pais'),
+    regionProvincia:gv('np-region')||'',
+    barrioZona:gv('np-barrio')||'',
+    altura:gv('np-altura')||'',
+    foto:npFotoData,
+    abuelaMaterna:gv('np-abuela')||'',
+    orientacionReligiosa:gv('np-relig'),
+    ascendencia:gv('np-asc')||'',
+    kashrut:gv('np-kash'),
+    shabat:gv('np-shab'),
+    baalTeshuva:gv('np-bt')||'',
+    converso:gv('np-conv')||'',
+    antecedentesFamilia:'',
+    templo:gv('np-templo')||'',
+    estudioDeTora:'',kipa:'',tseniut:'',cubrePelo:'',
+    profesion:gv('np-prof')||'',
+    primaria:'',secundaria:'',
+    universidad:gv('np-univ')||'',
+    carrera:gv('np-carrera')||'',
+    idiomas:gv('np-idiomas').split(',').map(s=>s.trim()).filter(Boolean),
+    planAlia:gv('np-alia')||'',
+    edadDesde:gv('np-eD'),
+    edadHasta:gv('np-eH'),
+    abiertoHijos:gv('np-abhijos')||'',
+    orientacionBuscada:ob?[ob]:[],
+    dealbreakers:gv('np-deal')||'',
+    personaIdeal:gv('np-ideal')||'',
+    notasExtra:gv('np-notas')||''
+  };
+  try{
+    await fetch(SCRIPT,{method:'POST',body:JSON.stringify(datos),redirect:'follow'});
+    closeOv('ovNuevo');
+    setTimeout(()=>loadProfiles(),1500);
+  }catch(e){alert('Error al guardar: '+e.message);}
   btn.disabled=false;btn.textContent='Guardar perfil';
 }
 
@@ -2036,9 +2147,9 @@ const FILTER_DEFS=[
   {id:'relig',   label:'Orientacion religiosa', default:'igual', tipo:'spec',   applies:'ambos', opciones:RELIG_ORD},
   {id:'kashrut', label:'Kashrut',             default:'igual', tipo:'spec',   applies:'ambos', opciones:['Nunca','En casa','Siempre','Parcialmente']},
   {id:'shabat',  label:'Shabat',              default:'igual', tipo:'spec',   applies:'ambos', opciones:['Nada','Kidush y algunos preceptos','Completo']},
-  {id:'alia',    label:'Plan de alia',        default:'igual', tipo:'spec',   applies:'ambos', opciones:['Si','No','Quizas']},
+  {id:'alia',    label:'Plan de alia',        default:'off',   tipo:'spec',   applies:'ambos', opciones:['Si','No','Quizas']},
   {id:'pais',    label:'Pais de residencia',  default:'igual', tipo:'pais',   applies:'ambos'},
-  {id:'hijos',   label:'Hijos',               default:'igual', tipo:'spec',   applies:'ambos', opciones:['Tiene hijos','No tiene hijos']},
+  {id:'hijos',   label:'Hijos',               default:'off',   tipo:'spec',   applies:'ambos', opciones:['Tiene hijos','No tiene hijos']},
   {id:'estado',  label:'Estado civil',        default:'off',   tipo:'spec',   applies:'ambos', opciones:['Soltero/a','Divorciado/a','Viudo/a']},
   {id:'altura',  label:'Altura',              default:'off',   tipo:'spec',   applies:'ambos', opciones:['Bajo/a','Mediano/a','Alto/a']},
   {id:'asc',     label:'Ascendencia',         default:'off',   tipo:'spec',   applies:'ambos', opciones:['Ashkenazi','Sefardi','Mezcla']},
