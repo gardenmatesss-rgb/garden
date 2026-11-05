@@ -1994,6 +1994,8 @@ function openNuevoPerfil(){
     <div class="ef-field"><label>Kashrut ✦</label><select id="np-kash">${selO(['Nunca','En casa','Siempre','Parcialmente'],'')}</select></div>
     <div class="ef-field"><label>Shabat ✦</label><select id="np-shab">${selO(['Nada','Kidush y algunos preceptos','Completo'],'')}</select></div>
     <div class="ef-field"><label>Idiomas ✦ <span style="font-weight:400;text-transform:none">(separados por coma)</span></label><input id="np-idiomas" placeholder="Español, Hebreo"></div>
+    <div class="ef-field"><label>Estado civil ✦</label><select id="np-estado">${selO(['Soltero/a','Divorciado/a','Viudo/a'],'')}</select></div>
+    <div class="ef-field"><label>Abuela materna judía ✦</label><select id="np-abuela">${selO(['Si','No','No se'],'')}</select></div>
     <div class="ef-field"><label>Hijos ✦</label><select id="np-hijos">${selO(['No','Si'],'')}</select></div>
     <div class="ef-field"><label>Nombre del contacto ✦</label><input id="np-cnombre" placeholder="Quien lo/la recomienda"></div>
     <div class="ef-field"><label>WhatsApp del contacto</label><input id="np-wa" placeholder="+54 11..."></div>
@@ -2006,13 +2008,11 @@ function openNuevoPerfil(){
     </button>
     <div class="np-extra-panel" id="npExtraPanel">
       <div class="ef-sec">Más datos personales</div>
-      <div class="ef-field"><label>Estado civil</label><select id="np-estado">${selO(['Soltero/a','Divorciado/a','Viudo/a'],'')}</select></div>
       <div class="ef-field"><label>Nacionalidad</label><input id="np-nac" placeholder="Argentina"></div>
       <div class="ef-field"><label>Ciudad / Provincia</label><input id="np-region" placeholder="CABA"></div>
       <div class="ef-field"><label>Barrio</label><input id="np-barrio" placeholder="Palermo"></div>
       <div class="ef-field"><label>Altura</label><select id="np-altura">${selO(['Bajo/a','Mediano/a','Alto/a'],'')}</select></div>
       <div class="ef-sec">Observancia</div>
-      <div class="ef-field"><label>Abuela materna judía</label><select id="np-abuela">${selO(['Si','No','No se'],'')}</select></div>
       <div class="ef-field"><label>Ascendencia</label><select id="np-asc">${selO(['Ashkenazi','Sefardi','Mezcla'],'')}</select></div>
       <div class="ef-field"><label>Baal teshuvá</label><select id="np-bt">${selO(['Si','No'],'')}</select></div>
       <div class="ef-field"><label>Converso/a</label><select id="np-conv">${selO(['Si','No'],'')}</select></div>
@@ -2062,6 +2062,8 @@ async function saveNuevoPerfil(){
     {id:'np-kash',label:'Kashrut'},
     {id:'np-shab',label:'Shabat'},
     {id:'np-idiomas',label:'Idiomas'},
+    {id:'np-estado',label:'Estado civil'},
+    {id:'np-abuela',label:'Abuela materna judía'},
     {id:'np-hijos',label:'Hijos'},
     {id:'np-cnombre',label:'Nombre del contacto'},
     {id:'np-eD',label:'Edad desde'},
@@ -2341,13 +2343,7 @@ function calcScore(p, c) {
   total+=4;
   if(city(p)&&city(c)&&city(p)===city(c))ganado+=4;
 
-  // 8. Plan de aliyá — peso 4 (se ignora si alguno ya vive en Israel)
-  const pEnIsrael=p.paisResidencia==='Israel'||p.planAlia==='Ya vive en Israel';
-  const cEnIsrael=c.paisResidencia==='Israel'||c.planAlia==='Ya vive en Israel';
-  if(!pEnIsrael&&!cEnIsrael){
-    total+=4;
-    if(p.planAlia&&c.planAlia&&p.planAlia===c.planAlia)ganado+=4;
-  }
+  // 8. Plan de aliyá — no cuenta en score por defecto
 
   const score=total>0?Math.round((ganado/total)*100):0;
   // Mutuo: ambos se buscan mutuamente por orientación Y rango de edad
@@ -2513,7 +2509,6 @@ function renderCmpTable(p,c,score,esMutuo,labelP,labelC){
     +row(edadOk,'Rango de edad',(p.edad||'?')+' anos (busca: '+eRangoP+')',(c.edad||'?')+' anos (busca: '+eRangoC+')')
     +row(kashOk,'Kashrut',p.kashrut,c.kashrut)
     +row(shabOk,'Shabat',p.shabat,c.shabat)
-    +row(aliaOk,'Plan de alia',p.planAlia,c.planAlia)
     +row(paisOk,'Mismo pais',p.paisResidencia,c.paisResidencia)
     +row(idiomasOk,'Idioma en comun',iP.join(', '),iC.join(', '))
     +row(hijosOk,'Hijos',p.hijos+' / abierto: '+p.abiertoHijos,c.hijos+' / abierto: '+c.abiertoHijos)
